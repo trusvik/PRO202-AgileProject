@@ -1,5 +1,5 @@
 import React from "react"; 
-
+import './adminLogin.css'
 
 const AdminLogin = () => {
     const givenUsr = "";
@@ -7,7 +7,17 @@ const AdminLogin = () => {
 
     return (
         <div id="admLogMainContainer">
-            <p></p> 
+            <div className="admFloater">
+                <div className="inputBox">
+                    <input type="text" placeholder="Password..."/>
+                    <button>TEST</button>
+                </div>
+                <div className="inputBox">
+                    <input type="text" placeholder="Username..."/>
+                    <button>TEST</button>
+                </div>
+            </div>
+
         </div>
     )
 }
