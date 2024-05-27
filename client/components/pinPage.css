@@ -1,0 +1,46 @@
+/* Sentrerer hele siden */
+.pinPageBody {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Lys grå bakgrunn */
+    font-family: Arial, sans-serif; /* Enkel, ren skrifttype */
+}
+
+/* Sentrerer innholdet i .pinPageContainer */
+.pinPageContainer {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Lett skygge for dybde */
+}
+
+/* Style for input felt */
+.pinPageInput {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style for knapp */
+.pinPageButton {
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Hover effekt for knapp */
+.pinPageButton:hover {
+    background-color: #0056b3;
+}
