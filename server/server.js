@@ -1,13 +1,14 @@
 import express from "express";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import {MongoClient, ServerApiVersion} from "mongodb";
+import {MongoClient, ObjectId, ServerApiVersion} from "mongodb";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
+app.use(express.json());
 
 app.use(express.static(join(__dirname, "../client/dist")));
 app.get("/*", (req, res) => {
@@ -40,6 +41,46 @@ async function connectToDatabase() {
         process.exit(1);
     }
 }
+
+app.post("/admin/new/play", async (req, res) => {
+    const { play, scenarios } = req.body;
+    if (!play || typeof scenarios !== 'number') {
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    try {
+        const database = client.db("loading");
+        const plays = database.collection("play");
+        const result = await plays.insertOne({ play, scenarios });
+        res.status(201).json(result);
+    } catch (err) {
+        console.error("Failed to insert play", err);
+        res.status(500).json({ error: "Failed to insert play" });
+    }
+});
+
+app.delete("/admin/delete/play/:id", async (req, res) => {
+    const playId = req.params.id;
+
+    if (!ObjectId.isValid(playId)) {
+        return res.status(400).json({ error: "Invalid play ID" });
+    }
+
+    try {
+        const database = client.db("loading");
+        const plays = database.collection("play");
+        const result = await plays.deleteOne({ _id: new ObjectId(playId) });
+
+        if (result.deletedCount === 1) {
+            res.status(200).json({ message: "Play deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Play not found" });
+        }
+    } catch (err) {
+        console.error("Failed to delete play", err);
+        res.status(500).json({ error: "Failed to delete play" });
+    }
+});
 
 connectToDatabase().then(() => {
     app.listen(3000, () => {
