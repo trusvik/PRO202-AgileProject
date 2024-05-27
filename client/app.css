@@ -1,3 +1,10 @@
 body {
-    margin: 20px;
+    margin: 0;
+    padding: 1vw;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    
 }
