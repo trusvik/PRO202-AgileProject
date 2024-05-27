@@ -42,7 +42,7 @@ const AdminLogin = () => {
 
     return (
         <div id="admLogMainContainer">
-            <h1>Admin Console Log in</h1>
+            <h1>Admin Konsoll Innlogging</h1>
             <div className="admFloater">
                 <div className="inputBox">
                     {/* Controlled input for username */}
