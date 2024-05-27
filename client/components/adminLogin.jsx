@@ -14,6 +14,7 @@ const AdminLogin = () => {
         setCookie('username', username, {path: '/' });
         setCookie('password', password, {path: '/' });
 
+        //Add login logic here
         console.log('Logged in with user: ', username);
     }
 
