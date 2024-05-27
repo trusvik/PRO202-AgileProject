@@ -7,15 +7,13 @@ const AdminLogin = () => {
 
     return (
         <div id="admLogMainContainer">
+            <h1>Admin Console Log in</h1>
             <div className="admFloater">
                 <div className="inputBox">
-                    <input type="text" placeholder="Password..."/>
-                    <button>TEST</button>
-                </div>
-                <div className="inputBox">
                     <input type="text" placeholder="Username..."/>
-                    <button>TEST</button>
+                    <input type="text" placeholder="Password..."/>
                 </div>
+                <button id="loginBtn">LOGG IN</button>
             </div>
 
         </div>
