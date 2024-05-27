@@ -109,7 +109,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/register", async (req, res) => {
+app.post("/admin/register", async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
