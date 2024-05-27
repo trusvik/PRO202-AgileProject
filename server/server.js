@@ -3,6 +3,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import {MongoClient, ObjectId, ServerApiVersion} from "mongodb";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -42,6 +43,8 @@ async function connectToDatabase() {
     }
 }
 
+
+//Create new Play-API
 app.post("/admin/new/play", async (req, res) => {
     const { play, scenarios } = req.body;
     if (!play || typeof scenarios !== 'number') {
@@ -59,6 +62,7 @@ app.post("/admin/new/play", async (req, res) => {
     }
 });
 
+//Delete current Play-API
 app.delete("/admin/delete/play/:id", async (req, res) => {
     const playId = req.params.id;
 
@@ -79,6 +83,51 @@ app.delete("/admin/delete/play/:id", async (req, res) => {
     } catch (err) {
         console.error("Failed to delete play", err);
         res.status(500).json({ error: "Failed to delete play" });
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    try {
+        const database = client.db("loading");
+        const users = database.collection("user");
+        const user = await users.findOne({ username });
+
+        if (user && await bcrypt.compare(password, user.password)) {
+            res.status(200).json({ message: "Login successful" });
+        } else {
+            res.status(401).json({ error: "Invalid username or password" });
+        }
+    } catch (err) {
+        console.error("Failed to authenticate user", err);
+        res.status(500).json({ error: "Failed to authenticate user" });
+    }
+});
+
+app.post("/register", async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    try {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const database = client.db("loading");
+        const users = database.collection("user");
+        const result = await users.insertOne({ username, password: hashedPassword });
+
+        res.status(201).json({ message: "User registered successfully", userId: result.insertedId });
+    } catch (err) {
+        console.error("Failed to register user", err);
+        res.status(500).json({ error: "Failed to register user" });
     }
 });
 
