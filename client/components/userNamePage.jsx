@@ -11,13 +11,15 @@ const UserNamePage = () => {
         setName(event.target.value);
     };
 
+
+    // Funksjonen for å legge til navn
     const setNameButton = () => {
         if (name.trim() !== "") {
             const storedNames = JSON.parse(sessionStorage.getItem("names"))|| [];
             const updatedNames = [...storedNames, name];
-            sessionStorage.setItem("names", JSON.stringify(updatedNames));
-            setName(""); // Clear the input field
-            navigate('/waitingRoom'); // Navigate to the waiting room
+            sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Lagre navnene i sessionStorage
+            setName(""); 
+            navigate('/waitingRoom'); // Bruker vil bli sendt til venterommet etter å skrevet inn navn
         } else {
             alert("Vennligst skriv inn navnet ditt først");
         }
