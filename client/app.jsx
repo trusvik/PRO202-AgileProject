@@ -5,6 +5,7 @@ import ProductPage from "./components/productPage";
 import AboutPage from "./components/aboutPage";
 import AdminLogin from "./components/adminLogin";
 import PinPage from "./components/pinPage"
+import Admin from "./components/admin";
 import "./app.css";
 
 export function App() {
@@ -17,6 +18,8 @@ export function App() {
                     <Link to={`/aboutPage/`}>About</Link>
                     <Link to={`/adminLogin/`}>Admin Login</Link>
                     <Link to={`/pinPage/`}>Pin Page</Link>
+                    <Link to={`/admin/`}>Admin Page</Link>
+
                 </h2>
             </nav>
             <Routes>
@@ -25,6 +28,7 @@ export function App() {
                 <Route path="/aboutPage/" element={<AboutPage />} />
                 <Route path="/adminLogin/" element={<AdminLogin />} />
                 <Route path="/pinPage/" element={<PinPage/>} />
+                <Route path="/admin/" element={<Admin/>} />
             </Routes>
         </div>
     );
