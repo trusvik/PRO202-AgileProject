@@ -12,6 +12,8 @@ const AdminLogin = () => {
 
     useEffect(() => {
         const verifyToken = async () => {
+            console.log(cookies);
+
             if (cookies.token) {
                 console.log("Token found in cookies:", cookies.token);
                 try {
@@ -56,7 +58,7 @@ const AdminLogin = () => {
 
             if (response.ok) {
                 console.log("Login successful. Setting cookie with token:", data.token);
-                setCookie('token', data.token, { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
+                setCookie('token', data.token, { path: '/' });
                 setMessage("Login successful!");
                 setUsername("");
                 setPassword("");
