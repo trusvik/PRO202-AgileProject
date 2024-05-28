@@ -18,15 +18,23 @@ const PinPage = () => {
 
     // Handle when the user clicks the button (send to DB - compare with PIN?).
     // Set a session cookie if the PIN is valid
-    const showPin = () => {
+    const checkPin = () => {
         if (/^\d+$/.test(pin)) { // Ensure the pin is not empty and only consists of digits
 
             const expires = new Date(); 
             expires.setTime(expires.getTime() + 12 * 60 * 60 * 1000); //Set expiration to 12 hours from now
             setCookie('userPin', pin, {path: '/', expires}); 
             alert(`Pin-kode: ${pin}`);
+            window.location.href = "/frontPage" // Sends to frontPage until the waiting page is ready.
         } else {
             alert('Vennligst skriv inn en gyldig PIN-kode.');
+        }
+    }
+
+    // Handles if the user presses Enter
+    const checkEnter = (event) => {
+        if (event.key === 'Enter') {
+            checkPin();
         }
     }
 
@@ -41,12 +49,13 @@ const PinPage = () => {
                     className="pinPageInput"
                     value={pin}
                     onChange={inputChange}
+                    onKeyDown={checkEnter}
                     placeholder="Skriv inn PIN-kode"
                     pattern="\d*"
                 />
 
                 {/* Button to submit the PIN */}
-                <button className="pinPageButton" onClick={showPin}>Bli med i spillet!</button>
+                <button className="pinPageButton" onClick={checkPin}>Bli med i spillet!</button>
             </div>
         </div>
     );
