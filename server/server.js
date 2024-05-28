@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -13,7 +14,7 @@ const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 app.use(cors());
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser());
 
 const uri = process.env.MONGODB_URI;
 
@@ -105,7 +106,11 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            res.status(200).json({ message: "Login successful" });
+            const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '3h'});
+            console.log(token);
+
+            res.cookie('token', token, { httpOnly: true, path: '/'});
+            res.status(200).json({ token });
         } else {
             res.status(401).json({ error: "Invalid username or password" });
         }
