@@ -4,20 +4,16 @@ import { useNavigate } from "react-router-dom";
 import './adminLogin.css';
 
 const AdminLogin = () => {
-    // State to manage user input
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
-    const [isTokenValid, setIsTokenValid] = useState(false);
-
-    // useCookies hook for managing cookies
-    const [cookies, setCookie, removeCookie] = useCookies(['token']); // Initialize cookie
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate();
 
     useEffect(() => {
         const verifyToken = async () => {
-            console.log("Verifying token");
             if (cookies.token) {
+                console.log("Token found in cookies:", cookies.token);
                 try {
                     const response = await fetch('http://localhost:3000/verify-token', {
                         method: 'GET',
@@ -26,24 +22,24 @@ const AdminLogin = () => {
 
                     if (response.ok) {
                         const data = await response.json();
+                        console.log("Token verified successfully:", data);
                         setMessage(`Welcome back, ${data.username}`);
-                        setIsTokenValid(true);
                         navigate("/admin");
                     } else {
-                        removeCookie('token');
+                        console.log("Token verification failed. Removing token.");
+                        removeCookie('token', { path: '/' });
                     }
                 } catch (error) {
-                console.error("token verification error:", error);
-                removeCookie('token');
+                    console.error("Token verification error:", error);
+                    removeCookie('token', { path: '/' });
                 }
+            } else {
+                console.log("No token found in cookies.");
             }
         };
         verifyToken();
+    }, [cookies.token, removeCookie, navigate]);
 
-    }, [cookies, removeCookie, navigate]);
-
-
-    
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
@@ -59,17 +55,14 @@ const AdminLogin = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Store username or authentication token in cookies
-                setCookie('token', data.token, { path: '/'});
-
+                console.log("Login successful. Setting cookie with token:", data.token);
+                setCookie('token', data.token, { path: '/', httpOnly: true, secure: true, sameSite: 'Strict' });
                 setMessage("Login successful!");
                 setUsername("");
                 setPassword("");
-                console.log('Logged in with user: ', username);
-                console.log('Token', data.token);
-                setIsTokenValid(true);
                 navigate("/admin");
             } else {
+                console.log("Login failed with message:", data.error);
                 setMessage(data.error || "Login failed");
             }
         } catch (error) {
@@ -84,7 +77,6 @@ const AdminLogin = () => {
             <h3 id="adminLogin">Admin login</h3>
             <form className="admFloater" onSubmit={handleLogin}>
                 <div className="inputBox">
-                    {/* Controlled input for username */}
                     <input
                         id="adminUsername"
                         type="text"
@@ -92,7 +84,6 @@ const AdminLogin = () => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    {/* Controlled input for password */}
                     <input
                         id="adminPassword"
                         type="password"
@@ -101,8 +92,7 @@ const AdminLogin = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                {/* Button to trigger login and set cookies */}
-                <button id="loginBtn" onClick={handleLogin}>LOGIN</button>
+                <button id="loginBtn" type="submit">LOGIN</button>
                 <div id="adminMessage">
                     {message && <p id="adminPTagMessage">{message}</p>}
                 </div>

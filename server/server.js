@@ -10,7 +10,6 @@ import cors from "cors";
 
 dotenv.config();
 
-
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
@@ -18,7 +17,7 @@ app.use(express.json());
 const corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true
-}
+};
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
@@ -43,13 +42,32 @@ async function connectToDatabase() {
     }
 }
 
+// Middleware to verify JWT token
+const verifyTokenMiddleware = (req, res, next) => {
+    const token = req.cookies.token;
+    console.log("Verifying token:", token);
+
+    if (!token) {
+        return res.status(401).json({ error: "Token is missing" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        console.log("Token verified successfully. Decoded token:", decoded);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        console.log("Token verification failed:", err.message);
+        res.status(401).json({ error: "Invalid or expired token" });
+    }
+};
+
 // API route to fetch plays
-app.get('/admin/plays/get', async (req, res) => {
+app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
         const plays = database.collection('plays');
         const playsList = await plays.find({}).toArray();
-        console.log("Fetched plays:", playsList); // Log the fetched data
         res.status(200).json(playsList);
     } catch (err) {
         console.error('Failed to fetch plays', err);
@@ -58,7 +76,7 @@ app.get('/admin/plays/get', async (req, res) => {
 });
 
 // Create new Play-API
-app.post("/admin/plays/new", async (req, res) => {
+app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
     const { play, scenarios } = req.body;
     if (!play || typeof scenarios !== 'number') {
         return res.status(400).json({ error: "Invalid input" });
@@ -76,7 +94,7 @@ app.post("/admin/plays/new", async (req, res) => {
 });
 
 // Delete current Play-API
-app.delete("/admin/plays/delete/:id", async (req, res) => {
+app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
 
     if (!ObjectId.isValid(playId)) {
@@ -113,12 +131,9 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            // Generate a token based on username and secret
-            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '3h'});
-            console.log(token); // debug print
-
-            // set cookie in response
-            res.cookie('token', token, { httpOnly: true, path: '/'});
+            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '3h' });
+            console.log("Login successful. Generated token:", token);
+            res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/' });
             res.status(200).json({ token });
         } else {
             res.status(401).json({ error: "Invalid username or password" });
@@ -130,20 +145,22 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/verify-token", (req, res) => {
-    console.log("Received request to verify token");
     const token = req.cookies.token;
+    console.log("Received request to verify token:", token);
 
     if (!token) {
-        return res.status(401).json({ error: "Token is missing"});
+        return res.status(401).json({ error: "Token is missing" });
     }
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        res.status(200).json({ valid: true, username: decoded.username});
+        console.log("Token verification successful. Decoded token:", decoded);
+        res.status(200).json({ valid: true, username: decoded.username });
     } catch (err) {
-        res.status(401).json({ error: "Invalid or expired token"});
+        console.log("Token verification failed:", err.message);
+        res.status(401).json({ error: "Invalid or expired token" });
     }
-})
+});
 
 // User registration
 app.post("/admin/register", async (req, res) => {
