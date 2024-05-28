@@ -24,10 +24,6 @@
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
   }
   
-  body{
-    background-color: var(--background-color);
-  }
-  
   #containerHeader{
     background-color: var(--background-color-header);
     height: 75px;

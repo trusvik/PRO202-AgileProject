@@ -42,11 +42,13 @@ const AdminLogin = () => {
 
     return (
         <div id="admLogMainContainer">
-            <h1>Admin Konsoll Innlogging</h1>
+            <h1 id="logo">Loading..</h1>
+            <h3 id="adminLogin">Admin login</h3>
             <div className="admFloater">
                 <div className="inputBox">
                     {/* Controlled input for username */}
                     <input
+                        id="adminUsername"
                         type="text"
                         placeholder="Username..."
                         value={username}
@@ -54,6 +56,7 @@ const AdminLogin = () => {
                     />
                     {/* Controlled input for password */}
                     <input
+                        id="adminPassword"
                         type="password"
                         placeholder="Password..."
                         value={password}
@@ -61,8 +64,10 @@ const AdminLogin = () => {
                     />
                 </div>
                 {/* Button to trigger login and set cookies */}
-                <button id="loginBtn" onClick={handleLogin}>LOG IN</button>
-                {message && <p>{message}</p>}
+                <button id="loginBtn" onClick={handleLogin}>LOGIN</button>
+                <div id="adminMessage">
+                    {message && <p id="adminPTagMessage">{message}</p>}
+                </div>
             </div>
         </div>
     );

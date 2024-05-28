@@ -1,77 +1,77 @@
-#admLogMainContainer *{
-    display: flex;
-    font-family: Arial, Helvetica, sans-serif;
+*{
+    margin: 0;
+    padding: 0;
 }
-#admLogMainContainer {
-    background-color: #f2a71b;
-    background: linear-gradient(170deg, rgb(36, 241, 122) 0%, rgb(1, 65, 35) 75%);
-    border-radius: 2vw;
-    flex-direction: column;
+  
+:root {
+    --background-color-header: #F2A71B;
+    --background-color-div: #D9D9D9;
+    --background-create-new-button: #D9D9D9;
+    --background-color: #BCBCBC;
+    --text-color: #000000;
+    --play-button: #6CF01B;
+    --edit-button: #1B8AF0;
+    --remove-button: #F01B1B;
+}
+  
+@font-face {
+    font-family: "JejuHallasan";
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
+}
+
+#admLogMainContainer{
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 95%;
-}
-#admLogMainContainer h1 {
-    color: #ffffff;
-}
-
-.admFloater {
     flex-direction: column;
-    justify-content: space-evenly;
     align-items: center;
-
-    width: 50%;
-    height: 50%;
-
-    border-radius: 2vw;
-    background: linear-gradient(170deg, rgb(255, 217, 0) 0%, rgb(245, 110, 0) 100%);
-    box-shadow: 0vw 0.5vw#fbff01;
+    text-align: center;
+    height: 50vh;
+    background-color: #6051BD;
 }
 
-#loginBtn {
-    width: 35%;
-    height: 10%;
-
-    display:block;
-    font-weight: 900;
-
-    border-radius: 0.3vw;
-    border: transparent;
-    box-shadow: 2px 2px rgb(1, 65, 35);
-    background-color: rgb(53, 165, 104);
-
+#adminLogin{
     color: white;
+    margin-top: 40px;
 }
 
-.inputBox {
-    width: 55%;
-    height: 50%;
+#adminUsername{
+    display: block;
+    padding: 9px;
+    margin-top: 5px;
+    font-weight: bold;
+}
 
-    border-radius: 0.3vw;
-    flex-direction: column;
-    justify-content: space-around;
+#adminPassword{
+    display: block;
+    padding: 9px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+#loginBtn{
+    background-color: white;
     color: black;
+    border: none;
+    padding: 10px 70px;
+    border-radius: 20px;
+    margin-top: 5px;
+    font-weight: bold;
 }
 
-.inputBox input {
-    width: 100%;
-    height: 30%;
-
-    border-radius: 0.3vw;
-    border: transparent;
-    letter-spacing: 0.1vw;
-    font-size: large;
-    
-    font-weight: 600;
-    color: black;
-
-    padding-left: 2vw;
+#adminMessage{
+    margin-top: 10px;
+    color: white;
+    position: absolute;
+    align-items: center;
+    height: 40px;
+    width: 200px;
 }
 
-.inputBox input::placeholder {
-
-    font-style: italic;
-    color: rgb(48, 27, 0);
+#adminPTagMessage{
+    text-align: center;
 }
