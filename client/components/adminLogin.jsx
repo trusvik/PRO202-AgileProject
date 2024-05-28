@@ -9,7 +9,7 @@ const AdminLogin = () => {
     const [message, setMessage] = useState("");
 
     // useCookies hook for managing cookies
-    const [cookies, setCookie] = useCookies(['Admin']); // Initialize cookie
+    const [cookies, setCookie] = useCookies(['username']); // Initialize cookie
 
     const handleLogin = async () => {
         try {
@@ -26,7 +26,6 @@ const AdminLogin = () => {
             if (response.ok) {
                 // Store username or authentication token in cookies
                 setCookie('username', username, { path: '/' });
-                setCookie('token', data.token, { path: '/' }); // Assuming your API returns a token
 
                 setMessage("Login successful!");
                 console.log('Logged in with user: ', username);
