@@ -4,12 +4,14 @@ import { fileURLToPath } from "url";
 import {MongoClient, ObjectId, ServerApiVersion} from "mongodb";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser"
 
 dotenv.config();
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use(express.static(join(__dirname, "../client/dist")));
 app.get("/*", (req, res) => {
@@ -99,6 +101,7 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
+            res.cookie("username", username, {signed: true, httpOnly: true, maxAge: 12 * 60 * 60 * 1000}); //12 hours expiration
             res.status(200).json({ message: "Login successful" });
         } else {
             res.status(401).json({ error: "Invalid username or password" });
