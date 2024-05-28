@@ -1,0 +1,46 @@
+.mainBody {
+    background-color: #0096FF;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+
+}
+
+.pageContainer {
+    text-align: center;
+    background-color: #7F00FF;
+    padding: 30px;
+    border-radius: 20px;
+    color: white;
+}
+
+.inputBox {
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+    
+}
+
+.onClickBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #008000;
+   
+}
+
+.nameList {
+    position: absolute;
+    top: 80px;
+    left: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    flex-direction: column;
+}
+
+.displayName {
+    margin-bottom: 5px;
+}
