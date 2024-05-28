@@ -6,6 +6,7 @@ import AboutPage from "./components/aboutPage";
 import AdminLogin from "./components/adminLogin";
 import PinPage from "./components/pinPage"
 import Admin from "./components/admin";
+import EditPlay from "./components/editPlay";
 import "./app.css";
 
 export function App() {
@@ -29,6 +30,7 @@ export function App() {
                 <Route path="/adminLogin/" element={<AdminLogin />} />
                 <Route path="/pinPage/" element={<PinPage/>} />
                 <Route path="/admin/" element={<Admin/>} />
+                <Route path="/admin/edit/new" element={<EditPlay />} />
             </Routes>
         </div>
     );

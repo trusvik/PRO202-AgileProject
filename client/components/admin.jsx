@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './admin.css';
 
 function Admin() {
     const [plays, setPlays] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // Initialize useNavigate hook
 
     useEffect(() => {
         const fetchPlays = async () => {
@@ -28,6 +30,11 @@ function Admin() {
         return <div>Loading...</div>;
     }
 
+    // Handle create new button click
+    const handleCreateNew = () => {
+        navigate('/admin/edit/new');
+    };
+
     return (
         <>
             <header id="containerHeader">
@@ -42,7 +49,7 @@ function Admin() {
 
             <section id='parent-margin'>
                 <section id='containerSectionButton'>
-                    <button id='createNewButton'>Create new</button>
+                    <button id='createNewButton' onClick={handleCreateNew}>Create new</button>
                 </section>
 
                 <section id='containerSectionName'>
