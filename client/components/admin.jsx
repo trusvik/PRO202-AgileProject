@@ -35,6 +35,23 @@ function Admin() {
         navigate('/admin/edit/new');
     };
 
+    // Handle remove button click
+    const handleRemove = async (playId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/admin/plays/delete/${playId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete play');
+            }
+
+            setPlays((prevPlays) => prevPlays.filter(play => play._id !== playId));
+        } catch (error) {
+            console.error('Error deleting play:', error);
+        }
+    };
+
     return (
         <>
             <header id="containerHeader">
@@ -73,7 +90,7 @@ function Admin() {
                         <div id='end'>
                             <button id='play'>Play</button>
                             <button id='edit'>Edit</button>
-                            <button id='remove'>Remove</button>
+                            <button id='remove' onClick={() => handleRemove(play._id)}>Remove</button>
                         </div>
                     </section>
                 ))}
