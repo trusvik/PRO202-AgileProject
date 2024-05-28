@@ -10,13 +10,20 @@ import cors from "cors";
 
 dotenv.config();
 
+
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true
+}
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 const uri = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const client = new MongoClient(uri, {
     serverApi: {
@@ -106,9 +113,11 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '3h'});
-            console.log(token);
+            // Generate a token based on username and secret
+            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '3h'});
+            console.log(token); // debug print
 
+            // set cookie in response
             res.cookie('token', token, { httpOnly: true, path: '/'});
             res.status(200).json({ token });
         } else {
@@ -119,6 +128,22 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ error: "Failed to authenticate user" });
     }
 });
+
+app.get("/verify-token", (req, res) => {
+    console.log("Received request to verify token");
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ error: "Token is missing"});
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        res.status(200).json({ valid: true, username: decoded.username});
+    } catch (err) {
+        res.status(401).json({ error: "Invalid or expired token"});
+    }
+})
 
 // User registration
 app.post("/admin/register", async (req, res) => {

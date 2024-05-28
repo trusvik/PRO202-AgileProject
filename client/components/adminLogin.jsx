@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import './adminLogin.css';
 
 const AdminLogin = () => {
@@ -7,33 +8,41 @@ const AdminLogin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const [isTokenValid, setIsTokenValid] = useState(false);
 
     // useCookies hook for managing cookies
-    const [cookies, setCookie] = useCookies(['token']); // Initialize cookie
+    const [cookies, setCookie, removeCookie] = useCookies(['token']); // Initialize cookie
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (cookies.token) {
-            const decodedToken = parseJwt(cookies.token);
-            if (decodedToken) {
-                setMessage()
-                setMessage(`Welcome back, ${decodedToken.username}`);
+        const verifyToken = async () => {
+            console.log("Verifying token");
+            if (cookies.token) {
+                try {
+                    const response = await fetch('http://localhost:3000/verify-token', {
+                        method: 'GET',
+                        credentials: 'include',
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setMessage(`Welcome back, ${data.username}`);
+                        setIsTokenValid(true);
+                        navigate("/admin");
+                    } else {
+                        removeCookie('token');
+                    }
+                } catch (error) {
+                console.error("token verification error:", error);
+                removeCookie('token');
+                }
             }
-        }
-    }, [cookies]);
+        };
+        verifyToken();
 
-    const parseJwt = (token) => {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+    }, [cookies, removeCookie, navigate]);
 
-            return JSON.parse(jsonPayload);
-        } catch (e) {
-            return null;
-        }
-    }
+
     
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -51,14 +60,15 @@ const AdminLogin = () => {
 
             if (response.ok) {
                 // Store username or authentication token in cookies
-                setCookie('toen', data.token, { path: '/'});
+                setCookie('token', data.token, { path: '/'});
 
                 setMessage("Login successful!");
                 setUsername("");
                 setPassword("");
                 console.log('Logged in with user: ', username);
                 console.log('Token', data.token);
-                // Redirect or take other actions after successful login
+                setIsTokenValid(true);
+                navigate("/admin");
             } else {
                 setMessage(data.error || "Login failed");
             }
