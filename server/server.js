@@ -242,7 +242,7 @@ app.get("/verify-token", (req, res) => {
 // Protected admin route
 app.get("/admin", verifyTokenMiddleware, (req, res) => {
     // If the token is valid, allow access to admin page
-    res.sendFile(join(__dirname, "../client/dist/admin.html"), function (err) {
+    res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
         }
