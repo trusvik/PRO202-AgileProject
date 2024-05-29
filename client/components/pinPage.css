@@ -1,3 +1,20 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+
+@font-face {
+    font-family: "JejuHallasan";
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
+}
+
 /* Sentrerer hele siden */
 .pinPageBody {
     height: 100vh;
@@ -5,27 +22,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0; /* Lys grå bakgrunn */
-    font-family: Arial, sans-serif; /* Enkel, ren skrifttype */
+    background-color: #de990e;
 }
 
 /* Sentrerer innholdet i .pinPageContainer */
 .pinPageContainer {
     text-align: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Lett skygge for dybde */
 }
 
 /* Style for input felt */
 .pinPageInput {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    display: block;
+    padding: 9px;
+    margin-top: 5px;
+    font-weight: bold;
 }
 
 /* Style for knapp */
@@ -34,13 +44,15 @@
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    background-color: #ffffff;
+    color: #000000;
     font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 /* Hover effekt for knapp */
 .pinPageButton:hover {
-    background-color: #0056b3;
+    background-color: #b83ce0;
+    transform: scale(1.1);
 }

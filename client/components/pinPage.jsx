@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import './pinPage.css';
 
-const PinPage = () => {
+const PinPage = ({ setIsAuthenticated }) => {
 
-    // Variable for the PIN code
+    // Variable for the PIN code ja
     const [pin, setPin] = useState("");
     const [cookie, setCookie] = useCookies(['userPin']); //initialize cookie
+    const navigate = useNavigate();
 
     // Update useState when the user enters the PIN.
     const inputChange = (event) => {
@@ -23,9 +25,10 @@ const PinPage = () => {
 
             const expires = new Date(); 
             expires.setTime(expires.getTime() + 12 * 60 * 60 * 1000); //Set expiration to 12 hours from now
-            setCookie('userPin', pin, {path: '/', expires}); 
+            setCookie('userPin', pin, {path: '/', expires});
+            setIsAuthenticated(true);
             alert(`Pin-kode: ${pin}`);
-            window.location.href = "/frontPage" // Sends to frontPage until the waiting page is ready.
+            navigate("/userNamePage"); // Sends to frontPage until the waiting page is ready.
         } else {
             alert('Vennligst skriv inn en gyldig PIN-kode.');
         }
@@ -41,7 +44,7 @@ const PinPage = () => {
     return (
         <div className="pinPageBody">
             <div className="pinPageContainer">
-                <h1>Skriv inn PIN-koden</h1>
+                <h1 id="logo">LOADING...</h1>
 
                 {/* Input field for entering PIN */}
                 <input
@@ -50,7 +53,7 @@ const PinPage = () => {
                     value={pin}
                     onChange={inputChange}
                     onKeyDown={checkEnter}
-                    placeholder="Skriv inn PIN-kode"
+                    placeholder="PIN-kode ..."
                     pattern="\d*"
                 />
 

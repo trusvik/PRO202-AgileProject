@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Route, Routes} from "react-router-dom";
+import React, {useState} from "react";
+import {Link, Navigate, Route, Routes} from "react-router-dom";
 import AdminLogin from "./components/adminLogin";
 import PinPage from "./components/pinPage"
 import Admin from "./components/admin";
@@ -9,6 +9,9 @@ import WaitingRoom from "./components/waitingRoom";
 import "./app.css";
 
 export function App() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isUserNameEntered, setIsUsernameEntered] = useState(false);
+
     return (
         <div id={"page_container"}>
             <nav>
@@ -22,12 +25,12 @@ export function App() {
             </nav>
             <Routes>
                 <Route path="/adminLogin/" element={<AdminLogin />} />
-                <Route path="/pinPage/" element={<PinPage/>} />
+                <Route path="/pinPage/" element={<PinPage setIsAuthenticated={setIsAuthenticated}/>} />
                 <Route path="/admin/" element={<Admin/>} />
                 <Route path="/admin/edit/new" element={<EditPlay />} />
-                <Route path="/userNamePage" element={<UserNamePage />} />
-                <Route path="/waitingRoom" element={<WaitingRoom />} />
-
+                <Route path="/userNamePage" element={isAuthenticated ? <UserNamePage setIsUserNameEntered={setIsUsernameEntered}/> : <Navigate to="/pinPage" />} />
+                <Route path="/waitingRoom" element={isUserNameEntered ? <WaitingRoom /> : <Navigate to="/userNamePage" />} />
+                <Route path="/" element={<Navigate to="/pinPage" />} />
             </Routes>
         </div>
     );
