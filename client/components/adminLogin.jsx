@@ -6,6 +6,11 @@ const AdminLogin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+
+    const [showSettings, setShowSettings] = useState(false);
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,6 +65,11 @@ const AdminLogin = () => {
         }
     };
 
+
+    const handleChangePassword = async () => {
+        console.log("Passord endring");
+    }
+
     return (
         <div id="admLogMainContainer">
             <h1 id="logo">Loading..</h1>
@@ -86,6 +96,51 @@ const AdminLogin = () => {
                     {message && <p id="adminPTagMessage">{message}</p>}
                 </div>
             </form>
+            
+            
+            <button id="settingsBtn" onClick={() => setShowSettings(true)}>Innstillinger</button>
+            {showSettings && (
+                <div className="settingsPopup">
+                    <div className="settingsContent">
+                        <h3>Innstillinger</h3>
+                        <button className="closeBtn" onClick={() => setShowSettings(false)}>Lukk</button>
+                        <div className="settingOption">
+                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Endre passord</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            )}
+
+            
+            {showChangePassword && (
+                <div className="changePasswordPopup">
+                    <div className="changePasswordContainer">
+                        <h3>Bytt passord</h3>
+                        <input
+                            type="password"
+                            placeholder="Nytt passord"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        >
+                         </input>
+
+                         <input
+                            type="password"
+                            placeholder="Gjenta passord"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value) }
+                             ></input>
+
+                             <button onClick={handleChangePassword}>Bekreft</button>
+                             <button className="closeBtn" onClick={() => setShowChangePassword(false)}>Lukk</button>
+                        
+                    </div>
+                </div>
+            )}
+            {message && <div id="adminMessage">{message}</div>}
+            
+
         </div>
     );
 }
