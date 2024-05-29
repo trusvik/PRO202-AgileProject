@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import './adminLogin.css';
 
@@ -7,40 +6,30 @@ const AdminLogin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
-    const [cookies, setCookie, removeCookie] = useCookies(['token']);
     const navigate = useNavigate();
 
     useEffect(() => {
         const verifyToken = async () => {
-            console.log(cookies);
+            try {
+                const response = await fetch('http://localhost:3000/verify-token', {
+                    method: 'GET',
+                    credentials: 'include', // Ensures cookies are sent with the request
+                });
 
-            if (cookies.token) {
-                console.log("Token found in cookies:", cookies.token);
-                try {
-                    const response = await fetch('http://localhost:3000/verify-token', {
-                        method: 'GET',
-                        credentials: 'include',
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log("Token verified successfully:", data);
-                        setMessage(`Welcome back, ${data.username}`);
-                        navigate("/admin");
-                    } else {
-                        console.log("Token verification failed. Removing token.");
-                        removeCookie('token', { path: '/' });
-                    }
-                } catch (error) {
-                    console.error("Token verification error:", error);
-                    removeCookie('token', { path: '/' });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Token verified successfully:", data);
+                    setMessage(`Welcome back, ${data.username}`);
+                    navigate("/admin");
+                } else {
+                    console.log("Token verification failed.");
                 }
-            } else {
-                console.log("No token found in cookies.");
+            } catch (error) {
+                console.error("Token verification error:", error);
             }
         };
         verifyToken();
-    }, [cookies.token, removeCookie, navigate]);
+    }, [navigate]);
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -50,20 +39,18 @@ const AdminLogin = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
+                credentials: 'include', // Ensures cookies are sent with the request
                 body: JSON.stringify({ username, password }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
-                console.log("Login successful. Setting cookie with token:", data.token);
-                setCookie('token', data.token, { path: '/' });
+                console.log("Login successful. Redirecting to /admin.");
                 setMessage("Login successful!");
                 setUsername("");
                 setPassword("");
                 navigate("/admin");
             } else {
+                const data = await response.json();
                 console.log("Login failed with message:", data.error);
                 setMessage(data.error || "Login failed");
             }

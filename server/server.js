@@ -131,10 +131,10 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '3h' });
+            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '12h' });
             console.log("Login successful. Generated token:", token);
-            res.cookie('token', token, { httpOnly: false, secure: true, sameSite: 'Strict', path: '/' });
-            res.status(200).json({ token });
+            res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
+            res.status(200).json({ message: "Login successful!" });
         } else {
             res.status(401).json({ error: "Invalid username or password" });
         }
@@ -146,8 +146,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/verify-token", (req, res) => {
     const token = req.cookies.token;
-    console.log("Server got token: ");
-    console.log(token);
+    console.log("Server got token: ", token);
 
     if (!token) {
         return res.status(401).json({ error: "Token is missing" });
