@@ -188,13 +188,13 @@ app.post("/admin/register", async (req, res) => {
 // Serve static files from the React app
 app.use(express.static(join(__dirname, "../client/dist")));
 
+app.get("/pinPage", (req, res) => {
+    res.sendFile(join(__dirname, "../client/dist/index.html"));
+});
+
 // The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get("/*", (req, res) => {
-    res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-    });
+    res.redirect('/pinPage/');
 });
 
 connectToDatabase().then(() => {
