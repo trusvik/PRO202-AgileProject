@@ -62,13 +62,54 @@ const verifyTokenMiddleware = (req, res, next) => {
     }
 };
 
+async function insertDocument() {
+    const database = client.db('loading');
+    const plays = database.collection('plays'); // Correct collection name here
+
+    const newPlay = {
+        _id: new ObjectId("665709e1f729babc6cd5daa9"),
+        play: "Mormor og de 8 Ungene",
+        scenarios: [
+            {
+                scenario_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e2"),
+                question: "What should the character feel?",
+                choices: [
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e3"), description: "Sint", votes: 0 },
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e4"), description: "Glad", votes: 0 },
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e5"), description: "Trist", votes: 0 },
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e6"), description: "Irritert", votes: 0 }
+                ]
+            },
+            {
+                scenario_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e7"),
+                question: "What should the character do?",
+                choices: [
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e8"), description: "Løp", votes: 0 },
+                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e9"), description: "Kjemp", votes: 0 }
+                ]
+            }
+        ]
+    };
+
+    try {
+        const result = await plays.insertOne(newPlay);
+        console.log(`New play created with the following id: ${result.insertedId}`);
+    } catch (err) {
+        console.error("Failed to insert play", err);
+    }
+}
+
 // API route to fetch plays
-app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
+app.get('/admin/get/plays', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
-        const plays = database.collection('play');
+        const plays = database.collection('plays'); // Correct collection name here
         const playsList = await plays.find({}).toArray();
-        res.status(200).json(playsList);
+        const formattedPlaysList = playsList.map(play => ({
+            name: play.play,
+            numberOfScenarios: play.scenarios.length // Access scenarios correctly
+        }));
+        res.status(200).json(formattedPlaysList);
     } catch (err) {
         console.error('Failed to fetch plays', err);
         res.status(500).json({ error: 'Failed to fetch plays' });
@@ -77,15 +118,27 @@ app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
 
 // Create new Play-API
 app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
-    const { play, scenarios } = req.body;
-    if (!play || typeof scenarios !== 'number') {
+    const { name, scenarios } = req.body;
+    if (!name || !Array.isArray(scenarios)) {
         return res.status(400).json({ error: "Invalid input" });
     }
 
     try {
         const database = client.db("loading");
-        const plays = database.collection("play");
-        const result = await plays.insertOne({ play, scenarios });
+        const plays = database.collection("plays");
+        const newPlay = {
+            name,
+            scenarios: scenarios.map(scenario => ({
+                scenario_id: new ObjectId(),
+                ...scenario,
+                choices: scenario.choices.map(choice => ({
+                    choice_id: new ObjectId(),
+                    ...choice,
+                    votes: 0
+                }))
+            }))
+        };
+        const result = await plays.insertOne(newPlay);
         res.status(201).json(result);
     } catch (err) {
         console.error("Failed to insert play", err);
@@ -103,7 +156,7 @@ app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) =>
 
     try {
         const database = client.db("loading");
-        const plays = database.collection("play");
+        const plays = database.collection("plays");
         const result = await plays.deleteOne({ _id: new ObjectId(playId) });
 
         if (result.deletedCount === 1) {
@@ -207,7 +260,36 @@ app.get("/*", (req, res) => {
     res.redirect('/pinPage/');
 });
 
-connectToDatabase().then(() => {
+app.post("/vote", verifyTokenMiddleware, async (req, res) => {
+    const { playId, scenarioId, choiceId } = req.body;
+
+    if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId) || !ObjectId.isValid(choiceId)) {
+        return res.status(400).json({ error: "Invalid IDs" });
+    }
+
+    try {
+        const database = client.db("loading");
+        const plays = database.collection("plays");
+
+        const result = await plays.updateOne(
+            { "_id": new ObjectId(playId), "scenarios.scenario_id": new ObjectId(scenarioId), "scenarios.choices.choice_id": new ObjectId(choiceId) },
+            { $inc: { "scenarios.$.choices.$[choice].votes": 1 } },
+            { arrayFilters: [{ "choice.choice_id": new ObjectId(choiceId) }] }
+        );
+
+        if (result.modifiedCount === 1) {
+            res.status(200).json({ message: "Vote registered successfully" });
+        } else {
+            res.status(404).json({ error: "Play, Scenario, or Choice not found" });
+        }
+    } catch (err) {
+        console.error("Failed to register vote", err);
+        res.status(500).json({ error: "Failed to register vote" });
+    }
+});
+
+connectToDatabase().then(async () => {
+    await insertDocument(); // Call the function to insert the document when the server starts
     app.listen(3000, () => {
         console.log("Server is running on http://localhost:3000");
     });

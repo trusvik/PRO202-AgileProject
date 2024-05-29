@@ -10,7 +10,7 @@ function Admin() {
     useEffect(() => {
         const fetchPlays = async () => {
             try {
-                const response = await fetch('http://localhost:3000/admin/plays/get', {
+                const response = await fetch('http://localhost:3000/admin/get/plays', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
@@ -97,8 +97,8 @@ function Admin() {
                     <section key={play._id} id='containerSectionName'>
                         <div id='start'>
                             <div id='one'><p>{play._id}</p></div>
-                            <div id='two'><p>{play.play}</p></div>
-                            <div id='three'><p>{play.scenarios}</p></div>
+                            <div id='two'><p>{play.name}</p></div>
+                            <div id='three'><p>{play.numberOfScenarios}</p></div>
                         </div>
                         <div id='end'>
                             <button id='play'>Play</button>
