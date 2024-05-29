@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import './pinPage.css';
 
 const PinPage = ({ setIsAuthenticated }) => {
-
-    // Variable for the PIN code ja
     const [pin, setPin] = useState("");
-    const [cookie, setCookie] = useCookies(['userPin']); //initialize cookie
     const navigate = useNavigate();
 
     // Update useState when the user enters the PIN.
@@ -19,13 +15,8 @@ const PinPage = ({ setIsAuthenticated }) => {
     };
 
     // Handle when the user clicks the button (send to DB - compare with PIN?).
-    // Set a session cookie if the PIN is valid
     const checkPin = () => {
         if (/^\d+$/.test(pin)) { // Ensure the pin is not empty and only consists of digits
-
-            const expires = new Date(); 
-            expires.setTime(expires.getTime() + 12 * 60 * 60 * 1000); //Set expiration to 12 hours from now
-            setCookie('userPin', pin, {path: '/', expires});
             setIsAuthenticated(true);
             alert(`Pin-kode: ${pin}`);
             navigate("/userNamePage"); // Sends to frontPage until the waiting page is ready.
