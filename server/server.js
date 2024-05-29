@@ -100,7 +100,7 @@ async function insertDocument() {
 }
 
 // API route to fetch plays
-app.get('/admin/get/plays', verifyTokenMiddleware, async (req, res) => {
+app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
         const plays = database.collection('plays');

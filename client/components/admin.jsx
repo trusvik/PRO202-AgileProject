@@ -10,7 +10,7 @@ function Admin() {
     useEffect(() => {
         const fetchPlays = async () => {
             try {
-                const response = await fetch('http://localhost:3000/admin/get/plays', {
+                const response = await fetch('http://localhost:3000/admin/plays/get', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
@@ -39,7 +39,7 @@ function Admin() {
 
     // Handle create new button click
     const handleCreateNew = () => {
-        navigate('/admin/edit/new');
+        navigate('/admin/plays/new');
     };
 
     // Handle remove button click
@@ -67,7 +67,7 @@ function Admin() {
 
     // Handle edit button click
     const handleEdit = (playId) => {
-        navigate(`/admin/edit/${playId}`);
+        navigate(`/admin/plays/edit/${playId}`);
     };
 
     return (
