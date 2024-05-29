@@ -1,0 +1,32 @@
+.waitingBody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0BDA51;
+    
+}
+
+
+.roomContainer {
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+    
+}
+
+
+
+.statusMessage {
+    margin-bottom: 20px;
+}
+
+.statusMessage p {
+    font-size: 18px;
+    margin: 10px;
+    color: #000000;
+}
+
+

@@ -12,7 +12,7 @@ const UserNamePage = ({ setIsUserNameEntered }) => {
     };
 
 
-    // Funksjonen for å legge til navn
+    // Funksjonen for å skrive inn navn
     const setNameButton = () => {
         if (name.trim() !== "") {
             const storedNames = JSON.parse(sessionStorage.getItem("names"))|| [];
@@ -25,6 +25,7 @@ const UserNamePage = ({ setIsUserNameEntered }) => {
             alert("Vennligst skriv inn navnet ditt først");
         }
     };
+
 
     return (
         <div className="mainBody">
