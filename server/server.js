@@ -66,7 +66,7 @@ const verifyTokenMiddleware = (req, res, next) => {
 app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
-        const plays = database.collection('plays');
+        const plays = database.collection('play');
         const playsList = await plays.find({}).toArray();
         res.status(200).json(playsList);
     } catch (err) {
@@ -84,7 +84,7 @@ app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
 
     try {
         const database = client.db("loading");
-        const plays = database.collection("plays");
+        const plays = database.collection("play");
         const result = await plays.insertOne({ play, scenarios });
         res.status(201).json(result);
     } catch (err) {
@@ -103,7 +103,7 @@ app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) =>
 
     try {
         const database = client.db("loading");
-        const plays = database.collection("plays");
+        const plays = database.collection("play");
         const result = await plays.deleteOne({ _id: new ObjectId(playId) });
 
         if (result.deletedCount === 1) {
