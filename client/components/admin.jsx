@@ -10,7 +10,14 @@ function Admin() {
     useEffect(() => {
         const fetchPlays = async () => {
             try {
-                const response = await fetch('http://localhost:3000/admin/plays/get');
+                const response = await fetch('http://localhost:3000/admin/plays/get', {
+                    credentials: 'include', // Ensure cookies are sent with the request
+                });
+                if (response.status === 401) {
+                    // If unauthorized, redirect to login page
+                    navigate('/adminlogin');
+                    return;
+                }
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -24,7 +31,7 @@ function Admin() {
         };
 
         fetchPlays();
-    }, []);
+    }, [navigate]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -40,8 +47,14 @@ function Admin() {
         try {
             const response = await fetch(`http://localhost:3000/admin/plays/delete/${playId}`, {
                 method: 'DELETE',
+                credentials: 'include', // Ensure cookies are sent with the request
             });
 
+            if (response.status === 401) {
+                // If unauthorized, redirect to login page
+                navigate('/adminlogin');
+                return;
+            }
             if (!response.ok) {
                 throw new Error('Failed to delete play');
             }
