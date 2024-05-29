@@ -15,13 +15,11 @@ export function App() {
     return (
         <div id={"page_container"}>
             <nav>
-                <h2>
-                    <Link to={`/adminLogin/`}>Admin Login</Link>
-                    <Link to={`/pinPage/`}>Pin Page</Link>
-                    <Link to={`/admin/`}>Admin Page</Link>
-                    <Link to={`/userNamePage/`}>Username page</Link>
+                <Link to={`/adminLogin/`}>Admin Login</Link>
+                <Link to={`/pinPage/`}>Pin Page</Link>
+                <Link to={`/admin/`}>Admin Page</Link>
+                <Link to={`/userNamePage/`}>Username page</Link>
 
-                </h2>
             </nav>
             <Routes>
                 <Route path="/adminLogin/" element={<AdminLogin />} />
