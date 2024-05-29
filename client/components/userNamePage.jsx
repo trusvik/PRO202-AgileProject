@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './userNamePage.css';
 
-const UserNamePage = () => {
+const UserNamePage = ({ setIsUserNameEntered }) => {
     const [name, setName] = useState("");
     const navigate = useNavigate();
 
@@ -18,7 +18,8 @@ const UserNamePage = () => {
             const storedNames = JSON.parse(sessionStorage.getItem("names"))|| [];
             const updatedNames = [...storedNames, name];
             sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Lagre navnene i sessionStorage
-            setName(""); 
+            setName("");
+            setIsUserNameEntered(true);
             navigate('/waitingRoom'); // Bruker vil bli sendt til venterommet etter å skrevet inn navn
         } else {
             alert("Vennligst skriv inn navnet ditt først");

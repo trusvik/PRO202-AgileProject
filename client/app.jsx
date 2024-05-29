@@ -10,6 +10,7 @@ import "./app.css";
 
 export function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isUserNameEntered, setIsUsernameEntered] = useState(false);
 
     return (
         <div id={"page_container"}>
@@ -27,8 +28,8 @@ export function App() {
                 <Route path="/pinPage/" element={<PinPage setIsAuthenticated={setIsAuthenticated}/>} />
                 <Route path="/admin/" element={<Admin/>} />
                 <Route path="/admin/edit/new" element={<EditPlay />} />
-                <Route path="/userNamePage" element={isAuthenticated ? <UserNamePage /> : <Navigate to="/pinPage" />} />
-                <Route path="/waitingRoom" element={<WaitingRoom />} />
+                <Route path="/userNamePage" element={isAuthenticated ? <UserNamePage setIsUserNameEntered={setIsUsernameEntered}/> : <Navigate to="/pinPage" />} />
+                <Route path="/waitingRoom" element={isUserNameEntered ? <WaitingRoom /> : <Navigate to="/userNamePage" />} />
                 <Route path="/" element={<Navigate to="/pinPage" />} />
             </Routes>
         </div>
