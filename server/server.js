@@ -64,7 +64,7 @@ const verifyTokenMiddleware = (req, res, next) => {
 
 async function insertDocument() {
     const database = client.db('loading');
-    const plays = database.collection('plays'); // Correct collection name here
+    const plays = database.collection('plays');
 
     const newPlay = {
         _id: new ObjectId("665709e1f729babc6cd5daa9"),
@@ -103,9 +103,10 @@ async function insertDocument() {
 app.get('/admin/get/plays', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
-        const plays = database.collection('plays'); // Correct collection name here
+        const plays = database.collection('plays');
         const playsList = await plays.find({}).toArray();
         const formattedPlaysList = playsList.map(play => ({
+            _id: play._id, // Ensure the _id is included
             name: play.play,
             numberOfScenarios: play.scenarios.length // Access scenarios correctly
         }));
@@ -113,6 +114,29 @@ app.get('/admin/get/plays', verifyTokenMiddleware, async (req, res) => {
     } catch (err) {
         console.error('Failed to fetch plays', err);
         res.status(500).json({ error: 'Failed to fetch plays' });
+    }
+});
+
+app.get('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
+    const playId = req.params.id;
+
+    if (!ObjectId.isValid(playId)) {
+        return res.status(400).json({ error: "Invalid play ID" });
+    }
+
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+        const play = await plays.findOne({ _id: new ObjectId(playId) });
+
+        if (play) {
+            res.status(200).json(play);
+        } else {
+            res.status(404).json({ error: "Play not found" });
+        }
+    } catch (err) {
+        console.error('Failed to fetch play', err);
+        res.status(500).json({ error: 'Failed to fetch play' });
     }
 });
 
@@ -127,13 +151,13 @@ app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
         const database = client.db("loading");
         const plays = database.collection("plays");
         const newPlay = {
-            name,
+            play: name, // Ensure the field matches the fetch structure
             scenarios: scenarios.map(scenario => ({
                 scenario_id: new ObjectId(),
                 ...scenario,
                 choices: scenario.choices.map(choice => ({
                     choice_id: new ObjectId(),
-                    ...choice,
+                    description: choice,
                     votes: 0
                 }))
             }))
@@ -258,34 +282,6 @@ app.get("/pinPage", (req, res) => {
 // The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get("/*", (req, res) => {
     res.redirect('/pinPage/');
-});
-
-app.post("/vote", verifyTokenMiddleware, async (req, res) => {
-    const { playId, scenarioId, choiceId } = req.body;
-
-    if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId) || !ObjectId.isValid(choiceId)) {
-        return res.status(400).json({ error: "Invalid IDs" });
-    }
-
-    try {
-        const database = client.db("loading");
-        const plays = database.collection("plays");
-
-        const result = await plays.updateOne(
-            { "_id": new ObjectId(playId), "scenarios.scenario_id": new ObjectId(scenarioId), "scenarios.choices.choice_id": new ObjectId(choiceId) },
-            { $inc: { "scenarios.$.choices.$[choice].votes": 1 } },
-            { arrayFilters: [{ "choice.choice_id": new ObjectId(choiceId) }] }
-        );
-
-        if (result.modifiedCount === 1) {
-            res.status(200).json({ message: "Vote registered successfully" });
-        } else {
-            res.status(404).json({ error: "Play, Scenario, or Choice not found" });
-        }
-    } catch (err) {
-        console.error("Failed to register vote", err);
-        res.status(500).json({ error: "Failed to register vote" });
-    }
 });
 
 connectToDatabase().then(async () => {

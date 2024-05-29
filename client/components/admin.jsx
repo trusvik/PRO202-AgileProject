@@ -65,6 +65,11 @@ function Admin() {
         }
     };
 
+    // Handle edit button click
+    const handleEdit = (playId) => {
+        navigate(`/admin/edit/${playId}`);
+    };
+
     return (
         <>
             <header id="containerHeader">
@@ -102,7 +107,7 @@ function Admin() {
                         </div>
                         <div id='end'>
                             <button id='play'>Play</button>
-                            <button id='edit'>Edit</button>
+                            <button id='edit' onClick={() => handleEdit(play._id)}>Edit</button>
                             <button id='remove' onClick={() => handleRemove(play._id)}>Remove</button>
                         </div>
                     </section>
