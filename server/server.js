@@ -194,6 +194,51 @@ app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) =>
     }
 });
 
+app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
+    const playId = req.params.id;
+    const { name, scenarios } = req.body;
+
+    if (!ObjectId.isValid(playId)) {
+        return res.status(400).json({ error: "Invalid play ID" });
+    }
+
+    if (!name || !Array.isArray(scenarios)) {
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+        const updatedPlay = {
+            play: name,
+            scenarios: scenarios.map(scenario => ({
+                scenario_id: scenario.scenario_id || new ObjectId(),
+                ...scenario,
+                choices: scenario.choices.map(choice => ({
+                    choice_id: choice.choice_id || new ObjectId(),
+                    description: choice.description,
+                    votes: choice.votes || 0
+                }))
+            }))
+        };
+
+        const result = await plays.updateOne(
+            { _id: new ObjectId(playId) },
+            { $set: updatedPlay }
+        );
+
+        if (result.modifiedCount === 1) {
+            res.status(200).json({ message: "Play updated successfully" });
+        } else {
+            res.status(404).json({ error: "Play not found" });
+        }
+    } catch (err) {
+        console.error('Failed to update play', err);
+        res.status(500).json({ error: 'Failed to update play' });
+    }
+});
+
+
 // User login
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;

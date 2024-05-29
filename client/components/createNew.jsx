@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function CreateNew() {
     const [play, setPlay] = useState('');
     const [scenarios, setScenarios] = useState([{ question: '', choices: [''] }]);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handlePlayNameChange = (e) => {
         setPlay(e.target.value);
@@ -64,6 +66,7 @@ function CreateNew() {
 
             if (response.ok) {
                 alert('Play created successfully');
+                navigate('/admin'); // Redirect to admin page after successful creation
             } else {
                 const errorData = await response.json();
                 alert(`Failed to create play: ${errorData.error}`);
