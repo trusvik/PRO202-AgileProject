@@ -64,14 +64,6 @@ const verifyTokenMiddleware = (req, res, next) => {
     }
 };
 
-const addTokenVersionToUsers = async () => {
-    const database = client.db("loading");
-    const users = database.collection("user");
-    await users.updateMany({}, { $set: { tokenVersion: 0 } });
-    console.log("Added tokenVersion to all users");
-};
-addTokenVersionToUsers();
-
 async function insertDocument() {
     const database = client.db('loading');
     const plays = database.collection('plays');
