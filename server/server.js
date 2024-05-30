@@ -8,8 +8,7 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
-import https from "https";
-import fs from "fs";
+import http from "http";
 
 dotenv.config();
 
@@ -340,17 +339,7 @@ app.get("/*", (req, res) => {
 });
 
 // Create the server and the WebSocket server
-let server;
-if (process.env.NODE_ENV === 'production') {
-    server = https.createServer({
-        // In production, Heroku manages SSL termination, so this is just a placeholder
-        // For local development, you can use self-signed certificates
-        key: fs.readFileSync('path/to/your/ssl/key.pem'),
-        cert: fs.readFileSync('path/to/your/ssl/cert.pem'),
-    }, app);
-} else {
-    server = http.createServer(app);
-}
+const server = http.createServer(app);
 
 const wss = new WebSocketServer({ server });
 
