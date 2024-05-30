@@ -10,16 +10,17 @@ function Admin() {
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [changePasswordMessage, setChangePasswordMessage] = useState("");
-    const navigate = useNavigate();
+    const [changePasswordMessage, setChangePasswordMessage] = useState(""); // Egen melding for passordbytte
+    const navigate = useNavigate(); // Initialize useNavigate hook
 
     useEffect(() => {
         const fetchPlays = async () => {
             try {
                 const response = await fetch('/admin/plays/get', {
-                    credentials: 'include',
+                    credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
+                    // If unauthorized, redirect to login page
                     navigate('/adminlogin');
                     return;
                 }
@@ -42,18 +43,21 @@ function Admin() {
         return <div>Loading...</div>;
     }
 
+    // Handle create new button click
     const handleCreateNew = () => {
         navigate('/admin/plays/new');
     };
 
+    // Handle remove button click
     const handleRemove = async (playId) => {
         try {
             const response = await fetch(`/admin/plays/delete/${playId}`, {
                 method: 'DELETE',
-                credentials: 'include',
+                credentials: 'include', // Ensure cookies are sent with the request
             });
 
             if (response.status === 401) {
+                // If unauthorized, redirect to login page
                 navigate('/adminlogin');
                 return;
             }
@@ -67,24 +71,30 @@ function Admin() {
         }
     };
 
+    // Handle edit button click
     const handleEdit = (playId) => {
         navigate(`/admin/plays/edit/${playId}`);
     };
 
-    const handleChangePassword = async () => {
+    const handleChangePassword = async (event) => {
+        event.preventDefault(); // Prevent form from submitting normally
         if (!newPassword || !confirmPassword) {
-            setChangePasswordMessage("Both password fields must be filled out.");
+            setChangePasswordMessage("Begge passordfeltene må fylles ut.");
+            setNewPassword(""); // Feltene tømmes etter feilmeldingen
+            setConfirmPassword("");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setChangePasswordMessage("Passwords do not match.");
+            setChangePasswordMessage("Passordene stemmer ikke overens.");
+            setNewPassword("");
+            setConfirmPassword("");
             return;
         }
 
         try {
-            const response = await fetch("/admin/change-password", {
-                method: 'PUT',
+            const response = await fetch("/change-password", {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -92,16 +102,18 @@ function Admin() {
             });
 
             if (response.ok) {
-                setChangePasswordMessage("Password changed successfully!");
+                setChangePasswordMessage("Passordet er endret!");
                 setNewPassword("");
                 setConfirmPassword("");
                 setShowChangePassword(false);
             } else {
-                setChangePasswordMessage("Error changing password.");
+                setChangePasswordMessage("Noe gikk galt under endring av passordet.");
+
             }
         } catch (error) {
-            console.error("Error changing password:", error);
-            setChangePasswordMessage("An error occurred. Please try again later.");
+            console.error("Feil ved passordendring:", error);
+            setChangePasswordMessage("En feil oppstod under passordendringen. Vennligst prøv igjen senere.");
+            
         }
     };
 
@@ -156,7 +168,7 @@ function Admin() {
                         <h3>Settings</h3>
                         <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
                         <div className="settingOption">
-                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change Password</button>
+                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
                         </div>
                     </div>
                 </div>
@@ -165,20 +177,22 @@ function Admin() {
             {showChangePassword && (
                 <div className="changePasswordPopup">
                     <div className="changePasswordContainer">
-                        <h3>Change Password</h3>
-                        <input
-                            type="password"
-                            placeholder="New Password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                        <input
-                            type="password"
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                        <button onClick={handleChangePassword}>Submit</button>
+                        <h3>Change password</h3>
+                        <form onSubmit={handleChangePassword}>
+                            <input
+                                type="password"
+                                placeholder="Nytt passord"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                placeholder="Gjenta passord"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            <button type="submit">Submit</button>
+                        </form>
                         {changePasswordMessage && <div className="popupMessage">{changePasswordMessage}</div>}
                         <button className="closeBtn" onClick={() => setShowChangePassword(false)}>Close</button>
                     </div>
