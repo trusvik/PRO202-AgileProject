@@ -295,25 +295,33 @@ app.get("/admin", verifyTokenMiddleware, (req, res) => {
 });
 
 // User registration
-app.post("/admin/register", async (req, res) => {
-    const { username, password } = req.body;
+app.put("/admin/change-password", async (req, res) => {
+    const { username, newPassword } = req.body;
 
-    if (!username || !password) {
+    if (!username || !newPassword) {
         return res.status(400).json({ error: "Invalid input" });
     }
 
     try {
         const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
         const database = client.db("loading");
         const users = database.collection("user");
-        const result = await users.insertOne({ username, password: hashedPassword });
 
-        res.status(201).json({ message: "User registered successfully", userId: result.insertedId });
+        const result = await users.updateOne(
+            { username: username },
+            { $set: { password: hashedPassword } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json({ message: "Password changed successfully" });
     } catch (err) {
-        console.error("Failed to register user", err);
-        res.status(500).json({ error: "Failed to register user" });
+        console.error("Failed to change password", err);
+        res.status(500).json({ error: "Failed to change password" });
     }
 });
 
