@@ -11,6 +11,7 @@
     "react-router-dom": "^6.22.2"
   },
   "scripts": {
-    "dev": "parcel watch index.html --no-cache"
+    "dev": "parcel watch index.html --no-cache",
+    "build": "parcel build index.html"
   }
 }
