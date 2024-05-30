@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import https from "https";
+import fs from "fs";
 
 dotenv.config();
 
@@ -240,7 +241,6 @@ app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
-
 // User login
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
@@ -339,10 +339,19 @@ app.get("/*", (req, res) => {
     res.redirect('/pinPage/');
 });
 
-// Set up the HTTP server
-const server = https.createServer(app);
+// Create the server and the WebSocket server
+let server;
+if (process.env.NODE_ENV === 'production') {
+    server = https.createServer({
+        // In production, Heroku manages SSL termination, so this is just a placeholder
+        // For local development, you can use self-signed certificates
+        key: fs.readFileSync('path/to/your/ssl/key.pem'),
+        cert: fs.readFileSync('path/to/your/ssl/cert.pem'),
+    }, app);
+} else {
+    server = http.createServer(app);
+}
 
-// Set up the WebSocket server
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
@@ -376,7 +385,8 @@ wss.on('connection', (ws) => {
 // Start the server
 connectToDatabase().then(async () => {
     await insertDocument(); // Call the function to insert the document when the server starts
-    server.listen(process.env.PORT || 3000, () => {
-        console.log("Server is running on http://localhost:3000");
+    const port = process.env.PORT || 3000;
+    server.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
     });
 }).catch(console.dir);
