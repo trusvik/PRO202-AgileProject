@@ -17,7 +17,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true
 };
 app.use(cors(corsOptions));
@@ -376,7 +376,7 @@ wss.on('connection', (ws) => {
 // Start the server
 connectToDatabase().then(async () => {
     await insertDocument(); // Call the function to insert the document when the server starts
-    server.listen(3000, () => {
+    server.listen(process.env.PORT || 3000, () => {
         console.log("Server is running on http://localhost:3000");
     });
 }).catch(console.dir);
