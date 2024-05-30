@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
+import { log } from "console";
 
 dotenv.config();
 
@@ -55,7 +56,7 @@ const verifyTokenMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("Token verified successfully. Decoded token:", decoded);
+        console.log("Server got token:", decoded);
         req.user = decoded;
         next();
     } catch (err) {
@@ -254,7 +255,7 @@ app.post("/login", async (req, res) => {
         const user = await users.findOne({ username });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '12h' });
+            const token = jwt.sign({ username, tokenVersion: user.tokenVersion }, JWT_SECRET);
             console.log("Login successful. Generated token:", token);
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
             res.status(200).json({ message: "Login successful!" });
@@ -267,7 +268,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/verify-token", (req, res) => {
+app.get("/verify-token", async (req, res) => {
     const token = req.cookies.token;
     console.log("Server got token: ", token);
 
@@ -277,7 +278,20 @@ app.get("/verify-token", (req, res) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("Token verification successful. Decoded token:", decoded);
+        console.log("Token that server got: ", decoded);
+
+        const database = client.db("loading");
+        const users = database.collection("user");
+        const user = await users.findOne({ username: decoded.username });
+        
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized"});
+        }
+        console.log("The correct token version is", user.tokenVersion);
+        if (decoded.tokenVersion !== user.tokenVersion) {
+            return res.status(401).json({ error: "Token expired due to password change"});
+        }
+
         res.status(200).json({ valid: true, username: decoded.username });
     } catch (err) {
         console.log("Token verification failed:", err.message);
@@ -298,21 +312,24 @@ app.get("/admin", verifyTokenMiddleware, (req, res) => {
 // User registration
 app.put("/admin/change-password", async (req, res) => {
     const { newPassword } = req.body;
+    console.log("New password request: ", newPassword);
 
     if (!newPassword) {
+        console.log("Invalid input..");
         return res.status(400).json({ error: "Invalid input" });
     }
 
     try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        console.log("New pwd hash: ", hashedPassword);
 
         const database = client.db("loading");
         const users = database.collection("user");
 
         const result = await users.updateOne(
             {}, // No filter needed as there's only one user
-            { $set: { password: hashedPassword } }
+            { $set: { password: hashedPassword }, $inc: { tokenVersion: 1 } }
         );
 
         if (result.matchedCount === 0) {

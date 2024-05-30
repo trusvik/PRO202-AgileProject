@@ -93,8 +93,8 @@ function Admin() {
         }
 
         try {
-            const response = await fetch("/change-password", {
-                method: 'POST',
+            const response = await fetch("/admin/change-password", {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
