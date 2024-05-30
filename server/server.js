@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
-import http from "http";
+import https from "https";
 
 dotenv.config();
 
@@ -340,7 +340,7 @@ app.get("/*", (req, res) => {
 });
 
 // Set up the HTTP server
-const server = http.createServer(app);
+const server = https.createServer(app);
 
 // Set up the WebSocket server
 const wss = new WebSocketServer({ server });

@@ -9,7 +9,7 @@ const WaitingRoom = () => {
     let ws;
 
     const connectWebSocket = () => {
-        ws = new WebSocket('ws://loading-19800d80be43.herokuapp.com');
+        ws = new WebSocket('wss://loading-19800d80be43.herokuapp.com');
 
         ws.onopen = () => {
             console.log('WebSocket connected');
