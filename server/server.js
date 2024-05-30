@@ -46,7 +46,7 @@ async function connectToDatabase() {
 }
 
 // Middleware to verify JWT token
-const verifyTokenMiddleware = (req, res, next) => {
+const verifyTokenMiddleware = async (req, res, next) => {
     const token = req.cookies.token;
     console.log("Verifying token:", token);
 
@@ -56,7 +56,19 @@ const verifyTokenMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("Server got token:", decoded);
+        console.log("Server got token: ", decoded);
+
+        const database = client.db("loading");
+        const users = database.collection("user");
+        const user = await users.findOne({ username: decoded.username });
+
+        if (!user) {
+            return res.status(401).json({ error: "Unauthorized user" });
+        }
+        console.log("Correct token version", user.tokenVersion);
+        if (decoded.tokenVersion !== user.tokenVersion) {
+            return res.status(401).json({ error: "Token has expired " });
+        }
         req.user = decoded;
         next();
     } catch (err) {
@@ -268,35 +280,8 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/verify-token", async (req, res) => {
-    const token = req.cookies.token;
-    console.log("Server got token: ", token);
-
-    if (!token) {
-        return res.status(401).json({ error: "Token is missing" });
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("Token that server got: ", decoded);
-
-        const database = client.db("loading");
-        const users = database.collection("user");
-        const user = await users.findOne({ username: decoded.username });
-        
-        if (!user) {
-            return res.status(401).json({ error: "Unauthorized"});
-        }
-        console.log("The correct token version is", user.tokenVersion);
-        if (decoded.tokenVersion !== user.tokenVersion) {
-            return res.status(401).json({ error: "Token expired due to password change"});
-        }
-
-        res.status(200).json({ valid: true, username: decoded.username });
-    } catch (err) {
-        console.log("Token verification failed:", err.message);
-        res.status(401).json({ error: "Invalid or expired token" });
-    }
+app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
+    res.status(200).json({ valid: true, username: req.user.username });
 });
 
 // Protected admin route
