@@ -297,9 +297,9 @@ app.get("/admin", verifyTokenMiddleware, (req, res) => {
 
 // User registration
 app.put("/admin/change-password", async (req, res) => {
-    const { username, newPassword } = req.body;
+    const { newPassword } = req.body;
 
-    if (!username || !newPassword) {
+    if (!newPassword) {
         return res.status(400).json({ error: "Invalid input" });
     }
 
@@ -311,7 +311,7 @@ app.put("/admin/change-password", async (req, res) => {
         const users = database.collection("user");
 
         const result = await users.updateOne(
-            { username: username },
+            {}, // No filter needed as there's only one user
             { $set: { password: hashedPassword } }
         );
 
@@ -325,6 +325,7 @@ app.put("/admin/change-password", async (req, res) => {
         res.status(500).json({ error: "Failed to change password" });
     }
 });
+
 
 // Serve static files from the React app
 app.use(express.static(join(__dirname, "../client/dist")));
