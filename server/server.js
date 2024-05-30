@@ -7,6 +7,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { WebSocketServer } from "ws";
+import http from "http";
 
 dotenv.config();
 
@@ -337,9 +339,44 @@ app.get("/*", (req, res) => {
     res.redirect('/pinPage/');
 });
 
+// Set up the HTTP server
+const server = http.createServer(app);
+
+// Set up the WebSocket server
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws) => {
+    console.log('New client connected');
+
+    ws.on('message', (message) => {
+        console.log('Received message from client:', message);
+        try {
+            const data = JSON.parse(message);
+            if (data.type === 'JOIN_ROOM') {
+                // Example: Broadcast updated names to all clients
+                const updatedNames = data.names; // You may want to update this logic as needed
+                wss.clients.forEach(client => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({ type: 'UPDATE_NAMES', names: updatedNames }));
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error parsing message:', error);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
+
+    ws.send(JSON.stringify({ type: 'WELCOME', message: 'Welcome to the WebSocket server!' }));
+});
+
+// Start the server
 connectToDatabase().then(async () => {
     await insertDocument(); // Call the function to insert the document when the server starts
-    app.listen(3000, () => {
+    server.listen(3000, () => {
         console.log("Server is running on http://localhost:3000");
     });
 }).catch(console.dir);
