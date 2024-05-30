@@ -159,3 +159,9 @@ button {
     font-weight: bold;
     cursor: pointer;
 }
+
+
+.popupMessage {
+    color: red;
+    margin-top: 10px;
+}

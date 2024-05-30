@@ -11,6 +11,7 @@ const AdminLogin = () => {
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [changePasswordMessage, setChangePasswordMessage] = useState(""); // Egen melding for passordbytte
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,9 +67,44 @@ const AdminLogin = () => {
     };
 
 
+    
     const handleChangePassword = async () => {
-        console.log("Passord endring");
-    }
+        if (!newPassword || !confirmPassword) {
+            setChangePasswordMessage("Begge passordfeltene må fylles ut.");
+            setNewPassword(""); // Feltene tømmes etter feilmeldingen
+            setConfirmPassword("");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setChangePasswordMessage("Passordene stemmer ikke overens.");
+            setNewPassword("");
+            setConfirmPassword("");
+            return;
+        }
+
+        try {
+            const response = await fetch("", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newPassword }),
+            });
+
+            if (response.ok) {
+                setChangePasswordMessage("Passordet er endret!");
+                setNewPassword("");
+                setConfirmPassword("");
+                setShowChangePassword(false);
+            } else {
+                setChangePasswordMessage("Noe gikk galt under endring av passordet.");
+            }
+        } catch (error) {
+            console.error("Feil ved passordendring:", error);
+            setChangePasswordMessage("En feil oppstod under passordendringen. Vennligst prøv igjen senere.");
+        }
+    };
 
     return (
         <div id="admLogMainContainer">
@@ -96,6 +132,7 @@ const AdminLogin = () => {
                     {message && <p id="adminPTagMessage">{message}</p>}
                 </div>
             </form>
+
             
             
             <button id="settingsBtn" onClick={() => setShowSettings(true)}>Innstillinger</button>
@@ -107,12 +144,11 @@ const AdminLogin = () => {
                         <div className="settingOption">
                             <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Endre passord</button>
                         </div>
-                        
                     </div>
                 </div>
             )}
 
-            
+
             {showChangePassword && (
                 <div className="changePasswordPopup">
                     <div className="changePasswordContainer">
@@ -122,27 +158,21 @@ const AdminLogin = () => {
                             placeholder="Nytt passord"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                        >
-                         </input>
-
-                         <input
+                        />
+                        <input
                             type="password"
                             placeholder="Gjenta passord"
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value) }
-                             ></input>
-
-                             <button onClick={handleChangePassword}>Bekreft</button>
-                             <button className="closeBtn" onClick={() => setShowChangePassword(false)}>Lukk</button>
-                        
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        <button onClick={handleChangePassword}>Bekreft</button>
+                        {changePasswordMessage && <div className="popupMessage">{changePasswordMessage}</div>}
+                        <button className="closeBtn" onClick={() => setShowChangePassword(false)}>Lukk</button>
                     </div>
                 </div>
             )}
-            {message && <div id="adminMessage">{message}</div>}
-            
-
         </div>
     );
-}
+};
 
 export default AdminLogin;
