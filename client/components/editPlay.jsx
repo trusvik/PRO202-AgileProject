@@ -85,7 +85,7 @@ function EditPlay() {
         setError(''); // Clear error if validation passes
 
         try {
-            const response = await fetch(`http://localhost:3000/admin/plays/${id}`, {
+            const response = await fetch(`/admin/plays/${id}`, {
                 method: 'PUT', // Assuming PUT method for update
                 headers: {
                     'Content-Type': 'application/json'

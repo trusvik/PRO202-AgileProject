@@ -56,7 +56,7 @@ function CreateNew() {
         setError(''); // Clear error if validation passes
 
         try {
-            const response = await fetch('http://localhost:3000/admin/plays/new', {
+            const response = await fetch('/admin/plays/new', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

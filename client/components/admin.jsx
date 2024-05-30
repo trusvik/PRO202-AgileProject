@@ -10,7 +10,7 @@ function Admin() {
     useEffect(() => {
         const fetchPlays = async () => {
             try {
-                const response = await fetch('http://localhost:3000/admin/plays/get', {
+                const response = await fetch('/admin/plays/get', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
@@ -45,7 +45,7 @@ function Admin() {
     // Handle remove button click
     const handleRemove = async (playId) => {
         try {
-            const response = await fetch(`http://localhost:3000/admin/plays/delete/${playId}`, {
+            const response = await fetch(`/admin/plays/delete/${playId}`, {
                 method: 'DELETE',
                 credentials: 'include', // Ensure cookies are sent with the request
             });

@@ -16,7 +16,7 @@ const AdminLogin = () => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                const response = await fetch('http://localhost:3000/verify-token', {
+                const response = await fetch('/verify-token', {
                     method: 'GET',
                     credentials: 'include', // Ensures cookies are sent with the request
                 });
@@ -39,7 +39,7 @@ const AdminLogin = () => {
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch('http://localhost:3000/login', {
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
