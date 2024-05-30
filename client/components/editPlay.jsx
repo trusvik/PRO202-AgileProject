@@ -12,7 +12,7 @@ function EditPlay() {
     useEffect(() => {
         const fetchPlay = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/admin/plays/${id}`, {
+                const response = await fetch(`/admin/plays/${id}`, {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
