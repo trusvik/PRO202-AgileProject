@@ -9,7 +9,6 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
-import { log } from "console";
 
 dotenv.config();
 
@@ -76,43 +75,6 @@ const verifyTokenMiddleware = async (req, res, next) => {
         res.status(401).json({ error: "Invalid or expired token" });
     }
 };
-
-async function insertDocument() {
-    const database = client.db('loading');
-    const plays = database.collection('plays');
-
-    const newPlay = {
-        _id: new ObjectId("665709e1f729babc6cd5daa9"),
-        play: "Mormor og de 8 Ungene",
-        scenarios: [
-            {
-                scenario_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e2"),
-                question: "What should the character feel?",
-                choices: [
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e3"), description: "Sint", votes: 0 },
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e4"), description: "Glad", votes: 0 },
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e5"), description: "Trist", votes: 0 },
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e6"), description: "Irritert", votes: 0 }
-                ]
-            },
-            {
-                scenario_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e7"),
-                question: "What should the character do?",
-                choices: [
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e8"), description: "Løp", votes: 0 },
-                    { choice_id: new ObjectId("6142bc7f4f1c4c3f4c18b2e9"), description: "Kjemp", votes: 0 }
-                ]
-            }
-        ]
-    };
-
-    try {
-        const result = await plays.insertOne(newPlay);
-        console.log(`New play created with the following id: ${result.insertedId}`);
-    } catch (err) {
-        console.error("Failed to insert play", err);
-    }
-}
 
 // API route to fetch plays
 app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
@@ -392,7 +354,6 @@ if (someConditionForLobbyReady) {
 
 // Start the server
 connectToDatabase().then(async () => {
-    await insertDocument(); // Call the function to insert the document when the server starts
     const port = process.env.PORT || 3000;
     server.listen(port, () => {
         console.log(`Server is running on port ${port}`);
