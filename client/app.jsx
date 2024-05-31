@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {Link, Navigate, Route, Routes} from "react-router-dom";
-import AdminLogin from "./components/adminLogin";
-import PinPage from "./components/pinPage"
-import Admin from "./components/admin";
-import UserNamePage from "./components/userNamePage";
-import WaitingRoom from "./components/waitingRoom";
-import CreateNew from "./components/createNew";
-import EditPlay from "./components/editPlay";
+import AdminLogin from "./components/admin/adminLogin";
+import PinPage from "./components/user/pinPage"
+import Admin from "./components/admin/admin";
+import UserNamePage from "./components/user/userNamePage";
+import WaitingRoom from "./components/user/waitingRoom";
+import CreateNew from "./components/admin/createNew";
+import EditPlay from "./components/admin/editPlay";
 import "./app.css";
 
 
