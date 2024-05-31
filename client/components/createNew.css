@@ -1,0 +1,96 @@
+#parentElementEdit{
+    width: 90%;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#playNameDiv{
+    background-color: #D9D9D9;
+    text-align: start;
+    padding: 10px 20px;
+    width: 320px;
+}
+
+#fontSize{
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+#fontSizeChoice{
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 18px;
+    margin-left: 67px;
+}
+
+#addScenarioButton{
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: solid black 1px;
+    cursor: pointer;
+    background-color: #1B8AF0;
+}
+
+#sizeInputAdmin{
+    padding: 10px 20px;
+    margin-right: 10px;
+}
+
+#removeChoiceButton{
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#saveButton{
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: solid black 1px;
+    cursor: pointer;
+}
+
+#saveButtonDiv{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#scenarioQuestionDiv{
+    margin-top: 10px;
+    background-color: #D9D9D9;
+    padding: 10px 20px;
+}
+
+#addChoiceButtonDiv{
+    display: block;
+    margin-left: 67px;
+    margin-top: 5px;
+}
+
+#choiceDiv{
+    margin-top: 5px;
+}
+
+#displayInlineBlockDiv{
+    display: inline-block;
+}
+
+#saveButton{
+    margin-top: 10px;
+    background-color: #6CF01B;
+    cursor: pointer;
+}
+
+#removeScenarioButton{
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#addChoiceButton{
+    padding: 10px 20px;
+    cursor: pointer;
+}

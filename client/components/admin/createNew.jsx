@@ -78,54 +78,75 @@ function CreateNew() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
+<>
+        <header id="containerHeader">
+                <div id="flexContainerLeft">
+                    <h1 id='logo'>Create</h1>
+                </div>
+                <div id="flexContainerRight">
+                    <p id='userName'>Admin</p>
+                </div>
+        </header>
+
+        <form onSubmit={handleSubmit} id='parentElementEdit'>
+            <div id='playNameDiv'>
                 <label>
-                    Play Name:
-                    <input type="text" value={play} onChange={handlePlayNameChange} required />
+                    <p id='fontSize'>Play Name:</p>
+                    <input type="text" id='sizeInputAdmin' value={play} onChange={handlePlayNameChange} required />
                 </label>
             </div>
             {scenarios.map((scenario, scenarioIndex) => (
-                <div key={scenarioIndex}>
+                <div key={scenarioIndex} id='scenarioQuestionDiv'>
                     <label>
-                        Scenario Question:
+                        <p id='fontSize'>Scenario Question:</p>
                         <input
+                            id='sizeInputAdmin'
                             type="text"
                             value={scenario.question}
                             onChange={(e) => handleScenarioChange(scenarioIndex, e.target.value)}
                             required
                         />
+                        <button type="button" onClick={() => handleRemoveScenario(scenarioIndex)}>
+                            Remove Scenario
+                        </button>
                     </label>
                     {scenario.choices.map((choice, choiceIndex) => (
-                        <div key={choiceIndex}>
+                        <div key={choiceIndex} id='choiceDiv'>
                             <label>
-                                Choice {choiceIndex + 1}:
+                                <p id='fontSizeChoice'>Choice {choiceIndex + 1}:</p>
                                 <input
+                                    id='sizeInputAdmin'
                                     type="text"
                                     value={choice}
                                     onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, e.target.value)}
                                     required
                                 />
                             </label>
-                            <button type="button" onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
-                                Remove Choice
+                            <button type="button" id='removeChoiceButton' onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
+                                -
                             </button>
                         </div>
                     ))}
-                    <button type="button" onClick={() => handleAddChoice(scenarioIndex)}>
-                        Add Choice
-                    </button>
-                    <button type="button" onClick={() => handleRemoveScenario(scenarioIndex)}>
-                        Remove Scenario
-                    </button>
+                    <div id='addChoiceButtonDiv'>
+                         <button type="button" onClick={() => handleAddChoice(scenarioIndex)} id='addChoiceButton'>
+                            Add Choice
+                         </button>
+                    </div>
                 </div>
             ))}
-            <button type="button" onClick={handleAddScenario}>
-                Add Scenario
-            </button>
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
-            <button type="submit">Save</button>
+             <div id='saveButtonDiv'>
+                {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+                
+                <button type="button" onClick={handleAddScenario} id='addScenarioButton'>
+                    Add Scenario
+                </button>
+                
+                <button type="submit" id='saveButton'>Save</button>
+                
+                
+            </div>
         </form>
+        </>
     );
 }
 
