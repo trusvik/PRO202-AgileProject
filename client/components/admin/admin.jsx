@@ -117,6 +117,10 @@ function Admin() {
         }
     };
 
+    const handleStart = (playId) => {
+        navigate(`/admin/plays/start/${playId}`)
+    }
+
     return (
         <>
             <header id="containerHeader">
@@ -153,7 +157,7 @@ function Admin() {
                             <div id='three'><p>{play.numberOfScenarios}</p></div>
                         </div>
                         <div id='end'>
-                            <button id='play'>Play</button>
+                            <button id='play' onClick={() => handleStart(play._id)}>Play</button>
                             <button id='edit' onClick={() => handleEdit(play._id)}>Edit</button>
                             <button id='remove' onClick={() => handleRemove(play._id)}>Remove</button>
                         </div>
