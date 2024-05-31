@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './editPlay.css'
 
 function EditPlay() {
     const { id } = useParams();
@@ -111,8 +112,8 @@ function EditPlay() {
     }
 
     return (
-<>
-        <header id="containerHeader">
+        <>
+            <header id="containerHeader">
                 <div id="flexContainerLeft">
                     <h1 id='logo'>Edit</h1>
                 </div>
@@ -121,66 +122,66 @@ function EditPlay() {
                 </div>
             </header>
 
-        <form onSubmit={handleSubmit}  id='parentElementEdit'>
-            <div id='playNameDiv'>
-                <label>
-                    <p id='fontSize'>Play Name:</p>
-                    <input type="text" value={play} onChange={handlePlayNameChange} required id='sizeInputAdmin'/>
-                </label>
-            </div>
-            {scenarios.map((scenario, scenarioIndex) => (
-                <div key={scenarioIndex} id='scenarioQuestionDiv'>
+            <form onSubmit={handleSubmit}  id='parentElementEdit'>
+                <div id='playNameDiv'>
                     <label>
-                        <p id='fontSize'>Scenario Question:</p>
-                        <input
-                            id='sizeInputAdmin'
-                            type="text"
-                            value={scenario.question}
-                            onChange={(e) => handleScenarioChange(scenarioIndex, e.target.value)}
-                            required
-                        />
-                        <button type="button" onClick={() => handleRemoveScenario(scenarioIndex)}>
-                            Remove Scenario
-                        </button>
+                        <p id='fontSize'>Play Name:</p>
+                        <input type="text" value={play} onChange={handlePlayNameChange} required id='sizeInputAdmin'/>
                     </label>
-                    {scenario.choices.map((choice, choiceIndex) => (
-                        <div key={choiceIndex} id='choiceDiv'>
-                            <label>
-                            <p id='fontSizeChoice'>Choice {choiceIndex + 1}:</p>
-                                <input
-                                    id='sizeInputAdmin'
-                                    type="text"
-                                    value={choice.description}
-                                    onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, e.target.value)}
-                                    required
-                                />
+                </div>
+                {scenarios.map((scenario, scenarioIndex) => (
+                    <div key={scenarioIndex} id='scenarioQuestionDiv'>
+                        <label>
+                            <p id='fontSize'>Scenario Question:</p>
+                            <input
+                                id='sizeInputAdmin'
+                                type="text"
+                                value={scenario.question}
+                                onChange={(e) => handleScenarioChange(scenarioIndex, e.target.value)}
+                                required
+                            />
+                            <button type="button" onClick={() => handleRemoveScenario(scenarioIndex)}>
+                                Remove Scenario
+                            </button>
+                        </label>
+                        {scenario.choices.map((choice, choiceIndex) => (
+                            <div key={choiceIndex} id='choiceDiv'>
+                                <label>
+                                    <p id='fontSizeChoice'>Choice {choiceIndex + 1}:</p>
+                                    <input
+                                        id='sizeInputAdmin'
+                                        type="text"
+                                        value={choice.description}
+                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, e.target.value)}
+                                        required
+                                    />
 
-                            </label>
-                            <button type="button" id='removeChoiceButton' onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
-                                -
+                                </label>
+                                <button type="button" id='removeChoiceButton' onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
+                                    -
+                                </button>
+                            </div>
+                        ))}
+                        <div id='addChoiceButtonDiv'>
+                            <button type="button" onClick={() => handleAddChoice(scenarioIndex)} id='addChoiceButton'>
+                                Add Choice
                             </button>
                         </div>
-                    ))}
-                    <div id='addChoiceButtonDiv'>
-                         <button type="button" onClick={() => handleAddChoice(scenarioIndex)} id='addChoiceButton'>
-                            Add Choice
-                         </button>
                     </div>
+                ))}
+                <div id='saveButtonDiv'>
+                    {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+
+                    <button type="button" onClick={handleAddScenario} id='addScenarioButton'>
+                        Add Scenario
+                    </button>
+
+                    <button type="submit" id='saveButton'>Save</button>
+
+
                 </div>
-            ))}
-            <div id='saveButtonDiv'>
-                {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
-                
-                <button type="button" onClick={handleAddScenario} id='addScenarioButton'>
-                    Add Scenario
-                </button>
-                
-                <button type="submit" id='saveButton'>Save</button>
-                
-                
-            </div>
-        </form>
-    </>
+            </form>
+        </>
     );
 }
 

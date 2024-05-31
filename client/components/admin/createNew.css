@@ -30,7 +30,6 @@
     border-radius: 10px;
     border: solid black 1px;
     cursor: pointer;
-    background-color: #1B8AF0;
 }
 
 #sizeInputAdmin{
@@ -81,7 +80,6 @@
 
 #saveButton{
     margin-top: 10px;
-    background-color: #6CF01B;
     cursor: pointer;
 }
 
