@@ -94,7 +94,7 @@ app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
-app.get('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
+app.get('/admin/plays/get/:id', verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
 
     if (!ObjectId.isValid(playId)) {
