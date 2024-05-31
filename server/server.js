@@ -374,6 +374,22 @@ wss.on('connection', (ws) => {
     ws.send(JSON.stringify({ type: 'WELCOME', message: 'Welcome to the WebSocket server!' }));
 });
 
+// Future Function to notify all clients that the lobby is ready
+const notifyLobbyReady = () => {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'LOBBY_READY' }));
+        }
+    });
+};
+
+// Example: Call this function when the lobby is ready
+// This will be modified and replaced when future logic will be implemented
+const someConditionForLobbyReady = true; // This should be your actual condition
+if (someConditionForLobbyReady) {
+    notifyLobbyReady();
+}
+
 // Start the server
 connectToDatabase().then(async () => {
     await insertDocument(); // Call the function to insert the document when the server starts

@@ -27,7 +27,10 @@ const WaitingRoom = () => {
                 console.log('Message from server:', data);
                 if (data.type === 'UPDATE_NAMES') {
                     setNameList(data.names);
-                }
+                    // The else if statement will in the future redirect the user to the game lobby when it's ready
+                }  else if (data.type === 'LOBBY_READY') {
+                navigate('/lobby');
+            }
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
             }
