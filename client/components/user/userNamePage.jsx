@@ -22,7 +22,7 @@ const UserNamePage = ({ setIsUserNameEntered }) => {
             return;
         }
 
-        if (trimmedName.length > 50) {
+        if (trimmedName.length > 25) {
             alert("Navnet er for langt");
             return;
         }
