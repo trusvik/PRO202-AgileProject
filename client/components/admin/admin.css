@@ -1,8 +1,10 @@
+/* Resetting margin and padding for all elements to ensure consistent spacing across different browsers */
 *{
     margin: 0;
     padding: 0;
   }
-  
+
+/* Defining CSS variables for theme colors and fonts */
   :root {
     --background-color-header: #F2A71B;
     --background-color-div: #D9D9D9;
@@ -13,7 +15,8 @@
     --edit-button: #1B8AF0;
     --remove-button: #F01B1B;
   }
-  
+
+/* Importing the custom font "JejuHallasan" */
   @font-face {
     font-family: "JejuHallasan";
     src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
@@ -23,49 +26,57 @@
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
   }
-  
+
+/* Styling for the header container */
   #containerHeader{
     background-color: var(--background-color-header);
     height: 75px;
     display: flex;
     align-items: center;
   }
-  
+
+/* Styling for the right section of the header */
   #flexContainerRight{
     margin-left: auto;
     display: flex;
     align-items: center;
     margin-right: 20px;
   }
-  
+
+/* Styling for the logo text in the header */
   #logo{
     color: var(--text-color);
     margin-left: 20px;
     cursor: pointer;
     font-family: "JejuHallasan";
   }
-  
+
+/* Styling for the username text in the header */
   #userName{
     margin-right: 10px;
     color: var(--text-color);
     display: inline-block;
   }
-  
+
+/* Styling for the profile picture in the header */
   #profilePicture{
     height: 50px;
     border-radius: 50px;
   }
-  
+
+/* Styling for the main content margin */
   #partent-margin{
     margin: 40px 20px;
   }
-  
+
+/* Styling for the button section container */
   #containerSectionButton{
     display: flex;
     justify-content: end;
     
   }
-  
+
+/* Styling for the create new button */
   #createNewButton{
     border: none;
     background-color: var(--background-create-new-button);
@@ -73,7 +84,8 @@
     padding: 10px;
     cursor: pointer;
   }
-  
+
+/* Styling for the section that displays names and other information */
   #containerSectionName{
     display: flex;
     justify-content: space-between;
@@ -83,50 +95,32 @@
     align-items: center;
   
   }
-  
+
+/* Styling for the start section within the container */
   #start{
     width: 60%;
     display: flex;
     justify-content: space-evenly;
     text-align: center;
   }
-  
+
+/* Styling for the end section within the container */
   #end{
     width: 40%;
     display: flex;
     justify-content: center;
     text-align: center;
   }
-  
-  #one{
+
+/* Common styling for subsections within the container */
+  #one, #two, #three{
     width: 20%;
     display: flex;
     justify-content: center;
     text-align: center;
   }
-  
-  #two{
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  #three{
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+/* Styling for the play button */
   #play{
     background-color: var(--play-button);
     color: var(--text-color);
@@ -135,7 +129,8 @@
     border-radius: 20px;
     cursor: pointer;
   }
-  
+
+/* Styling for the edit button */
   #edit{
     background-color: var(--edit-button);
     color: var(--text-color);
@@ -145,7 +140,8 @@
     margin-left: 5px;
     cursor: pointer;
   }
-  
+
+/* Styling for the remove button */
   #remove{
     background-color: var(--remove-button);
     color: var(--text-color);
@@ -155,7 +151,8 @@
     margin-left: 5px;
     cursor: pointer;
   }
-  
+
+/* Styling for the settings button */
   #settingsBtn {
     position: absolute;
     top: 110px;
@@ -169,8 +166,7 @@
 
 }
 
-/*Popup vinduet*/
-
+/* Styling for popup windows */
 .settingsPopup, .changePasswordPopup {
     position: fixed;
     top: 0;
@@ -181,9 +177,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Sørger for at popup er på toppen av alt annet */
+    z-index: 9999; /* Ensure the popup is on top of all other elements */
 }
 
+/* Styling for the content within the popup windows */
 .settingsContent, .changePasswordContainer {
     background-color: white;
     padding: 20px;
@@ -192,6 +189,7 @@
     max-width: 400px;
 }
 
+/* Styling for the close button in the popup windows */
 .closeBtn {
     position: absolute;
     top: 120px;
@@ -203,6 +201,7 @@
     cursor: pointer;
 }
 
+/* Styling for the change password button */
 .changePasswordBtn {
     color: black;
     padding: 10px 70px;
@@ -212,7 +211,7 @@
 
 }
 
-
+/* Styling for the password input fields */
 input[type="password"] {
     display: block;
     padding: 10px;
@@ -221,8 +220,7 @@ input[type="password"] {
     border-radius: 5px;
 }
 
-
-
+/* Styling for general buttons */
 button {
     background-color: orange;
     color: white;
@@ -233,7 +231,7 @@ button {
     cursor: pointer;
 }
 
-
+/* Styling for popup messages */
 .popupMessage {
     color: red;
     margin-top: 10px;
