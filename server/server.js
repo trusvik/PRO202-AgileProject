@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -75,6 +76,17 @@ const verifyTokenMiddleware = async (req, res, next) => {
         res.status(401).json({ error: "Invalid or expired token" });
     }
 };
+
+// Rate limiting
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 login attempts per windowMs
+    handler: (req, res) => {
+        res.status(429).json({ error: 'Too many login attempts from this IP, please try again after 15 minutes' });
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // API route to fetch plays
 app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
@@ -216,7 +228,7 @@ app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
 });
 
 // User login
-app.post("/login", async (req, res) => {
+app.post("/login", loginLimiter, async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -266,6 +278,8 @@ app.put("/admin/change-password", async (req, res) => {
         return res.status(400).json({ error: "Invalid input" });
     }
 
+    const initToken = req.cookies.token;
+
     try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -273,6 +287,9 @@ app.put("/admin/change-password", async (req, res) => {
 
         const database = client.db("loading");
         const users = database.collection("user");
+
+        const decoded = jwt.verify(initToken, JWT_SECRET);
+        let user = await users.findOne({ username: decoded.username});
 
         const result = await users.updateOne(
             {}, // No filter needed as there's only one user
@@ -283,7 +300,12 @@ app.put("/admin/change-password", async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
+        user = await users.findOne({ username: decoded.username});
+
+        const newToken = jwt.sign({ username: decoded.username, tokenVersion: user.tokenVersion}, JWT_SECRET);
+        res.cookie('token', newToken, {httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
         res.status(200).json({ message: "Password changed successfully" });
+        
     } catch (err) {
         console.error("Failed to change password", err);
         res.status(500).json({ error: "Failed to change password" });
