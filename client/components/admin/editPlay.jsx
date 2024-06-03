@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './editPlay.css'
 
 function EditPlay() {
+    // State and hook initializations.
     const { id } = useParams();
     const [play, setPlay] = useState('');
     const [scenarios, setScenarios] = useState([{ question: '', choices: [''] }]);
@@ -10,6 +11,7 @@ function EditPlay() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    // useEffect hook to fetch play data when component mounts or the ID changes.
     useEffect(() => {
         const fetchPlay = async () => {
             try {
@@ -38,46 +40,55 @@ function EditPlay() {
         fetchPlay();
     }, [id, navigate]);
 
+    // Handler to update the play name.
     const handlePlayNameChange = (e) => {
         setPlay(e.target.value);
     };
 
+    // Handler to update a scenario question.
     const handleScenarioChange = (index, value) => {
         const newScenarios = [...scenarios];
         newScenarios[index].question = value;
         setScenarios(newScenarios);
     };
 
+    // Handler to update a choice description.
     const handleChoiceChange = (scenarioIndex, choiceIndex, value) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices[choiceIndex].description = value;
         setScenarios(newScenarios);
     };
 
+    // Handler to add a new scenario.
     const handleAddScenario = () => {
         setScenarios([...scenarios, { question: '', choices: [{ description: '' }] }]);
     };
 
+    // Handler to remove a scenario by index.
     const handleRemoveScenario = (index) => {
         const newScenarios = scenarios.filter((_, i) => i !== index);
         setScenarios(newScenarios);
     };
 
+    // Handler to add a new choice to a scenario by index.
     const handleAddChoice = (scenarioIndex) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices.push({ description: '' });
         setScenarios(newScenarios);
     };
 
+    // Handler to remove a choice from a scenario by index.
     const handleRemoveChoice = (scenarioIndex, choiceIndex) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices = newScenarios[scenarioIndex].choices.filter((_, i) => i !== choiceIndex);
         setScenarios(newScenarios);
     };
 
+    // Handler for form submission.
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validates that the play name is not empty.
         if (play.trim() === '') {
             setError('Play name cannot be empty');
             return;
