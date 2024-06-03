@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './admin.css';
 
 function Admin() {
+    // State hooks for managing plays data and various IU states.
     const [plays, setPlays] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -10,9 +11,10 @@ function Admin() {
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [changePasswordMessage, setChangePasswordMessage] = useState(""); // Egen melding for passordbytte
+    const [changePasswordMessage, setChangePasswordMessage] = useState(""); // Message for password change.
     const navigate = useNavigate(); // Initialize useNavigate hook
 
+    // useEffect hook to fetch plays data from the server.
     useEffect(() => {
         const fetchPlays = async () => {
             try {
@@ -39,16 +41,17 @@ function Admin() {
         fetchPlays();
     }, [navigate]);
 
+    // Displays a loading message while data is being fetched.
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    // Handle create new button click
+    // Handler for creating a new play.
     const handleCreateNew = () => {
         navigate('/admin/plays/new');
     };
 
-    // Handle remove button click
+    // Handler for removing a play.
     const handleRemove = async (playId) => {
         try {
             const response = await fetch(`/admin/plays/delete/${playId}`, {
@@ -71,11 +74,12 @@ function Admin() {
         }
     };
 
-    // Handle edit button click
+    // Handler for editing a play.
     const handleEdit = (playId) => {
         navigate(`/admin/plays/edit/${playId}`);
     };
 
+    // Handler for changing the admin password.
     const handleChangePassword = async (event) => {
         event.preventDefault(); // Prevent form from submitting normally
         if (!newPassword || !confirmPassword) {
@@ -117,6 +121,7 @@ function Admin() {
         }
     };
 
+    // Handler for stating a play.
     const handleStart = (playId) => {
         navigate(`/admin/plays/start/${playId}`)
     }
