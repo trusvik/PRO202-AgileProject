@@ -278,6 +278,8 @@ app.put("/admin/change-password", async (req, res) => {
         return res.status(400).json({ error: "Invalid input" });
     }
 
+    const initToken = req.cookies.token;
+
     try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -285,6 +287,9 @@ app.put("/admin/change-password", async (req, res) => {
 
         const database = client.db("loading");
         const users = database.collection("user");
+
+        const decoded = jwt.verify(initToken, JWT_SECRET);
+        let user = await users.findOne({ username: decoded.username});
 
         const result = await users.updateOne(
             {}, // No filter needed as there's only one user
@@ -295,7 +300,12 @@ app.put("/admin/change-password", async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
+        user = await users.findOne({ username: decoded.username});
+
+        const newToken = jwt.sign({ username: decoded.username, tokenVersion: user.tokenVersion}, JWT_SECRET);
+        res.cookie('token', newToken, {httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
         res.status(200).json({ message: "Password changed successfully" });
+        
     } catch (err) {
         console.error("Failed to change password", err);
         res.status(500).json({ error: "Failed to change password" });
