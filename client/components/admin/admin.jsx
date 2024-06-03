@@ -143,7 +143,7 @@ function Admin() {
     };
 
     return (
-        <>
+        <>  
             <header id="containerHeader">
                 <div id="flexContainerLeft">
                     <h1 id='logo'>Plays</h1>
@@ -187,6 +187,11 @@ function Admin() {
             </section>
 
             <button id="settingsBtn" onClick={() => setShowSettings(true)}>Settings</button>
+            <button className="logoutBtn" onClick={handleLogout}> 
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M16 2v2h4v16h-4v2h6v-20h-6zm-4 11h-10v-2h10v-4l6 5-6 5v-4z"/>
+                </svg>
+                <span className="tooltip">Logout</span></button>
             {showSettings && (
                 <div className="settingsPopup">
                     <div className="settingsContent">
@@ -194,7 +199,6 @@ function Admin() {
                         <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
                         <div className="settingOption">
                             <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
-                            <button className="logoutBtn" onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
                 </div>
@@ -217,7 +221,7 @@ function Admin() {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
-                            <button type="submit">Submit</button>
+                            <button className='submitBtn' type="submit">Submit</button>
                         </form>
                         {changePasswordMessage && <div className="popupMessage">{changePasswordMessage}</div>}
                         <button className="closeBtn" onClick={() => setShowChangePassword(false)}>Close</button>

@@ -150,24 +150,37 @@
     border-radius: 20px;
     margin-left: 5px;
     cursor: pointer;
+  
   }
 
 /* Styling for the settings button */
   #settingsBtn {
     position: absolute;
     top: 110px;
-    right: 120px; 
-    background-color: white;
+    right: 220px; 
     color: black;
     padding: 10px 70px;
     border-radius: 20px;
     margin-top: 5px;
     font-weight: bold;
-
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
 }
+
+#settingsBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+
+
 
 /* Styling for popup windows */
 .settingsPopup, .changePasswordPopup {
+    text-align: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -182,9 +195,10 @@
 
 /* Styling for the content within the popup windows */
 .settingsContent, .changePasswordContainer {
+    text-align: center;
     background-color: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
     max-width: 400px;
 }
@@ -203,11 +217,15 @@
 
 /* Styling for the change password button */
 .changePasswordBtn {
-    color: black;
-    padding: 10px 70px;
-    border-radius: 20px;
-    margin-top: 5px;
-    font-weight: bold;
+  display: block;
+  background-color: orange;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
 
 }
 
@@ -220,9 +238,10 @@ input[type="password"] {
     border-radius: 5px;
 }
 
-/* Styling for general buttons */
-button {
-    background-color: orange;
+
+
+.submitBtn {
+  background-color: orange;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -231,8 +250,58 @@ button {
     cursor: pointer;
 }
 
+
 /* Styling for popup messages */
 .popupMessage {
     color: red;
     margin-top: 10px;
+}
+
+
+/* Styling for the logout button */
+.logoutBTn {
+  position: absolute;
+  top: 115px;
+  right: 120px; 
+  border: none;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: -4px;
+  margin-right: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.logoutBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+
+/*Text that appear over the button */
+.logoutBtn .tooltip {
+  visibility: hidden;
+  width: 120px;
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%; 
+  left: 50%;
+  margin-left: -60px; 
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.logoutBtn:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
