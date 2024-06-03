@@ -6,26 +6,29 @@ const PinPage = ({ setIsAuthenticated }) => {
     const [pin, setPin] = useState("");
     const navigate = useNavigate();
 
-    // Update useState when the user enters the PIN.
+    // Update the PIN-state when the user enters the PIN.
     const inputChange = (event) => {
         const { value } = event.target;
+        // Allow only numeric values
         if (/^\d*$/.test(value)) {
             setPin(value);
         }
     };
 
-    // Handle when the user clicks the button (send to DB - compare with PIN?).
+    // Handle the PIN submission. If the PIN is valid, set authentication and navigate to the username page.
     const checkPin = () => {
-        if (/^\d+$/.test(pin)) { // Ensure the pin is not empty and only consists of digits
+        // Ensure the pin is not empty and only consists of digits.
+        if (/^\d+$/.test(pin)) {
             setIsAuthenticated(true);
             alert(`Pin-kode: ${pin}`);
-            navigate("/userNamePage"); // Sends to frontPage until the waiting page is ready.
+            navigate("/userNamePage");
         } else {
+            // Alert the user if the PIN is invalid.
             alert('Vennligst skriv inn en gyldig PIN-kode.');
         }
     }
 
-    // Handles if the user presses Enter
+    // Check if the entered PIN is valid when Enter is pressed.
     const checkEnter = (event) => {
         if (event.key === 'Enter') {
             checkPin();
