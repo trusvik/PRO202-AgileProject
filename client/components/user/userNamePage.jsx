@@ -7,38 +7,43 @@ const UserNamePage = ({ setIsUserNameEntered }) => {
     const navigate = useNavigate();
 
 
+    // Updates the name state when the input value changes.
     const handleInputChange = (event) => {
         setName(event.target.value);
     };
 
 
-    // Funksjonen for å skrive inn navn
+    // Function to handle the name submission.
     const setNameButton = () => {
 
         const trimmedName = name.trim();
 
+        // Validates that the name is not empty.
         if (trimmedName === "") {
             alert("Vennligst skriv inn navnet ditt");
             return;
         }
 
+        // Validates that the name is not too long (exceeding 25 characters).
         if (trimmedName.length > 25) {
             alert("Navnet er for langt");
             return;
         }
 
+        // Validates that the name only contains allowed characters (letters, numbers, and spaces).
         const nameRegex = /^[a-zA-ZæøåÆØÅ0-9\s]+$/;
         if (!nameRegex.test(trimmedName)) {
-            alert("Nanvet kan kun inneholde bokstaver of mellomrom");
+            alert("Nanvet kan kun inneholde bokstaver og mellomrom");
             return;
         }
 
+        // Retrieves existing names from sessionStorage and adds the new name.
         const storedNames = JSON.parse(sessionStorage.getItem("names"))|| [];
         const updatedNames = [...storedNames, name];
-        sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Lagre navnene i sessionStorage
+        sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Stores the names in sessionStorage.
         setName("");
         setIsUserNameEntered(true);
-        navigate('/waitingRoom'); // Bruker vil bli sendt til venterommet etter å skrevet inn navn
+        navigate('/waitingRoom'); // User gets sent to /waitingRoom.
     };
 
     return (
