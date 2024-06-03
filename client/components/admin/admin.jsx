@@ -108,18 +108,33 @@ function Admin() {
                 setShowChangePassword(false);
             } else {
                 setChangePasswordMessage("Noe gikk galt under endring av passordet.");
-
             }
         } catch (error) {
             console.error("Feil ved passordendring:", error);
             setChangePasswordMessage("En feil oppstod under passordendringen. Vennligst prøv igjen senere.");
-            
         }
     };
 
     const handleStart = (playId) => {
         navigate(`/admin/plays/start/${playId}`)
-    }
+    };
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                navigate('/adminlogin');
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
 
     return (
         <>
@@ -173,6 +188,7 @@ function Admin() {
                         <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
                         <div className="settingOption">
                             <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
+                            <button className="logoutBtn" onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
                 </div>

@@ -312,6 +312,13 @@ app.put("/admin/change-password", async (req, res) => {
     }
 });
 
+// User logout
+app.post("/logout", (req, res) => {
+    res.clearCookie('token', { path: '/' });
+    res.status(200).json({ message: "Logout successful" });
+});
+
+
 
 // Serve static files from the React app
 app.use(express.static(join(__dirname, "../client/dist")));
