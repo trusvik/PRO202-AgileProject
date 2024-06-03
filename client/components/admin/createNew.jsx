@@ -3,48 +3,57 @@ import { useNavigate } from 'react-router-dom';
 import './createNew.css'
 
 function CreateNew() {
+    // State hooks for managing play name, scenarios, and error messages.
     const [play, setPlay] = useState('');
     const [scenarios, setScenarios] = useState([{ question: '', choices: [''] }]);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    // Handler to update play name state.
     const handlePlayNameChange = (e) => {
         setPlay(e.target.value);
     };
 
+    // Handler to update scenario question state.
     const handleScenarioChange = (index, value) => {
         const newScenarios = [...scenarios];
         newScenarios[index].question = value;
         setScenarios(newScenarios);
     };
 
+    // Handler to update choice text state for a specific scenario.
     const handleChoiceChange = (scenarioIndex, choiceIndex, value) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices[choiceIndex] = value;
         setScenarios(newScenarios);
     };
 
+    // Handler to add a new scenario.
     const handleAddScenario = () => {
         setScenarios([...scenarios, { question: '', choices: [''] }]);
     };
 
+    // Handler to remove a scenario by index.
     const handleRemoveScenario = (index) => {
         const newScenarios = scenarios.filter((_, i) => i !== index);
         setScenarios(newScenarios);
     };
 
+    // Handler to add a new choice to a specific scenario.
     const handleAddChoice = (scenarioIndex) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices.push('');
         setScenarios(newScenarios);
     };
 
+    // Handler to remove a choice from a specific scenario.
     const handleRemoveChoice = (scenarioIndex, choiceIndex) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices = newScenarios[scenarioIndex].choices.filter((_, i) => i !== choiceIndex);
         setScenarios(newScenarios);
     };
 
+    // Handler for form submission.
     const handleSubmit = async (e) => {
         e.preventDefault();
 

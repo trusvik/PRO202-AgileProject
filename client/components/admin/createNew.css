@@ -1,3 +1,4 @@
+/* Styling for the parent element of the form */
 #parentElementEdit{
     width: 90%;
     margin-top: 20px;
@@ -5,6 +6,7 @@
     margin-right: auto;
 }
 
+/* Styling for the play name input container */
 #playNameDiv{
     background-color: #D9D9D9;
     text-align: start;
@@ -12,12 +14,14 @@
     width: 320px;
 }
 
+/* Styling for the font size of the label */
 #fontSize{
     display: inline-block;
     margin-right: 10px;
     font-size: 18px;
 }
 
+/* Styling for the font size of choice labels */
 #fontSizeChoice{
     display: inline-block;
     margin-right: 10px;
@@ -25,6 +29,7 @@
     margin-left: 67px;
 }
 
+/* Styling for the button to add a new scenario */
 #addScenarioButton{
     padding: 10px 20px;
     border-radius: 10px;
@@ -32,62 +37,67 @@
     cursor: pointer;
 }
 
+/* Styling for the input fields */
 #sizeInputAdmin{
     padding: 10px 20px;
     margin-right: 10px;
 }
 
+/* Styling for the button to remove a choice */
 #removeChoiceButton{
     padding: 10px 20px;
     cursor: pointer;
 }
 
+/* Styling for the save button */
 #saveButton{
     padding: 10px 20px;
     border-radius: 10px;
     border: solid black 1px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
+/* Styling for the container of the save button */
 #saveButtonDiv{
     display: flex;
     justify-content: center;
     margin-top: 10px;
     margin-bottom: 10px;
-    display: flex;
     flex-direction: column;
 }
 
+/* Styling for the scenario question container */
 #scenarioQuestionDiv{
     margin-top: 10px;
     background-color: #D9D9D9;
     padding: 10px 20px;
 }
 
+/* Styling for the container of the add choice button */
 #addChoiceButtonDiv{
     display: block;
     margin-left: 67px;
     margin-top: 5px;
 }
 
+/* Styling for the choice container */
 #choiceDiv{
     margin-top: 5px;
 }
 
+/* Styling for inline block display container */
 #displayInlineBlockDiv{
     display: inline-block;
 }
 
-#saveButton{
-    margin-top: 10px;
-    cursor: pointer;
-}
-
+/* Styling for the button to remove a scenario */
 #removeScenarioButton{
     padding: 10px 20px;
     cursor: pointer;
 }
 
+/* Styling for the button to add a choice */
 #addChoiceButton{
     padding: 10px 20px;
     cursor: pointer;
