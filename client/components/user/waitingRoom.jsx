@@ -8,6 +8,7 @@ const WaitingRoom = () => {
     const navigate = useNavigate();
     let ws;
 
+    // Function to establish a WebSocket-connection.
     const connectWebSocket = () => {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         const wsHost = window.location.hostname;
@@ -15,12 +16,14 @@ const WaitingRoom = () => {
         const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
         ws = new WebSocket(wsUrl);
 
+        // Event handler for WebSocket-connection open event.
         ws.onopen = () => {
             console.log('WebSocket connected');
             const storedNames = JSON.parse(sessionStorage.getItem("names"));
             ws.send(JSON.stringify({ type: 'JOIN_ROOM', names: storedNames }));
         };
 
+        // Event handler for WebSocket message event.
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
@@ -36,6 +39,7 @@ const WaitingRoom = () => {
             }
         };
 
+        // Event handler for WebSocket close event.
         ws.onclose = () => {
             console.log('WebSocket disconnected');
             // Attempt to reconnect after a delay
@@ -60,6 +64,7 @@ const WaitingRoom = () => {
 
         connectWebSocket(); // Initialize WebSocket connection
 
+        // Cleanup function to clear timer and close WebSocket.
         return () => {
             clearTimeout(timer);
             if (ws) ws.close();

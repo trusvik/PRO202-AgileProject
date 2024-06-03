@@ -4,7 +4,7 @@
 }
 
 
-
+/* Importing the custom font "JejuHallasan" */
 @font-face {
     font-family: "JejuHallasan";
     src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
@@ -15,7 +15,7 @@
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
 }
 
-/* Sentrerer hele siden */
+/* Centering the entire page */
 .pinPageBody {
     height: 100vh;
     margin: 0;
@@ -25,12 +25,12 @@
     background-color: #de990e;
 }
 
-/* Sentrerer innholdet i .pinPageContainer */
+/* Centering content within the .pinPageContainer */
 .pinPageContainer {
     text-align: center;
 }
 
-/* Style for input felt */
+/* Styling for the input field */
 .pinPageInput {
     display: block;
     padding: 9px;
@@ -38,7 +38,7 @@
     font-weight: bold;
 }
 
-/* Style for knapp */
+/* Styling for the button */
 .pinPageButton {
     padding: 10px 20px;
     margin: 10px 0;
@@ -51,7 +51,7 @@
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Hover effekt for knapp */
+/* Hover effect for the button */
 .pinPageButton:hover {
     background-color: #b83ce0;
     transform: scale(1.1);

@@ -1,3 +1,4 @@
+/* Styling for the main body of the page */
 .mainBody {
     background-color: #0096FF;
     min-height: 80vh;
@@ -9,6 +10,7 @@
 
 }
 
+/* Styling for the container that holds the page content */
 .pageContainer {
     text-align: center;
     background-color: #7F00FF;
@@ -17,6 +19,7 @@
     color: white;
 }
 
+/* Styling for the input box */
 .inputBox {
     padding: 10px;
     margin: 10px;
@@ -24,6 +27,7 @@
     
 }
 
+/* Styling for the button */
 .onClickBtn {
     padding: 10px 20px;
     font-size: 16px;
@@ -32,6 +36,7 @@
    
 }
 
+/* Styling for the list of names */
 .nameList {
     position: absolute;
     top: 80px;
@@ -41,6 +46,7 @@
     flex-direction: column;
 }
 
+/* Styling for individual display of names in the list */
 .displayName {
     margin-bottom: 5px;
 }

@@ -1,3 +1,4 @@
+/* Styling for the body of the waiting room page */
 .waitingBody {
     display: flex;
     justify-content: center;
@@ -7,7 +8,7 @@
     
 }
 
-
+/* Styling for the container that holds the room content */
 .roomContainer {
     background-color: transparent;
     padding: 20px;
@@ -17,12 +18,12 @@
     
 }
 
-
-
+/* Styling for the status message container */
 .statusMessage {
     margin-bottom: 20px;
 }
 
+/* Styling for the paragraph inside the status message */
 .statusMessage p {
     font-size: 18px;
     margin: 10px;
