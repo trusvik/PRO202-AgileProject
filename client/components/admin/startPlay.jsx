@@ -3,26 +3,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 
 function StartPlay() {
+    // State and hook initializations.
     const { id } = useParams();
     const [play, setPlay] = useState('');
     const navigate = useNavigate();
 
+    // useEffect hook to fetch play data when component mounts or the ID changes.
     useEffect(() => {
         const fetchPlay = async () => {
             try {
                 const response = await fetch(`/admin/plays/${id}`,{
-                    credentials: 'include',
+                    credentials: 'include', // Ensure cookies are sent with the request.
                 });
                 switch (response.status) {
                     case 401:
                        console.error("Unauthorized");
-                       navigate('/adminLogin'); 
+                       navigate('/adminLogin'); // Redirect to /adminLogin if unauthorized.
                        return;
                     case 200:
                         break;
                 }
                 const data = await response.json();
-                setPlay(data.play);
+                setPlay(data.play); // Set the play name from the fetched data.
             } catch (error) {
                 console.error("Error fetching play", error);
             }
