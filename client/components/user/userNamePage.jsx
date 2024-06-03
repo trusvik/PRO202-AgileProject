@@ -46,20 +46,30 @@ const UserNamePage = ({ setIsUserNameEntered }) => {
         navigate('/waitingRoom'); // User gets sent to /waitingRoom.
     };
 
+    // Function that allows the user to also press enter after typing their name in the input field
+    const handleKeyPress = (event) => {
+        if(event.key === "Enter") {
+            setNameButton();
+        }
+    }
+
+
     return (
         <div className="mainBody">
             <div className="pageContainer">
-                <h1>Skriv inn navnet ditt</h1>
+                <h1 className="pageLogo">Loading...</h1>
+                <h2>Skriv inn navnet ditt</h2>
                 <input
                     className="inputBox"
                     type="text"
                     value={name}
                     onChange={handleInputChange}
-                    placeholder="Skriv inn navnet ditt her"
+                    onKeyPress={handleKeyPress}
+                    placeholder="Navn..."
                 />
-                <button className="onClickBtn" onClick={setNameButton}>OK</button>
+                <button className="enterNameBtn" type="submit" onClick={setNameButton}>OK</button>
             </div>
-        </div>
+        </div>    
     );
 };
 

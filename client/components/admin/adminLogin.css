@@ -118,7 +118,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Sørger for at popup er på toppen av alt annet */
+    z-index: 9999; 
 }
 
 /* Styling for the content within the popup windows */
