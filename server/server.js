@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -75,6 +76,17 @@ const verifyTokenMiddleware = async (req, res, next) => {
         res.status(401).json({ error: "Invalid or expired token" });
     }
 };
+
+// Rate limiting
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 login attempts per windowMs
+    handler: (req, res) => {
+        res.status(429).json({ error: 'Too many login attempts from this IP, please try again after 15 minutes' });
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // API route to fetch plays
 app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
@@ -216,7 +228,7 @@ app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
 });
 
 // User login
-app.post("/login", async (req, res) => {
+app.post("/login", loginLimiter, async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
