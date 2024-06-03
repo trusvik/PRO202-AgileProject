@@ -124,6 +124,7 @@ function Admin() {
         navigate(`/admin/plays/start/${playId}`)
     };
 
+    // Handler for logging out.
     const handleLogout = async () => {
         try {
             const response = await fetch('/logout', {

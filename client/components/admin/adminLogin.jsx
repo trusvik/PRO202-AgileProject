@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import './adminLogin.css';
 
 const AdminLogin = () => {
+    // State hooks for managing various IU states.
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
+    // useEffect hook to verify the token when the component mounts.
     useEffect(() => {
         const verifyToken = async () => {
             try {
@@ -20,7 +22,7 @@ const AdminLogin = () => {
                     const data = await response.json();
                     console.log("Token verified successfully:", data);
                     setMessage(`Welcome back, ${data.username}`);
-                    navigate("/admin");
+                    navigate("/admin"); // Redirect to /admin if token is verified.
                 } else {
                     console.log("Token verification failed.");
                 }
@@ -31,8 +33,9 @@ const AdminLogin = () => {
         verifyToken();
     }, [navigate]);
 
+    // Function to handle login form submission.
     const handleLogin = async (event) => {
-        event.preventDefault();
+        event.preventDefault(); // Prevents the form from submitting normally.
         try {
             const response = await fetch('/login', {
                 method: 'POST',
@@ -48,7 +51,7 @@ const AdminLogin = () => {
                 setMessage("Login successful!");
                 setUsername("");
                 setPassword("");
-                navigate("/admin");
+                navigate("/admin"); // Redirect to /admin if successful login.
             } else {
                 const data = await response.json();
                 console.log("Login failed with message:", data.error);
@@ -56,7 +59,7 @@ const AdminLogin = () => {
             }
         } catch (error) {
             console.error("Login error:", error);
-            setMessage("An error occurred. Please try again.");
+            setMessage("An error occurred. Please try again."); // Displays generic error message.
         }
     };
 
