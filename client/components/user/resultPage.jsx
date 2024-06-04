@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BarChart from "./barChart"; // Sørg for at stien er riktig
 import './resultPage.css';
 
 const ResultPage = () => {
@@ -16,12 +17,13 @@ const ResultPage = () => {
                 });
                 console.log('Response status:', response.status);
                 if (response.status === 401) {
-                    alert("Aida, det var dumt..");
+                    console.error("Unauthorized access");
                     return;
                 }
-                /*if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }*/
+                if (!response.ok) {
+                    //throw new Error('Network response was not ok');
+                    console.error("Network response was not ok.");
+                }
                 const data = await response.json();
                 console.log('Data fetched:', data);
                 setCurrentPlay(data);
@@ -62,16 +64,7 @@ const ResultPage = () => {
                     {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
                         <div key={scenario.scenario_id}>
                             <h4>{scenario.description}</h4>
-                            <Bar
-                                data={getChartData(scenario)}
-                                options={{
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true
-                                        }
-                                    }
-                                }}
-                            />
+                            <BarChart data={getChartData(scenario)} />
                         </div>
                     ))}
                 </div>
