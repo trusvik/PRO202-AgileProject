@@ -359,8 +359,7 @@ app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
     try {
         const database = client.db('loading');
         const plays = database.collection('plays');
-        // Assuming you have a way to mark the current play, you might want to add a filter here
-        const currentPlay = await plays.findOne(); // You may want to add conditions to find the current play
+        const currentPlay = await plays.findOne({ current: true });
 
         if (!currentPlay) {
             return res.status(404).json({ message: 'No play found' });
@@ -371,6 +370,7 @@ app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 
 app.get("/resultPage", (req, res) => {
