@@ -144,10 +144,11 @@ app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
             play: name, // Ensure the field matches the fetch structure
             scenarios: scenarios.map(scenario => ({
                 scenario_id: new ObjectId(),
-                ...scenario,
+                question: scenario.question,
                 choices: scenario.choices.map(choice => ({
                     choice_id: new ObjectId(),
-                    description: choice,
+                    description: choice.description,
+                    nextStage: choice.nextStage, // Add the nextStage field
                     votes: 0
                 }))
             }))
@@ -223,7 +224,6 @@ app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) =>
         res.status(500).json({ error: "Failed to delete play" });
     }
 });
-
 app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
     const { name, scenarios } = req.body;
@@ -243,10 +243,11 @@ app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
             play: name,
             scenarios: scenarios.map(scenario => ({
                 scenario_id: scenario.scenario_id || new ObjectId(),
-                ...scenario,
+                question: scenario.question,
                 choices: scenario.choices.map(choice => ({
                     choice_id: choice.choice_id || new ObjectId(),
                     description: choice.description,
+                    nextStage: choice.nextStage, // Add the nextStage field
                     votes: choice.votes || 0
                 }))
             }))
