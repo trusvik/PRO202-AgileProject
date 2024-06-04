@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './startPlay.css'
 
 function StartPlay() {
     const { id } = useParams();
@@ -36,13 +37,10 @@ function StartPlay() {
 
     return (
         <>
-            <div>A play has been started...</div>
-            <div>The play is called {play}</div>
-            <div>The access pin is: {code}</div> {/* Display the generated code */}
-
             <header id="containerHeader">
                 <div id="flexContainerLeft">
-                    <h1 id='logo'>Plays</h1>
+                    <h1 id='logo'>Play: {play}</h1>
+                    <h3 id="logo">Pin: {code}</h3>
                 </div>
                 <div id="flexContainerRight">
                     <p id='userName'>Admin</p>
@@ -51,7 +49,7 @@ function StartPlay() {
 
             <div id='sectionHolderParent'>
                 <div>
-                    <p>NAME HERE</p>
+                    <p>{play}</p>
                 </div>
                 <div id='parentQuestionElement'>
                     <div id='leftQuestionElement'>
