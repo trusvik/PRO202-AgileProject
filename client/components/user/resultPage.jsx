@@ -16,7 +16,7 @@ const ResultPage = () => {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
-                    navigate('/adminlogin');
+                    alert("Aida, det var dumt..");
                     return;
                 }
                 if (!response.ok) {
