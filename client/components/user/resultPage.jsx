@@ -16,6 +16,10 @@ const ResultPage = () => {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 console.log('Response status:', response.status);
+
+                const textResponse = await response.text();
+                console.log("Text response:", textResponse);
+
                 if (response.status === 401) {
                     console.error("Unauthorized access");
                     return;
@@ -23,8 +27,9 @@ const ResultPage = () => {
                 if (!response.ok) {
                     //throw new Error('Network response was not ok');
                     console.error("Network response was not ok.");
+                    return;
                 }
-                const data = await response.json();
+                const data = JSON.parse(textResponse);
                 console.log('Data fetched:', data);
                 setCurrentPlay(data);
                 setLoading(false);

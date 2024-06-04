@@ -299,6 +299,24 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
     res.status(200).json({ valid: true, username: req.user.username });
 });
 
+// ikke slett denne :)
+app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+        const currentPlay = await plays.findOne({ current: true });
+
+        if (!currentPlay) {
+            return res.status(404).json({ message: 'No play found' });
+        }
+        res.json(currentPlay);
+    } catch (error) {
+        console.error('Failed to fetch current play', error);
+        res.status(500).json({ message: 'Server error', error: error.toString() });
+    }
+});
+
+
 // Protected admin route
 app.get("/admin", verifyTokenMiddleware, (req, res) => {
     res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {
