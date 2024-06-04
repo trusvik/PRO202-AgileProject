@@ -353,6 +353,29 @@ app.post("/logout", (req, res) => {
 // Serve static files from the React app
 app.use(express.static(join(__dirname, "../client/dist")));
 
+
+// Midlertidig - skal slettes. API for å hente nåværende play
+app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+        // Assuming you have a way to mark the current play, you might want to add a filter here
+        const currentPlay = await plays.findOne(); // You may want to add conditions to find the current play
+
+        if (!currentPlay) {
+            return res.status(404).json({ message: 'No play found' });
+        }
+        res.json(currentPlay);
+    } catch (error) {
+        console.error('Failed to fetch current play', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+app.get("/resultPage", (req, res) => {
+   res.sendFile(join(__dirname, "../client/dist/index.html"));
+});
 app.get("/pinPage", (req, res) => {
     res.sendFile(join(__dirname, "../client/dist/index.html"));
 });
