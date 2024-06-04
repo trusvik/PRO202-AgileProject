@@ -10,6 +10,7 @@ import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
 import rateLimit from "express-rate-limit";
+import cookie from "cookie";
 
 dotenv.config();
 
@@ -188,6 +189,16 @@ app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
     }
 });
 
+// Route to handle the "Show" button press
+app.post('/admin/start-game', verifyTokenMiddleware, (req, res) => {
+    // Notify all WebSocket clients to redirect to /play
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY' }));
+        }
+    });
+    res.status(200).json({ message: 'Game started, users redirected' });
+});
 
 // Delete current Play-API
 app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) => {
@@ -290,7 +301,6 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
 
 // Protected admin route
 app.get("/admin", verifyTokenMiddleware, (req, res) => {
-    // If the token is valid, allow access to admin page
     res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
@@ -335,7 +345,7 @@ app.put("/admin/change-password", async (req, res) => {
         const newToken = jwt.sign({ username: decoded.username, tokenVersion: user.tokenVersion}, JWT_SECRET);
         res.cookie('token', newToken, {httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
         res.status(200).json({ message: "Password changed successfully" });
-        
+
     } catch (err) {
         console.error("Failed to change password", err);
         res.status(500).json({ error: "Failed to change password" });
@@ -348,34 +358,13 @@ app.post("/logout", (req, res) => {
     res.status(200).json({ message: "Logout successful" });
 });
 
-
-
 // Serve static files from the React app
 app.use(express.static(join(__dirname, "../client/dist")));
 
-
-// Midlertidig - skal slettes. API for å hente nåværende play
-app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
-    try {
-        const database = client.db('loading');
-        const plays = database.collection('plays');
-        // Assuming you have a way to mark the current play, you might want to add a filter here
-        const currentPlay = await plays.findOne(); // You may want to add conditions to find the current play
-
-        if (!currentPlay) {
-            return res.status(404).json({ message: 'No play found' });
-        }
-        res.json(currentPlay);
-    } catch (error) {
-        console.error('Failed to fetch current play', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-
 app.get("/resultPage", (req, res) => {
-   res.sendFile(join(__dirname, "../client/dist/index.html"));
+    res.sendFile(join(__dirname, "../client/dist/index.html"));
 });
+
 app.get("/pinPage", (req, res) => {
     res.sendFile(join(__dirname, "../client/dist/index.html"));
 });
@@ -387,52 +376,38 @@ app.get("/*", (req, res) => {
 
 // Create the server and the WebSocket server
 const server = http.createServer(app);
+const wsServer = new WebSocketServer({ noServer: true });
+const sockets = [];
 
-const wss = new WebSocketServer({ server });
+server.on("upgrade", (req, socket, head) => {
+    const cookies = cookie.parse(req.headers.cookie || '');
+    const signedCookies = cookieParser.signedCookies(cookies, 'your_cookie_secret'); // Ensure this matches your setup
+    const { username } = signedCookies;
 
-wss.on('connection', (ws) => {
-    console.log('New client connected');
+    wsServer.handleUpgrade(req, socket, head, (ws) => {
+        sockets.push(ws);
+        ws.send(JSON.stringify({ message: `Hello to "${username}" from the server` }));
 
-    ws.on('message', (message) => {
-        console.log('Received message from client:', message);
-        try {
+        ws.on("message", (buffer) => {
+            const message = buffer.toString();
             const data = JSON.parse(message);
-            if (data.type === 'JOIN_ROOM') {
-                // Example: Broadcast updated names to all clients
-                const updatedNames = data.names; // You may want to update this logic as needed
-                wss.clients.forEach(client => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({ type: 'UPDATE_NAMES', names: updatedNames }));
-                    }
-                });
+
+            if (data.type === 'ADMIN_START_GAME') {
+                // Admin wants to start the game, notify all users
+                for (const client of sockets) {
+                    client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY' }));
+                }
             }
-        } catch (error) {
-            console.error('Error parsing message:', error);
-        }
-    });
+        });
 
-    ws.on('close', () => {
-        console.log('Client disconnected');
+        ws.on('close', () => {
+            const index = sockets.indexOf(ws);
+            if (index !== -1) {
+                sockets.splice(index, 1);
+            }
+        });
     });
-
-    ws.send(JSON.stringify({ type: 'WELCOME', message: 'Welcome to the WebSocket server!' }));
 });
-
-// Future Function to notify all clients that the lobby is ready
-const notifyLobbyReady = () => {
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ type: 'LOBBY_READY' }));
-        }
-    });
-};
-
-// Example: Call this function when the lobby is ready
-// This will be modified and replaced when future logic will be implemented
-const someConditionForLobbyReady = true; // This should be your actual condition
-if (someConditionForLobbyReady) {
-    notifyLobbyReady();
-}
 
 // Start the server
 connectToDatabase().then(async () => {

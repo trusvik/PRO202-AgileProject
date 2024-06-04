@@ -1,39 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './startPlay.css'
+import './startPlay.css';
 
 function StartPlay() {
     const { id } = useParams();
     const [play, setPlay] = useState('');
     const [code, setCode] = useState('');
     const navigate = useNavigate();
+    let ws;
 
     useEffect(() => {
         const fetchPlay = async () => {
             try {
                 const response = await fetch(`/admin/plays/start/${id}`, {
                     method: 'POST',
-                    credentials: 'include', // Ensure cookies are sent with the request.
+                    credentials: 'include',
                 });
-                switch (response.status) {
-                    case 401:
-                        console.error("Unauthorized");
-                        navigate('/adminlogin'); // Redirect to /adminlogin if unauthorized.
-                        return;
-                    case 200:
-                        break;
-                    default:
-                        throw new Error('Failed to start play');
+                if (response.status === 401) {
+                    console.error("Unauthorized");
+                    navigate('/adminlogin');
+                    return;
+                } else if (response.status !== 200) {
+                    throw new Error('Failed to start play');
                 }
                 const data = await response.json();
-                setPlay(data.play); // Set the play name from the fetched data.
-                setCode(data.code); // Set the generated code from the server
+                setPlay(data.play);
+                setCode(data.code);
             } catch (error) {
                 console.error("Error starting play", error);
             }
         };
         fetchPlay();
+
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsHost = window.location.hostname;
+        const wsPort = window.location.port ? `:${window.location.port}` : '';
+        const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
+        ws = new WebSocket(wsUrl);
+
+        return () => {
+            if (ws) ws.close();
+        };
     }, [id, navigate]);
+
+    const handleShowGame = () => {
+        const ws = new WebSocket(`ws://${window.location.host}`);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
+            ws.close();
+        };
+    };
 
     return (
         <>
@@ -57,15 +73,10 @@ function StartPlay() {
                     </div>
                     <div id='rightQuestionElement'>
                         <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
-                        <button>Show</button>
+                        <button onClick={handleShowGame}>Show</button>
                     </div>
                 </div>
             </div>
-            
-
-
-        
-
         </>
     );
 }
