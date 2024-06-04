@@ -39,6 +39,35 @@ function StartPlay() {
             <div>A play has been started...</div>
             <div>The play is called {play}</div>
             <div>The access pin is: {code}</div> {/* Display the generated code */}
+
+            <header id="containerHeader">
+                <div id="flexContainerLeft">
+                    <h1 id='logo'>Plays</h1>
+                </div>
+                <div id="flexContainerRight">
+                    <p id='userName'>Admin</p>
+                </div>
+            </header>
+
+            <div id='sectionHolderParent'>
+                <div>
+                    <p>NAME HERE</p>
+                </div>
+                <div id='parentQuestionElement'>
+                    <div id='leftQuestionElement'>
+                        <p>QUESTION HERE</p>
+                    </div>
+                    <div id='rightQuestionElement'>
+                        <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
+                        <button>Show</button>
+                    </div>
+                </div>
+            </div>
+            
+
+
+        
+
         </>
     );
 }
