@@ -159,6 +159,36 @@ app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
     }
 });
 
+app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
+    const playId = req.params.id;
+
+    if (!ObjectId.isValid(playId)) {
+        return res.status(400).json({ error: "Invalid play ID" });
+    }
+
+    try {
+        const database = client.db("loading");
+        const plays = database.collection("plays");
+        const play = await plays.findOne({ _id: new ObjectId(playId) });
+
+        if (!play) {
+            return res.status(404).json({ error: "Play not found" });
+        }
+
+        // Generate a 6-digit random code
+        const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Optionally, store the generated code in the play document
+        await plays.updateOne({ _id: new ObjectId(playId) }, { $set: { accessCode: randomCode } });
+
+        res.status(200).json({ play: play.play, code: randomCode });
+    } catch (err) {
+        console.error('Failed to start play', err);
+        res.status(500).json({ error: 'Failed to start play' });
+    }
+});
+
+
 // Delete current Play-API
 app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
