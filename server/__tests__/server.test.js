@@ -93,10 +93,13 @@ describe('Test for CRUD operations', () => {
         expect(response.body.message).toBe('Play deleted successfully');
     });
 
-    it('should verify that a admin has a token', async () => {
-     const response = await request(app)
-         .get('/admin')
-         .set('Cookie', `token=${token}`);
-     expect(token !== null);
-    })
+    it('should verify that an admin has a token', async () => {
+        const response = await request(app)
+            .get('/admin')
+            .set('Cookie', `token=${token}`);
+        console.log(response.body); // Log the response body for debugging
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe('Admin access verified');
+        expect(response.body.username).toBe('testuser');
+    });
 });
