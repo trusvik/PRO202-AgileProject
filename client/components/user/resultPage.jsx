@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
+import BarChart from "./barChart"; // Sørg for at stien er riktig
 import './resultPage.css';
 
 const ResultPage = () => {
@@ -12,17 +11,21 @@ const ResultPage = () => {
     useEffect(() => {
         const fetchCurrentPlay = async () => {
             try {
-                const response = await fetch('http://localhost:5000/admin/plays/getCurrent', {
+                console.log('Fetching current play from Heroku...');
+                const response = await fetch('https://loading-19800d80be43.herokuapp.com/admin/plays/getCurrent', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
+                console.log('Response status:', response.status);
                 if (response.status === 401) {
-                    navigate('/adminlogin');
+                    console.error("Unauthorized access");
                     return;
                 }
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    //throw new Error('Network response was not ok');
+                    console.error("Network response was not ok.");
                 }
                 const data = await response.json();
+                console.log('Data fetched:', data);
                 setCurrentPlay(data);
                 setLoading(false);
             } catch (error) {
@@ -45,34 +48,27 @@ const ResultPage = () => {
         }]
     });
 
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (!currentPlay) {
+        return <p>No play data available</p>;
+    }
+
     return (
         <div className="resultPageBody">
-            {loading ? (
-                <p>Loading...</p>
-            ) : currentPlay ? (
-                <section id='containerSectionName'>
-                    <div id='choices'>
-                        <h2>Choices for {currentPlay.play}</h2>
-                        {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
-                            <div key={scenario.scenario_id}>
-                                <h4>{scenario.description}</h4>
-                                <Bar
-                                    data={getChartData(scenario)}
-                                    options={{
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true
-                                            }
-                                        }
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            ) : (
-                <p>No play data available</p>
-            )}
+            <section id='containerSectionName'>
+                <div id='choices'>
+                    <h2>Choices for {currentPlay.play}</h2>
+                    {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
+                        <div key={scenario.scenario_id}>
+                            <h4>{scenario.description}</h4>
+                            <BarChart data={getChartData(scenario)} />
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 }
