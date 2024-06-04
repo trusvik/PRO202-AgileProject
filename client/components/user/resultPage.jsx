@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bar } from 'react-chartjs-2';
 import './resultPage.css';
 
 const ResultPage = () => {
@@ -20,9 +19,9 @@ const ResultPage = () => {
                     alert("Aida, det var dumt..");
                     return;
                 }
-                if (!response.ok) {
+                /*if (!response.ok) {
                     throw new Error('Network response was not ok');
-                }
+                }*/
                 const data = await response.json();
                 console.log('Data fetched:', data);
                 setCurrentPlay(data);
