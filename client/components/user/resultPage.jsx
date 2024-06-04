@@ -12,7 +12,7 @@ const ResultPage = () => {
     useEffect(() => {
         const fetchCurrentPlay = async () => {
             try {
-                const response = await fetch('http://localhost:5000/admin/plays/getCurrent', {
+                const response = await fetch('https://loading-19800d80be43.herokuapp.com/admin/plays/getCurrent', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (response.status === 401) {
