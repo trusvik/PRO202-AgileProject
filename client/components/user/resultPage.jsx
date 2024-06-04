@@ -12,9 +12,11 @@ const ResultPage = () => {
     useEffect(() => {
         const fetchCurrentPlay = async () => {
             try {
+                console.log('Fetching current play from Heroku...');
                 const response = await fetch('https://loading-19800d80be43.herokuapp.com/admin/plays/getCurrent', {
                     credentials: 'include', // Ensure cookies are sent with the request
                 });
+                console.log('Response status:', response.status);
                 if (response.status === 401) {
                     alert("Aida, det var dumt..");
                     return;
@@ -23,6 +25,7 @@ const ResultPage = () => {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
+                console.log('Data fetched:', data);
                 setCurrentPlay(data);
                 setLoading(false);
             } catch (error) {
@@ -45,34 +48,36 @@ const ResultPage = () => {
         }]
     });
 
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (!currentPlay) {
+        return <p>No play data available</p>;
+    }
+
     return (
         <div className="resultPageBody">
-            {loading ? (
-                <p>Loading...</p>
-            ) : currentPlay ? (
-                <section id='containerSectionName'>
-                    <div id='choices'>
-                        <h2>Choices for {currentPlay.play}</h2>
-                        {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
-                            <div key={scenario.scenario_id}>
-                                <h4>{scenario.description}</h4>
-                                <Bar
-                                    data={getChartData(scenario)}
-                                    options={{
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true
-                                            }
+            <section id='containerSectionName'>
+                <div id='choices'>
+                    <h2>Choices for {currentPlay.play}</h2>
+                    {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
+                        <div key={scenario.scenario_id}>
+                            <h4>{scenario.description}</h4>
+                            <Bar
+                                data={getChartData(scenario)}
+                                options={{
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
                                         }
-                                    }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            ) : (
-                <p>No play data available</p>
-            )}
+                                    }
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 }
