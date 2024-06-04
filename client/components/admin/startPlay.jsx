@@ -44,7 +44,10 @@ function StartPlay() {
     }, [id, navigate]);
 
     const handleShowGame = () => {
-        const ws = new WebSocket(`ws://${window.location.host}`);
+        const wsUrl = process.env.NODE_ENV === 'production'
+            ? 'wss://loading-19800d80be43.herokuapp.com/'
+            : `ws://${window.location.hostname}:${window.location.port}`;
+        const ws = new WebSocket(wsUrl);
         ws.onopen = () => {
             ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
             ws.close();

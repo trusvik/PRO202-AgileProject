@@ -9,10 +9,10 @@ const WaitingRoom = () => {
     let ws;
 
     const connectWebSocket = () => {
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const wsHost = window.location.hostname;
-        const wsPort = window.location.port ? `:${window.location.port}` : '';
-        const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
+        // Use the main URL for WebSocket connection
+        const wsUrl = process.env.NODE_ENV === 'production'
+            ? 'wss://loading-19800d80be43.herokuapp.com/'
+            : `ws://${window.location.hostname}:${window.location.port}`;
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
