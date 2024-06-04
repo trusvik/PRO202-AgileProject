@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "JejuHallasan";
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
+  }
+
+
+
+
+
+.questionContainer {
+    text-align: center;
+    background-color: #f2a71b;
+    padding: 50px;
+    height: 100vh;
+  }
+  
+  /*Styling of the title */
+
+  .loadingText {
+    font-size: 2em;
+    margin-bottom: 200px;
+    font-family: "JejuHallasan"
+  }
+  
+
+  /*Styling of the main question */
+  .questionText {
+    font-size: 1.5em;
+    margin-bottom: 50px;
+    font-family: "JejuHallasan"
+  }
+
+    /*Styling of the options and its elements */
+  .optionsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    
+  }
+
+    /*Styling of the option buttons */
+  .optionBtn {
+    padding: 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .option-0 { background-color: #00ff00; color: #000; }
+  .option-1 { background-color: #0000ff; color: #fff; }
+  .option-2 { background-color: #ff00ff; color: #fff; }
+  .option-3 { background-color: #ff0000; color: #fff; }
+  
