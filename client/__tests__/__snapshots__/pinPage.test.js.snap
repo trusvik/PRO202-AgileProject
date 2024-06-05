@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PinPage Snapshot Test renders correctly 1`] = `
+<div
+  className="pinPageBody"
+>
+  <div
+    className="pinPageContainer"
+  >
+    <h1
+      id="logo"
+    >
+      LOADING...
+    </h1>
+    <input
+      className="pinPageInput"
+      onChange={[Function]}
+      onKeyDown={[Function]}
+      pattern="\\d*"
+      placeholder="PIN-kode ..."
+      type="text"
+      value=""
+    />
+    <button
+      className="pinPageButton"
+      onClick={[Function]}
+    >
+      Bli med i spillet!
+    </button>
+  </div>
+</div>
+`;

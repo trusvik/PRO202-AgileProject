@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WaitingRoom Snapshot Test renders correctly 1`] = `
+<div
+  className="waitingBody"
+>
+  <div
+    className="roomContainer"
+  >
+    <h1>
+      Venterom
+    </h1>
+    <div
+      className="statusMessage"
+    >
+      <p>
+        Spillet starter straks. Vennligst vent...
+      </p>
+    </div>
+    <div
+      className="nameList"
+    />
+  </div>
+</div>
+`;

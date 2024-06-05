@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserNamePage Snapshot Test renders correctly 1`] = `
+<div
+  className="mainBody"
+>
+  <div
+    className="pageContainer"
+  >
+    <h1
+      className="pageLogo"
+    >
+      Loading...
+    </h1>
+    <h2>
+      Skriv inn navnet ditt
+    </h2>
+    <input
+      className="inputBox"
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      placeholder="Navn..."
+      type="text"
+      value=""
+    />
+    <button
+      className="enterNameBtn"
+      onClick={[Function]}
+      type="submit"
+    >
+      OK
+    </button>
+  </div>
+</div>
+`;

@@ -1,8 +1,8 @@
-// WaitingRoom.test.js
+// UserNamePage.test.js
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { MemoryRouter } from 'react-router-dom';
-import WaitingRoom from '../components/user/waitingRoom';
+import UserNamePage from '../components/user/userNamePage';
 
 // Mock the `useNavigate` hook
 jest.mock('react-router-dom', () => ({
@@ -10,23 +10,14 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => jest.fn(),
 }));
 
-// Mock the WebSocket
-global.WebSocket = jest.fn(() => ({
-    onopen: jest.fn(),
-    onmessage: jest.fn(),
-    onclose: jest.fn(),
-    send: jest.fn(),
-    close: jest.fn(),
-}));
-
-describe('WaitingRoom Snapshot Test', () => {
+describe('UserNamePage Snapshot Test', () => {
     it('renders correctly', () => {
-        sessionStorage.setItem('names', JSON.stringify(['Player1', 'Player2'])); // Mock session storage
+        const setIsUserNameEntered = jest.fn(); // Mock function for setIsUserNameEntered
 
         // Render the component
         const tree = renderer.create(
             <MemoryRouter>
-                <WaitingRoom />
+                <UserNamePage setIsUserNameEntered={setIsUserNameEntered} />
             </MemoryRouter>
         ).toJSON();
 
