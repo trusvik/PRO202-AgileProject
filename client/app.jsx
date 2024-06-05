@@ -11,6 +11,7 @@ import StartPlay from "./components/admin/startPlay";
 import ResultPage from "./components/user/resultPage";
 import "./app.css";
 import Play from "./components/user/play";
+import ResultPage from './components/admin/resultPage';
 
 
 
@@ -39,6 +40,7 @@ export function App() {
                 <Route path="/admin/plays/start/:id" element={<StartPlay />} />
                 <Route path="/resultPage/" element={<ResultPage />} />
                 <Route path="/play/" element={<Play />} />
+                <Route path="/admin/resultPage" element={<ResultPage />} />
             </Routes>
         </div>
     );
