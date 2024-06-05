@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import './play.css';
+import {useNavigate} from "react-router-dom";
 
 const Play = () => {
     const questions = [
@@ -12,6 +13,7 @@ const Play = () => {
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [votes, setVotes] = useState([0, 0, 0, 0]);
+    const navigate = useNavigate();
 
     const handleAnswer = (selectedOptionIndex) => {
         const newVotes = [...votes];
@@ -24,6 +26,7 @@ const Play = () => {
             setCurrentQuestionIndex(nextQuestionIndex);
         } else {
             localStorage.setItem('votes', JSON.stringify(newVotes));
+            navigate('/resultPage');
         }
     };
 

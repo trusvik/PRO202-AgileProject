@@ -326,21 +326,32 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
     res.status(200).json({ valid: true, username: req.user.username });
 });
 
-// ikke slett denne :)
+// Gets the current play - I hope.
 app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
+
+    const { playId } = req.params;
     try {
         const database = client.db('loading');
         const plays = database.collection('plays');
-        const currentPlay = await plays.findOne({ current: true });
 
-        if (!currentPlay) {
-            return res.status(404).json({ message: 'No play found' });
-        }
-        res.json(currentPlay);
-    } catch (error) {
-        console.error('Failed to fetch current play', error);
-        res.status(500).json({ message: 'Server error', error: error.toString() });
+        const results = await plays.aggregate([
+            { $match: { _id: new ObjectId(playId) } },
+            { $unwind: "$scenarios" },
+            { $unwind: "$scenarios.choices" },
+            { $project: {
+                    playName: "$play",
+                    scenarioQuestion: "$scenarios.question",
+                    choiceDescription: "$scenarios.choices.description",
+                    votes: "$scenarios.choices.votes"
+                }}
+        ]).toArray();
+
+        res.status(200).json(results);
+    } catch (err) {
+        console.error('Failed to fetch results', err);
+        res.status(500).json({ error: 'Failed to fetch results' });
     }
+
 });
 
 
