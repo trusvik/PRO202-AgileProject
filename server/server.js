@@ -177,6 +177,31 @@ app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async
     }
 });
 
+app.get('/api/scenario/:scenarioId', verifyTokenMiddleware, async (req, res) => {
+    const { scenarioId } = req.params;
+
+    if (!ObjectId.isValid(scenarioId)) {
+        return res.status(400).json({ error: "Invalid scenario ID" });
+    }
+
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        const play = await plays.findOne({ 'scenarios.scenario_id': new ObjectId(scenarioId) }, { projection: { 'scenarios.$': 1 } });
+
+        if (!play) {
+            return res.status(404).json({ error: "Scenario not found" });
+        }
+
+        const scenario = play.scenarios[0];
+
+        res.status(200).json(scenario);
+    } catch (err) {
+        console.error('Failed to fetch scenario', err);
+        res.status(500).json({ error: 'Failed to fetch scenario' });
+    }
+});
 
 
 

@@ -21,14 +21,22 @@ const WaitingRoom = () => {
             ws.send(JSON.stringify({ type: 'JOIN_ROOM', names: storedNames }));
         };
 
-        ws.onmessage = (event) => {
+        ws.onmessage = async (event) => {
             try {
                 const data = JSON.parse(event.data);
                 console.log('Message from server:', data);
                 if (data.type === 'UPDATE_NAMES') {
                     setNameList(data.names);
                 } else if (data.type === 'REDIRECT_TO_PLAY') {
-                    navigate('/play');
+                    const scenarioId = data.scenarioId; // Assuming the server sends scenarioId
+                    const response = await fetch(`/api/scenario/${scenarioId}`);
+                    if (response.ok) {
+                        const scenarioData = await response.json();
+                        localStorage.setItem('scenarioData', JSON.stringify(scenarioData));
+                        setTimeout(() => {
+                            navigate('/play');
+                        }, 2000); // Delay the redirect by 2 seconds
+                    }
                 }
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
