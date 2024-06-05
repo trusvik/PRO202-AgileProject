@@ -22,6 +22,10 @@ const corsOptions = {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true
 };
+const gameState = {
+    playId: null,
+    scenarioId: null
+}
 app.use(cors(corsOptions));
 app.use(cookieParser());
 

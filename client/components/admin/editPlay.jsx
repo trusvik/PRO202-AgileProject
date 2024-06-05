@@ -6,7 +6,7 @@ function EditPlay() {
     // State and hook initializations.
     const { id } = useParams();
     const [play, setPlay] = useState('');
-    const [scenarios, setScenarios] = useState([{ question: '', choices: [''] }]);
+    const [scenarios, setScenarios] = useState([{ question: '', choices: [{ description: '', nextStage: '' }] }]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -53,15 +53,15 @@ function EditPlay() {
     };
 
     // Handler to update a choice description.
-    const handleChoiceChange = (scenarioIndex, choiceIndex, value) => {
+    const handleChoiceChange = (scenarioIndex, choiceIndex, field, value) => {
         const newScenarios = [...scenarios];
-        newScenarios[scenarioIndex].choices[choiceIndex].description = value;
+        newScenarios[scenarioIndex].choices[choiceIndex][field] = value;
         setScenarios(newScenarios);
     };
 
     // Handler to add a new scenario.
     const handleAddScenario = () => {
-        setScenarios([...scenarios, { question: '', choices: [{ description: '' }] }]);
+        setScenarios([...scenarios, { question: '', choices: [{ description: '', nextStage: '' }] }]);
     };
 
     // Handler to remove a scenario by index.
@@ -73,7 +73,7 @@ function EditPlay() {
     // Handler to add a new choice to a scenario by index.
     const handleAddChoice = (scenarioIndex) => {
         const newScenarios = [...scenarios];
-        newScenarios[scenarioIndex].choices.push({ description: '' });
+        newScenarios[scenarioIndex].choices.push({ description: '', nextStage: '' });
         setScenarios(newScenarios);
     };
 
@@ -163,10 +163,16 @@ function EditPlay() {
                                         id='sizeInputAdmin'
                                         type="text"
                                         value={choice.description}
-                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, e.target.value)}
+                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'description', e.target.value)}
                                         required
                                     />
-
+                                    <p id='fontSizeChoice'>Next Stage:</p>
+                                    <input
+                                        id='sizeInputAdmin'
+                                        type="text"
+                                        value={choice.nextStage}
+                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'nextStage', e.target.value)}
+                                    />
                                 </label>
                                 <button type="button" id='removeChoiceButton' onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
                                     -
