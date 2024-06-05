@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "jest": "^29.7.0"
   },
   "scripts": {
     "dev": "concurrently npm:dev:client npm:dev:server",
