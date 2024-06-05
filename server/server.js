@@ -181,6 +181,34 @@ app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async
     }
 });
 
+// Route to get current scenario choices for a play
+app.get('/play/scenario/:playId/:scenarioId', async (req, res) => {
+    const { playId, scenarioId } = req.params;
+
+    if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId)) {
+        return res.status(400).json({ error: "Invalid play or scenario ID" });
+    }
+
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        const play = await plays.findOne({ _id: new ObjectId(playId) });
+        if (!play) {
+            return res.status(404).json({ error: "Play not found" });
+        }
+
+        const scenario = play.scenarios.find(scenario => scenario.scenario_id.toString() === scenarioId);
+        if (!scenario) {
+            return res.status(404).json({ error: "Scenario not found" });
+        }
+
+        res.status(200).json(scenario);
+    } catch (err) {
+        console.error('Failed to fetch scenario', err);
+        res.status(500).json({ error: 'Failed to fetch scenario' });
+    }
+});
 
 
 
@@ -417,6 +445,25 @@ app.get("/admin", verifyTokenMiddleware, (req, res) => {
     });
 });
 
+app.post('/admin/reset-votes', verifyTokenMiddleware, async (req, res) => {
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        // Reset all votes for all scenarios
+        await plays.updateMany(
+            {},
+            { $set: { "scenarios.$[].choices.$[].votes": 0 } }
+        );
+
+        res.status(200).json({ message: 'Votes reset successfully' });
+    } catch (err) {
+        console.error('Failed to reset votes', err);
+        res.status(500).json({ error: 'Failed to reset votes' });
+    }
+});
+
+
 // User registration
 app.put("/admin/change-password", async (req, res) => {
     const { newPassword } = req.body;
@@ -490,21 +537,66 @@ const sockets = [];
 
 server.on("upgrade", (req, socket, head) => {
     const cookies = cookie.parse(req.headers.cookie || '');
-    const signedCookies = cookieParser.signedCookies(cookies, 'your_cookie_secret'); // Ensure this matches your setup
+    const signedCookies = cookieParser.signedCookies(cookies, process.env.COOKIE_SECRET); // Ensure this matches your setup
     const { username } = signedCookies;
 
     wsServer.handleUpgrade(req, socket, head, (ws) => {
         sockets.push(ws);
-        ws.send(JSON.stringify({ message: `Hello to "${username}" from the server` }));
+        ws.send(JSON.stringify({ message: `Hello to "${username}" from the server.` }));
 
-        ws.on("message", (buffer) => {
+        ws.on("message", async (buffer) => {
             const message = buffer.toString();
             const data = JSON.parse(message);
 
             if (data.type === 'ADMIN_START_GAME') {
+                const { playId, scenarioId } = data;
                 // Admin wants to start the game, notify all users
                 for (const client of sockets) {
-                    client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY' }));
+                    client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId, scenarioId }));
+                }
+            } else if (data.type === 'USER_VOTE') {
+                const { playId, scenarioId, choiceIndex } = data;
+
+                if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId)) {
+                    console.log("Invalid play or scenario ID");
+                    return;
+                }
+
+                try {
+                    const database = client.db('loading');
+                    const plays = database.collection('plays');
+
+                    const play = await plays.findOne({ _id: new ObjectId(playId) });
+                    if (!play) {
+                        console.log("Play not found");
+                        return;
+                    }
+
+                    const scenarioIndex = play.scenarios.findIndex(scenario => scenario.scenario_id.toString() === scenarioId);
+                    if (scenarioIndex === -1) {
+                        console.log("Scenario not found");
+                        return;
+                    }
+
+                    const choicePath = `scenarios.${scenarioIndex}.choices.${choiceIndex}.votes`;
+
+                    await plays.updateOne(
+                        { _id: new ObjectId(playId) },
+                        { $inc: { [choicePath]: 1 } }
+                    );
+
+                    const updatedPlay = await plays.findOne({ _id: new ObjectId(playId) });
+                    const updatedScenario = updatedPlay.scenarios[scenarioIndex];
+                    const updatedVotes = updatedScenario.choices.map(choice => ({ description: choice.description, votes: choice.votes }));
+
+                    // Broadcast the updated votes to the admin
+                    sockets.forEach(client => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify({ type: 'UPDATE_RESULTS', playId, scenarioId, updatedVotes }));
+                        }
+                    });
+                } catch (err) {
+                    console.error('Failed to update votes', err);
                 }
             }
         });
@@ -518,6 +610,8 @@ server.on("upgrade", (req, socket, head) => {
     });
 });
 
+
+
 // Start the server
 connectToDatabase().then(async () => {
     const port = process.env.PORT || 3000;
@@ -525,3 +619,4 @@ connectToDatabase().then(async () => {
         console.log(`Server is running on port ${port}`);
     });
 }).catch(console.dir);
+

@@ -1,41 +1,90 @@
-import React, {useState} from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import './play.css';
-import {useNavigate} from "react-router-dom";
 
 const Play = () => {
-    const questions = [
-        {
-            question: 'Hvordan skal karakteren reagere?',
-            options: ['Forvirret', 'Sint', 'Irritert', 'Glad'],
-        },
-
-    ];
-
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [votes, setVotes] = useState([0, 0, 0, 0]);
+    const { playId, scenarioId } = useParams();
+    const [question, setQuestion] = useState('');
+    const [options, setOptions] = useState([]);
+    const [votes, setVotes] = useState([]);
     const navigate = useNavigate();
+    const ws = useRef(null); // Use a ref to hold the WebSocket instance
+
+    const connectWebSocket = () => {
+        const wsUrl = process.env.NODE_ENV === 'production'
+            ? 'wss://loading-19800d80be43.herokuapp.com/'
+            : `ws://${window.location.hostname}:${window.location.port}`;
+        ws.current = new WebSocket(wsUrl);
+
+        ws.current.onopen = () => {
+            console.log('WebSocket connected');
+        };
+
+        ws.current.onclose = () => {
+            console.log('WebSocket disconnected');
+        };
+    };
+
+    useEffect(() => {
+        const fetchScenario = async () => {
+            try {
+                const response = await fetch(`/play/scenario/${playId}/${scenarioId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                if (response.status === 401) {
+                    console.error("Unauthorized");
+                    navigate('/userNamePage');
+                    return;
+                } else if (!response.ok) {
+                    throw new Error('Failed to fetch scenario');
+                }
+
+                const data = await response.json();
+                setQuestion(data.question);
+                setOptions(data.choices.map(choice => choice.description));
+                setVotes(new Array(data.choices.length).fill(0)); // Initialize votes array
+            } catch (error) {
+                console.error("Error fetching scenario", error);
+            }
+        };
+
+        fetchScenario();
+        connectWebSocket();
+
+        return () => {
+            if (ws.current) ws.current.close();
+        };
+    }, [playId, scenarioId, navigate]);
 
     const handleAnswer = (selectedOptionIndex) => {
         const newVotes = [...votes];
         newVotes[selectedOptionIndex]++;
         setVotes(newVotes);
 
-
-        const nextQuestionIndex = currentQuestionIndex + 1;
-        if (nextQuestionIndex < questions.length) {
-            setCurrentQuestionIndex(nextQuestionIndex);
-        } else {
-            localStorage.setItem('votes', JSON.stringify(newVotes));
-            navigate('/resultPage');
+        const message = {
+            type: 'USER_VOTE',
+            playId,
+            scenarioId,
+            choiceIndex: selectedOptionIndex
+        };
+        
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+            ws.current.send(JSON.stringify(message));
         }
+
+        // Store votes and navigate to the result page after answering
+        localStorage.setItem('votes', JSON.stringify(newVotes));
+        navigate('/resultPage');
     };
 
     return (
         <div className="questionContainer">
             <h2 className="loadingText">LOADING..</h2>
-            <h3 className="questionText">{questions[currentQuestionIndex].question}</h3>
+            <h3 className="questionText">{question}</h3>
             <div className="optionsContainer">
-                {questions[currentQuestionIndex].options.map((option, index) => (
+                {options.map((option, index) => (
                     <button
                         key={index}
                         className={`optionBtn option-${index}`}
@@ -47,8 +96,6 @@ const Play = () => {
             </div>
         </div>
     );
-
 }
-
 
 export default Play;

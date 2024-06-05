@@ -28,12 +28,15 @@ const WaitingRoom = () => {
                 if (data.type === 'UPDATE_NAMES') {
                     setNameList(data.names);
                 } else if (data.type === 'REDIRECT_TO_PLAY') {
-                    navigate('/play');
+                    const { playId, scenarioId } = data;
+                    navigate(`/play/${playId}/${scenarioId}`);
                 }
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
             }
         };
+        
+        
 
         ws.onclose = () => {
             console.log('WebSocket disconnected');

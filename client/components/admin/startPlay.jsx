@@ -66,11 +66,13 @@ function StartPlay() {
             : `ws://${window.location.hostname}:${window.location.port}`;
         const ws = new WebSocket(wsUrl);
         ws.onopen = () => {
-            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
+            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId }));
             ws.close();
         };
         navigate(`/admin/resultPage/${id}/${scenarioId}`); // Pass play and scenario IDs to the result page
     };
+    
+    
 
     if (loading) {
         return <p>Loading...</p>;
