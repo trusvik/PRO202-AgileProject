@@ -180,8 +180,6 @@ app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async
 
 
 
-
-
 app.get('/admin/plays/get/:id', verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
 
@@ -378,7 +376,8 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
 // Gets the current play - I hope.
 app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
 
-    const { playId } = req.params;
+    const { playId } = req.query;
+    console.log(playId);
     try {
         const database = client.db('loading');
         const plays = database.collection('plays');
@@ -395,6 +394,7 @@ app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
                 }}
         ]).toArray();
 
+        console.log(results); 
         res.status(200).json(results);
     } catch (err) {
         console.error('Failed to fetch results', err);
