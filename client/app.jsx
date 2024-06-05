@@ -9,7 +9,6 @@ import CreateNew from "./components/admin/createNew";
 import EditPlay from "./components/admin/editPlay";
 import StartPlay from "./components/admin/startPlay";
 import ResultPage from "./components/user/resultPage";
-import ChoicesPage from "./components/user/choicesPage";
 import "./app.css";
 import Play from "./components/user/play";
 
@@ -40,7 +39,6 @@ export function App() {
                 <Route path="/admin/plays/start/:id" element={<StartPlay />} />
                 <Route path="/resultPage/" element={<ResultPage />} />
                 <Route path="/play/" element={<Play />} />
-                <Route path="/choicesPage/" element={<ChoicesPage />} />
             </Routes>
         </div>
     );
