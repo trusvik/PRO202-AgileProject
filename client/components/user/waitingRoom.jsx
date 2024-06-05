@@ -8,41 +8,35 @@ const WaitingRoom = () => {
     const navigate = useNavigate();
     let ws;
 
-    // Function to establish a WebSocket-connection.
     const connectWebSocket = () => {
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const wsHost = window.location.hostname;
-        const wsPort = window.location.port ? `:${window.location.port}` : '';
-        const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
+        // Use the main URL for WebSocket connection
+        const wsUrl = process.env.NODE_ENV === 'production'
+            ? 'wss://loading-19800d80be43.herokuapp.com/'
+            : `ws://${window.location.hostname}:${window.location.port}`;
         ws = new WebSocket(wsUrl);
 
-        // Event handler for WebSocket-connection open event.
         ws.onopen = () => {
             console.log('WebSocket connected');
             const storedNames = JSON.parse(sessionStorage.getItem("names"));
             ws.send(JSON.stringify({ type: 'JOIN_ROOM', names: storedNames }));
         };
 
-        // Event handler for WebSocket message event.
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
                 console.log('Message from server:', data);
                 if (data.type === 'UPDATE_NAMES') {
                     setNameList(data.names);
-                    // The else if statement will in the future redirect the user to the game lobby when it's ready
-                }  else if (data.type === 'LOBBY_READY') {
-                navigate('/lobby');
-            }
+                } else if (data.type === 'REDIRECT_TO_PLAY') {
+                    navigate('/play');
+                }
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
             }
         };
 
-        // Event handler for WebSocket close event.
         ws.onclose = () => {
             console.log('WebSocket disconnected');
-            // Attempt to reconnect after a delay
             setTimeout(() => {
                 console.log('Reconnecting...');
                 connectWebSocket();
@@ -62,9 +56,8 @@ const WaitingRoom = () => {
             setShowWaitingMessage(false);
         }, 5000);
 
-        connectWebSocket(); // Initialize WebSocket connection
+        connectWebSocket();
 
-        // Cleanup function to clear timer and close WebSocket.
         return () => {
             clearTimeout(timer);
             if (ws) ws.close();

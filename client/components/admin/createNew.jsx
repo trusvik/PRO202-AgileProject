@@ -3,67 +3,57 @@ import { useNavigate } from 'react-router-dom';
 import './createNew.css'
 
 function CreateNew() {
-    // State hooks for managing play name, scenarios, and error messages.
     const [play, setPlay] = useState('');
-    const [scenarios, setScenarios] = useState([{ question: '', choices: [''] }]);
+    const [scenarios, setScenarios] = useState([{ question: '', choices: [{ description: '', nextStage: '' }] }]);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // Handler to update play name state.
     const handlePlayNameChange = (e) => {
         setPlay(e.target.value);
     };
 
-    // Handler to update scenario question state.
     const handleScenarioChange = (index, value) => {
         const newScenarios = [...scenarios];
         newScenarios[index].question = value;
         setScenarios(newScenarios);
     };
 
-    // Handler to update choice text state for a specific scenario.
-    const handleChoiceChange = (scenarioIndex, choiceIndex, value) => {
+    const handleChoiceChange = (scenarioIndex, choiceIndex, field, value) => {
         const newScenarios = [...scenarios];
-        newScenarios[scenarioIndex].choices[choiceIndex] = value;
+        newScenarios[scenarioIndex].choices[choiceIndex][field] = value;
         setScenarios(newScenarios);
     };
 
-    // Handler to add a new scenario.
     const handleAddScenario = () => {
-        setScenarios([...scenarios, { question: '', choices: [''] }]);
+        setScenarios([...scenarios, { question: '', choices: [{ description: '', nextStage: '' }] }]);
     };
 
-    // Handler to remove a scenario by index.
     const handleRemoveScenario = (index) => {
         const newScenarios = scenarios.filter((_, i) => i !== index);
         setScenarios(newScenarios);
     };
 
-    // Handler to add a new choice to a specific scenario.
     const handleAddChoice = (scenarioIndex) => {
         const newScenarios = [...scenarios];
-        newScenarios[scenarioIndex].choices.push('');
+        newScenarios[scenarioIndex].choices.push({ description: '', nextStage: '' });
         setScenarios(newScenarios);
     };
 
-    // Handler to remove a choice from a specific scenario.
     const handleRemoveChoice = (scenarioIndex, choiceIndex) => {
         const newScenarios = [...scenarios];
         newScenarios[scenarioIndex].choices = newScenarios[scenarioIndex].choices.filter((_, i) => i !== choiceIndex);
         setScenarios(newScenarios);
     };
 
-    // Handler for form submission.
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation
         if (play.trim() === '') {
             setError('Play name cannot be empty');
             return;
         }
 
-        setError(''); // Clear error if validation passes
+        setError('');
 
         try {
             const response = await fetch('/admin/plays/new', {
@@ -76,7 +66,7 @@ function CreateNew() {
 
             if (response.ok) {
                 alert('Play created successfully');
-                navigate('/admin'); // Redirect to admin page after successful creation
+                navigate('/admin');
             } else {
                 const errorData = await response.json();
                 alert(`Failed to create play: ${errorData.error}`);
@@ -127,9 +117,16 @@ function CreateNew() {
                                     <input
                                         id='sizeInputAdmin'
                                         type="text"
-                                        value={choice}
-                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, e.target.value)}
+                                        value={choice.description}
+                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'description', e.target.value)}
                                         required
+                                    />
+                                    <p id='fontSizeChoice'>Next Stage:</p>
+                                    <input
+                                        id='sizeInputAdmin'
+                                        type="text"
+                                        value={choice.nextStage}
+                                        onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'nextStage', e.target.value)}
                                     />
                                 </label>
                                 <button type="button" id='removeChoiceButton' onClick={() => handleRemoveChoice(scenarioIndex, choiceIndex)}>
@@ -152,8 +149,6 @@ function CreateNew() {
                     </button>
 
                     <button type="submit" id='saveButton'>Save</button>
-
-
                 </div>
             </form>
         </>

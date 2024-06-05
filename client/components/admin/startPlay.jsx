@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './startPlay.css';
+import './startPlay.css';
 
 function StartPlay() {
     const { id } = useParams();
@@ -10,13 +11,14 @@ function StartPlay() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    let ws;
 
     useEffect(() => {
         const fetchPlay = async () => {
             try {
                 const response = await fetch(`/admin/plays/start/${id}`, {
                     method: 'POST',
-                    credentials: 'include', // Ensure cookies are sent with the request.
+                    credentials: 'include',
                 });
                 if (response.status === 401) {
                     console.error("Unauthorized");
@@ -48,6 +50,16 @@ function StartPlay() {
             }
         };
         fetchPlay();
+
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsHost = window.location.hostname;
+        const wsPort = window.location.port ? `:${window.location.port}` : '';
+        const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
+        ws = new WebSocket(wsUrl);
+
+        return () => {
+            if (ws) ws.close();
+        };
     }, [id, navigate]);
 
     if (loading) {
