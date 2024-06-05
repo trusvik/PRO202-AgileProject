@@ -1,296 +1,324 @@
 /* Resetting margin and padding for all elements to ensure consistent spacing across different browsers */
 *{
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0;
+  padding: 0;
+}
 
 /* Defining CSS variables for theme colors and fonts */
-  :root {
-    --background-color-header: #F2A71B;
-    --background-color-div: #D9D9D9;
-    --background-create-new-button: #D9D9D9;
-    --background-color: #BCBCBC;
-    --text-color: #000000;
-    --play-button: #6CF01B;
-    --edit-button: #1B8AF0;
-    --remove-button: #F01B1B;
-  }
+:root {
+  --background-color-header: #F2A71B;
+  --background-color-div: #D9D9D9;
+  --background-create-new-button: #D9D9D9;
+  --background-color: #BCBCBC;
+  --text-color: #000000;
+  --play-button: #6CF01B;
+  --edit-button: #1B8AF0;
+  --remove-button: #F01B1B;
+}
 
 /* Importing the custom font "JejuHallasan" */
-  @font-face {
-    font-family: "JejuHallasan";
-    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
-    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
-    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
-    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
-    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
-    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
-  }
+@font-face {
+  font-family: "JejuHallasan";
+  src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
+  src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
+  url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
+  url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
+  url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
+  url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
+}
 
 /* Styling for the header container */
-  #containerHeader{
-    background-color: var(--background-color-header);
-    height: 75px;
-    display: flex;
-    align-items: center;
-  }
+#containerHeader{
+  background-color: var(--background-color-header);
+  height: 75px;
+  display: flex;
+  align-items: center;
+}
 
 /* Styling for the right section of the header */
-  #flexContainerRight{
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-  }
+#flexContainerRight{
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
 
 /* Styling for the logo text in the header */
-  #logo{
-    color: var(--text-color);
-    margin-left: 20px;
-    cursor: pointer;
-    font-family: "JejuHallasan";
-  }
+#logo{
+  color: var(--text-color);
+  margin-left: 20px;
+  cursor: pointer;
+  font-family: "JejuHallasan";
+}
 
 /* Styling for the username text in the header */
-  #userName{
-    margin-right: 10px;
-    color: var(--text-color);
-    display: inline-block;
-  }
+#userName{
+  margin-right: 10px;
+  color: var(--text-color);
+  display: inline-block;
+}
 
 /* Styling for the profile picture in the header */
-  #profilePicture{
-    height: 50px;
-    border-radius: 50px;
-  }
+#profilePicture{
+  height: 50px;
+  border-radius: 50px;
+}
 
 /* Styling for the main content margin */
-  #partent-margin{
-    margin: 40px 20px;
-  }
+#partent-margin{
+  margin: 40px 20px;
+}
 
 /* Styling for the button section container */
-  #containerSectionButton{
-    display: flex;
-    justify-content: end;
-    margin-top: 10px;
-  }
+#containerSectionButton{
+  display: flex;
+  justify-content: end;
+  margin-top: 10px;
+}
 
 /* Styling for the create new button */
-  #createNewButton{
-    border: none;
-    background-color: #F2A71B;
-    color: var white;
-    padding: 10px;
-    cursor: pointer;
-    margin-right: 25px;
-  }
+#createNewButton{
+  border: none;
+  background-color: #F2A71B;
+  color: var white;
+  padding: 10px;
+  cursor: pointer;
+  margin-right: 25px;
+}
 
 /* Styling for the section that displays names and other information */
-  #containerSectionName{
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--background-color-div);
-    padding: 10px;
-    margin-top: 10px;
-    align-items: center;
-  
-  }
+#containerSectionName{
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--background-color-div);
+  padding: 10px;
+  margin-top: 10px;
+  align-items: center;
+
+}
 
 /* Styling for the start section within the container */
-  #start{
-    width: 60%;
-    display: flex;
-    justify-content: space-evenly;
-    text-align: center;
-  }
+#start{
+  width: 60%;
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+}
 
 /* Styling for the end section within the container */
-  #end{
-    width: 40%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-  }
+#end{
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
 
 /* Common styling for subsections within the container */
-  #one, #two, #three{
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-  }
+#one, #two, #three{
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
 
 /* Styling for the play button */
-  #play{
-    background-color: var(--play-button);
-    color: var(--text-color);
-    border: none;
-    padding: 5px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
+#play{
+  background-color: var(--play-button);
+  color: var(--text-color);
+  border: none;
+  padding: 5px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
 
 /* Styling for the edit button */
-  #edit{
-    background-color: var(--edit-button);
-    color: var(--text-color);
-    border: none;
-    padding: 5px 20px;
-    border-radius: 20px;
-    margin-left: 5px;
-    cursor: pointer;
-  }
+#edit{
+  background-color: var(--edit-button);
+  color: var(--text-color);
+  border: none;
+  padding: 5px 20px;
+  border-radius: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+}
 
 /* Styling for the remove button */
-  #remove{
-    background-color: var(--remove-button);
-    color: var(--text-color);
-    border: none;
-    padding: 5px 10px;
-    border-radius: 20px;
-    margin-left: 5px;
-    cursor: pointer;
-  
-  }
+#remove{
+  background-color: var(--remove-button);
+  color: var(--text-color);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+
+}
 
 /* Styling for the settings button */
-  #settingsBtnAdmin { 
-    position: var(--background-create-new-button);
-    cursor: pointer;  
-    margin-right: 20px;
+#settingsBtnAdmin { 
+  position: var(--background-create-new-button);
+  cursor: pointer;  
+  margin-right: 20px;
 }
 /* Styling for popup windows */
 .settingsPopup, .changePasswordPopup {
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Ensure the popup is on top of all other elements */
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure the popup is on top of all other elements */
 }
 
 /* Styling for the content within the popup windows */
 .settingsContent, .changePasswordContainer {
-    text-align: center;
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
-    max-width: 400px;
+  text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+  max-width: 400px;
 }
 
 /* Styling for the close button in the popup windows */
 .closeBtn {
-    position: absolute;
-    top: 120px;
-    right: 80px;
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
+  position: absolute;
+  top: 120px;
+  right: 80px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 /* Styling for the change password button */
 .changePasswordBtn {
-  display: block;
-  background-color: orange;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
+display: block;
+background-color: orange;
+color: white;
+border: none;
+padding: 10px 20px;
+margin: 10px;
+border-radius: 10px;
+font-weight: bold;
+cursor: pointer;
 
 }
 
 /* Styling for the password input fields */
 input[type="password"] {
-    display: block;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  display: block;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 
 
 .submitBtn {
-  background-color: orange;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
+background-color: orange;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 
 /* Styling for popup messages */
 .popupMessage {
-    color: red;
-    margin-top: 10px;
+  color: red;
+  margin-top: 10px;
 }
 
 
 /* Styling for the logout button */
 .logoutBTn {
-  margin-right: 25px;
-  cursor: pointer;
+margin-right: 25px;
+cursor: pointer;
 }
 
 /*Text that appear over the button */
 .logoutBtn .tooltip {
-  visibility: hidden;
-  width: 120px;
-  color: black;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 100%; 
-  left: 50%;
-  margin-left: -60px; 
-  opacity: 0;
-  transition: opacity 0.3s;
+visibility: hidden;
+width: 120px;
+color: black;
+text-align: center;
+border-radius: 6px;
+padding: 5px;
+position: absolute;
+z-index: 1;
+bottom: 100%; 
+left: 50%;
+margin-left: -60px; 
+opacity: 0;
+transition: opacity 0.3s;
 }
 
 .logoutBtn:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
+visibility: visible;
+opacity: 1;
 }
 
 .logOutPopup{
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1000;
-  border-radius: 20px;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: white;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+padding: 20px;
+border-radius: 8px;
+z-index: 1000;
+border-radius: 20px;
 }
 
 .logOutDiv{
-  text-align: center;
-  background-color: white;
-  padding: 20px;
-  border-radius: 20px;
-  max-width: 400px;
+text-align: center;
+background-color: white;
+padding: 20px;
+border-radius: 20px;
+max-width: 400px;
 }
 
 .noLogoutAdmin, .yesLogoutAdmin{
-  display: block;
-  width:100%;
-  margin-top: 10px;
+display: block;
+width:100%;
+margin-top: 10px;
+}
+
+.removePlayDiv{
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: white;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+padding: 20px;
+border-radius: 8px;
+z-index: 1000;
+border-radius: 20px;
+text-align: center;
+}
+
+.noRemoveButton, .yesRemoveButton{
+width: 100px;
+text-align: center;
+margin-right: 5px;
+margin-left: 5px;
+margin-top: 10px;
+}
+
+.yesNoButtonAdminPage{
+  width: 100px;
+  margin-left: 5px;
+  margin-right: 5px;
 }

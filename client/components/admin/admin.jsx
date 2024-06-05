@@ -5,15 +5,17 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
 
 function Admin() {
-    // State hooks for managing plays data and various IU states.
+    // State hooks for managing plays data and various UI states.
     const [plays, setPlays] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [showSettings, setShowSettings] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [changePasswordMessage, setChangePasswordMessage] = useState(""); // Message for password change.
+    const [showLogoutPopup, setShowLogoutPopup] = useState(false); // State for logout popup
+    const [showRemovePopup, setShowRemovePopup] = useState(false); // State for remove popup
+    const [playToRemove, setPlayToRemove] = useState(null); // State to hold the play to be removed
     const navigate = useNavigate(); // Initialize useNavigate hook
 
     // useEffect hook to fetch plays data from the server.
@@ -54,9 +56,9 @@ function Admin() {
     };
 
     // Handler for removing a play.
-    const handleRemove = async (playId) => {
+    const confirmRemove = async () => {
         try {
-            const response = await fetch(`/admin/plays/delete/${playId}`, {
+            const response = await fetch(`/admin/plays/delete/${playToRemove._id}`, {
                 method: 'DELETE',
                 credentials: 'include', // Ensure cookies are sent with the request
             });
@@ -70,7 +72,8 @@ function Admin() {
                 throw new Error('Failed to delete play');
             }
 
-            setPlays((prevPlays) => prevPlays.filter(play => play._id !== playId));
+            setPlays((prevPlays) => prevPlays.filter(play => play._id !== playToRemove._id));
+            setShowRemovePopup(false);
         } catch (error) {
             console.error('Error deleting play:', error);
         }
@@ -121,13 +124,13 @@ function Admin() {
         }
     };
 
-    // Handler for stating a play.
+    // Handler for starting a play.
     const handleStart = (playId) => {
-        navigate(`/admin/plays/start/${playId}`)
+        navigate(`/admin/plays/start/${playId}`);
     };
 
     // Handler for logging out.
-    const handleLogout = async () => {
+    const confirmLogout = async () => {
         try {
             const response = await fetch('/logout', {
                 method: 'POST',
@@ -157,23 +160,23 @@ function Admin() {
 
             <section id='parent-margin'>
                 <section id='containerSectionButton'>
-                <button id="settingsBtnAdmin" onClick={() => setShowSettings(true)}><CiSettings id='logoutIcon' size={20}/></button>
-                <button className="logoutBtn" onClick={handleLogout}> 
-                    <IoIosLogOut id='settingsIcon'size={20}/>
-                    <span className="tooltip">Logout</span>
-                </button>
+                    <button id="settingsBtnAdmin" onClick={() => setShowSettings(true)}><CiSettings id='logoutIcon' size={20}/></button>
+                    <button className="logoutBtn" onClick={() => setShowLogoutPopup(true)}> 
+                        <IoIosLogOut id='settingsIcon'size={20}/>
+                        <span className="tooltip">Logout</span>
+                    </button>
 
-                        {showSettings && (
+                    {showSettings && (
                         <div className="settingsPopup">
-                    <div className="settingsContent">
-                        <h3>Settings</h3>
-                        <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
-                        <div className="settingOption">
-                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
+                            <div className="settingsContent">
+                                <h3>Settings</h3>
+                                <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
+                                <div className="settingOption">
+                                    <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    )}
                     <button id='createNewButton' onClick={handleCreateNew}>Create new</button>
                 </section>
 
@@ -198,12 +201,14 @@ function Admin() {
                         <div id='end'>
                             <button id='play' onClick={() => handleStart(play._id)}>Play</button>
                             <button id='edit' onClick={() => handleEdit(play._id)}>Edit</button>
-                            <button id='remove' onClick={() => handleRemove(play._id)}>Remove</button>
+                            <button id='remove' onClick={() => {
+                                setShowRemovePopup(true);
+                                setPlayToRemove(play);
+                            }}>Remove</button>
                         </div>
                     </section>
                 ))}
             </section>
-
 
             {showChangePassword && (
                 <div className="changePasswordPopup">
@@ -230,22 +235,31 @@ function Admin() {
                 </div>
             )}
 
-        <div className='logOutPopup'>
-            <div className='logOutDiv'>
-                <IoIosLogOut size={80}/>
-                <h3>Oh no! You're leaving...</h3>
-                <h3>Are you sure?</h3>
-                <div className='noLogoutAdmin'>
-                    <button>No</button>
+            {showLogoutPopup && (
+                <div className='logOutPopup'>
+                    <div className='logOutDiv'>
+                        <IoIosLogOut size={80}/>
+                        <h3>Oh no! You're leaving...</h3>
+                        <h3>Are you sure?</h3>
+                        <div className='noLogoutAdmin'>
+                            <button onClick={confirmLogout} className='yesNoButtonAdminPage'>YES</button>
+                            <button onClick={() => setShowLogoutPopup(false) } className='yesNoButtonAdminPage'>NO</button>
+                        </div>
+                    </div>
                 </div>
-                <div className='yesLogoutAdmin'>
-                    <button>Yes, Log Me Out</button>
+            )}
+
+            {showRemovePopup && (
+                <div className='removePlayPopup'>
+                    <div className='removePlayDiv'>
+                        <p>Are you sure you want to delete "{playToRemove?.name}"?</p>
+                        <div>
+                            <button className='yesRemoveButton' onClick={confirmRemove}>YES</button>
+                            <button className='noRemoveButton' onClick={() => setShowRemovePopup(false)}>NO</button>
+                        </div>   
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-
-
+            )}
         </>
     );
 }
