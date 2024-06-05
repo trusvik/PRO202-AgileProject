@@ -83,6 +83,7 @@
 /* Styling for the choice container */
 #choiceDiv{
     margin-top: 5px;
+    margin-left: 31px;
 }
 
 /* Styling for inline block display container */
@@ -99,3 +100,15 @@
 #addChoiceButton{
     padding: 10px 20px;
 }
+
+.scenarioDivElement {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.centeredIcon {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
