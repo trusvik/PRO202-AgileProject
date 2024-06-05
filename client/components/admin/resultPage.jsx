@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './resultPage.css';
 
 function ResultPage() {
+    const { playId, scenarioId } = useParams();
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchResults = async () => {
             try {
-                const response = await fetch('/admin/plays/results', {
+                const response = await fetch(`/admin/plays/results/${playId}/${scenarioId}`, {
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -30,7 +31,7 @@ function ResultPage() {
         };
 
         fetchResults();
-    }, [navigate]);
+    }, [navigate, playId, scenarioId]);
 
     return (
         <>
@@ -47,14 +48,14 @@ function ResultPage() {
                 {results.length === 0 ? (
                     <p>No results to display</p>
                 ) : (
-                    results.map(result => (
-                        <div key={result._id} className="resultItem">
-
-                            <h3>{result.choiceDescription}</h3>
-                            <p>Votes: {result.votes}</p>
-                            <p></p>
-                        </div>
-                    ))
+                    <div className="resultItem">
+                        {results.choices.map((choice, index) => (
+                            <div key={index}>
+                                <p>Choice: {choice.description}</p>
+                                <p>Votes: {choice.votes}</p>
+                            </div>
+                        ))}
+                    </div>
                 )}
                 <button onClick={() => navigate('/admin')} id="goBackButton">Go Back</button>
             </div>

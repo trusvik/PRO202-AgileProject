@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './startPlay.css';
-import './startPlay.css';
 
 function StartPlay() {
     const { id } = useParams();
@@ -60,7 +59,8 @@ function StartPlay() {
             if (ws) ws.close();
         };
     }, [id, navigate]);
-    const handleShowGame = () => {
+
+    const handleShowGame = (scenarioId) => {
         const wsUrl = process.env.NODE_ENV === 'production'
             ? 'wss://loading-19800d80be43.herokuapp.com/'
             : `ws://${window.location.hostname}:${window.location.port}`;
@@ -69,7 +69,7 @@ function StartPlay() {
             ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
             ws.close();
         };
-        navigate('/admin/resultPage'); // Redirect to the result page after sending the WebSocket message
+        navigate(`/admin/resultPage/${id}/${scenarioId}`); // Pass play and scenario IDs to the result page
     };
 
     if (loading) {
@@ -103,7 +103,7 @@ function StartPlay() {
                         </div>
                         <div id='rightQuestionElement'>
                             <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
-                            <button onClick={handleShowGame}>Show</button>
+                            <button onClick={() => handleShowGame(scenario.scenario_id)}>Show</button>
                         </div>
                     </div>
                 ))}

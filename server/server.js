@@ -113,7 +113,6 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
         const database = client.db('loading');
         const plays = database.collection('plays');
 
-        // Assuming the results are stored within each play document
         const results = await plays.aggregate([
             { $unwind: "$scenarios" },
             { $unwind: "$scenarios.choices" },
@@ -131,6 +130,56 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch results' });
     }
 });
+
+app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async (req, res) => {
+    const { playId, scenarioId } = req.params;
+
+    if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId)) {
+        console.log("Invalid play or scenario ID");
+        return res.status(400).json({ error: "Invalid play or scenario ID" });
+    }
+
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        console.log(`Fetching play with ID: ${playId}`);
+        const play = await plays.findOne({ _id: new ObjectId(playId) });
+        if (!play) {
+            console.log("Play not found");
+            return res.status(404).json({ error: "Play not found" });
+        }
+
+        console.log(`Fetching scenario with ID: ${scenarioId}`);
+        const scenario = play.scenarios.find(scenario => {
+            return scenario.scenario_id.toString() === scenarioId;
+        });
+
+        if (!scenario) {
+            console.log("Scenario not found");
+            return res.status(404).json({ error: "Scenario not found" });
+        }
+
+        const result = {
+            playName: play.play,
+            scenarioQuestion: scenario.question,
+            choices: scenario.choices.map(choice => ({
+                description: choice.description,
+                votes: choice.votes
+            }))
+        };
+
+        console.log("Results fetched successfully", result);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error('Failed to fetch results', err);
+        res.status(500).json({ error: 'Failed to fetch results' });
+    }
+});
+
+
+
+
 
 
 app.get('/admin/plays/get/:id', verifyTokenMiddleware, async (req, res) => {
