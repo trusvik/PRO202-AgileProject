@@ -20,8 +20,13 @@ app.use(express.json());
 
 const corsOptions = {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-    credentials: true
 };
+let GAME_STATE = {
+    playId: null,
+    scenarioId: null,
+    votes: [0,0,0,0],
+    gameCode: null
+}
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
@@ -131,7 +136,7 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
-app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async (req, res) => {
+app.get('/admin/plays/results/:playId/:scenarioId', async (req, res) => {
     const { playId, scenarioId } = req.params;
 
     if (!ObjectId.isValid(playId) || !ObjectId.isValid(scenarioId)) {
@@ -180,7 +185,7 @@ app.get('/admin/plays/results/:playId/:scenarioId', verifyTokenMiddleware, async
 
 
 
-app.get('/admin/plays/get/:id', verifyTokenMiddleware, async (req, res) => {
+app.get('/admin/plays/get/:id', async (req, res) => {
     const playId = req.params.id;
 
     if (!ObjectId.isValid(playId)) {
@@ -250,12 +255,17 @@ app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
             return res.status(404).json({ error: "Play not found" });
         }
 
+
         // Generate a 6-digit random code
         const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         // Optionally, store the generated code in the play document
         await plays.updateOne({ _id: new ObjectId(playId) }, { $set: { accessCode: randomCode } });
 
+        GAME_STATE.gameCode = randomCode;
+        GAME_STATE.playId = playId;
+        GAME_STATE.scenarioId = play.scenarios[0].scenario_id;
+        console.log(GAME_STATE);
         res.status(200).json({ play: play.play, code: randomCode });
     } catch (err) {
         console.error('Failed to start play', err);
@@ -373,6 +383,9 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
     res.status(200).json({ valid: true, username: req.user.username });
 });
 
+app.get('/gameState', async (req, res) => {
+    res.status(200).json(GAME_STATE);
+})
 // Gets the current play - I hope.
 app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
 
