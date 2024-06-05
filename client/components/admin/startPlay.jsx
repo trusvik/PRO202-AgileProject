@@ -102,7 +102,7 @@ function StartPlay() {
                             <p>{scenario.question}</p>
                         </div>
                         <div id='rightQuestionElement'>
-                            <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
+                            <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' min={0}/>
                             <button onClick={() => handleShowGame(scenario.scenario_id)}>Show</button>
                         </div>
                     </div>
