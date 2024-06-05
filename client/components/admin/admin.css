@@ -73,16 +73,17 @@
   #containerSectionButton{
     display: flex;
     justify-content: end;
-    
+    margin-top: 10px;
   }
 
 /* Styling for the create new button */
   #createNewButton{
     border: none;
-    background-color: var(--background-create-new-button);
-    color: var(--text-color);
+    background-color: #F2A71B;
+    color: var white;
     padding: 10px;
     cursor: pointer;
+    margin-right: 25px;
   }
 
 /* Styling for the section that displays names and other information */
@@ -154,30 +155,11 @@
   }
 
 /* Styling for the settings button */
-  #settingsBtn {
-    position: absolute;
-    top: 110px;
-    right: 220px; 
-    color: black;
-    padding: 10px 70px;
-    border-radius: 20px;
-    margin-top: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
+  #settingsBtnAdmin { 
+    position: var(--background-create-new-button);
+    cursor: pointer;  
+    margin-right: 20px;
 }
-
-#settingsBtn svg {
-  width: 24px;
-  height: 24px;
-}
-
-
-
-
 /* Styling for popup windows */
 .settingsPopup, .changePasswordPopup {
     text-align: center;
@@ -260,29 +242,9 @@ input[type="password"] {
 
 /* Styling for the logout button */
 .logoutBTn {
-  position: absolute;
-  top: 115px;
-  right: 120px; 
-  border: none;
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border-radius: 20px;
-  margin-top: -4px;
   margin-right: 25px;
-  font-weight: bold;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-
-
-.logoutBtn svg {
-  width: 24px;
-  height: 24px;
-}
-
 
 /*Text that appear over the button */
 .logoutBtn .tooltip {
@@ -304,4 +266,31 @@ input[type="password"] {
 .logoutBtn:hover .tooltip {
   visibility: visible;
   opacity: 1;
+}
+
+.logOutPopup{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  border-radius: 20px;
+}
+
+.logOutDiv{
+  text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  max-width: 400px;
+}
+
+.noLogoutAdmin, .yesLogoutAdmin{
+  display: block;
+  width:100%;
+  margin-top: 10px;
 }

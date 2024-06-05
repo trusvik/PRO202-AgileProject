@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './startPlay.css';
+import './startPlay.css';
 
 function StartPlay() {
     const { id } = useParams();
     const [play, setPlay] = useState('');
     const [code, setCode] = useState('');
+    const [scenarios, setScenarios] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     let ws;
 
@@ -18,16 +22,31 @@ function StartPlay() {
                 });
                 if (response.status === 401) {
                     console.error("Unauthorized");
-                    navigate('/adminlogin');
+                    navigate('/adminlogin'); // Redirect to /adminlogin if unauthorized.
                     return;
-                } else if (response.status !== 200) {
+                }
+                if (!response.ok) {
                     throw new Error('Failed to start play');
                 }
                 const data = await response.json();
-                setPlay(data.play);
-                setCode(data.code);
+                setPlay(data.play); // Set the play name from the fetched data.
+                setCode(data.code); // Set the generated code from the server
+
+                // Fetch the scenarios
+                const scenariosResponse = await fetch(`/admin/plays/get/${id}`, {
+                    credentials: 'include',
+                });
+                if (!scenariosResponse.ok) {
+                    throw new Error('Failed to fetch scenarios');
+                }
+                const scenariosData = await scenariosResponse.json();
+                setScenarios(scenariosData.scenarios); // Set the scenarios from the fetched data
+
+                setLoading(false);
             } catch (error) {
                 console.error("Error starting play", error);
+                setError('Failed to load play');
+                setLoading(false);
             }
         };
         fetchPlay();
@@ -43,17 +62,13 @@ function StartPlay() {
         };
     }, [id, navigate]);
 
-    const handleShowGame = () => {
-        const wsUrl = process.env.NODE_ENV === 'production'
-            ? 'wss://loading-19800d80be43.herokuapp.com/'
-            : `ws://${window.location.hostname}:${window.location.port}`;
-        const ws = new WebSocket(wsUrl);
-        ws.onopen = () => {
-            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
-            ws.close();
-        };
-        navigate('/admin/resultPage'); // Redirect to the result page after sending the WebSocket message
-    };
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <>
@@ -71,15 +86,17 @@ function StartPlay() {
                 <div>
                     <p>{play}</p>
                 </div>
-                <div id='parentQuestionElement'>
-                    <div id='leftQuestionElement'>
-                        <p>QUESTION HERE</p>
+                {scenarios.map((scenario, index) => (
+                    <div key={index} id='parentQuestionElement'>
+                        <div id='leftQuestionElement'>
+                            <p>{scenario.question}</p>
+                        </div>
+                        <div id='rightQuestionElement'>
+                            <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' min="0" />
+                            <button>Show</button>
+                        </div>
                     </div>
-                    <div id='rightQuestionElement'>
-                        <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
-                        <button onClick={handleShowGame}>Show</button>
-                    </div>
-                </div>
+                ))}
             </div>
         </>
     );

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './admin.css';
+import { CiSettings } from "react-icons/ci";
+import { IoIosLogOut } from "react-icons/io";
 
 function Admin() {
     // State hooks for managing plays data and various IU states.
@@ -150,12 +152,28 @@ function Admin() {
                 </div>
                 <div id="flexContainerRight">
                     <p id='userName'>Admin</p>
-                    <img alt="Admin" id='profilePicture'/>
                 </div>
             </header>
 
             <section id='parent-margin'>
                 <section id='containerSectionButton'>
+                <button id="settingsBtnAdmin" onClick={() => setShowSettings(true)}><CiSettings id='logoutIcon' size={20}/></button>
+                <button className="logoutBtn" onClick={handleLogout}> 
+                    <IoIosLogOut id='settingsIcon'size={20}/>
+                    <span className="tooltip">Logout</span>
+                </button>
+
+                        {showSettings && (
+                        <div className="settingsPopup">
+                    <div className="settingsContent">
+                        <h3>Settings</h3>
+                        <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
+                        <div className="settingOption">
+                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
+                        </div>
+                    </div>
+                </div>
+            )}
                     <button id='createNewButton' onClick={handleCreateNew}>Create new</button>
                 </section>
 
@@ -186,23 +204,6 @@ function Admin() {
                 ))}
             </section>
 
-            <button id="settingsBtn" onClick={() => setShowSettings(true)}>Settings</button>
-            <button className="logoutBtn" onClick={handleLogout}> 
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M16 2v2h4v16h-4v2h6v-20h-6zm-4 11h-10v-2h10v-4l6 5-6 5v-4z"/>
-                </svg>
-                <span className="tooltip">Logout</span></button>
-            {showSettings && (
-                <div className="settingsPopup">
-                    <div className="settingsContent">
-                        <h3>Settings</h3>
-                        <button className="closeBtn" onClick={() => setShowSettings(false)}>Close</button>
-                        <div className="settingOption">
-                            <button className="changePasswordBtn" onClick={() => setShowChangePassword(true)}>Change password</button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {showChangePassword && (
                 <div className="changePasswordPopup">
@@ -228,6 +229,23 @@ function Admin() {
                     </div>
                 </div>
             )}
+
+        <div className='logOutPopup'>
+            <div className='logOutDiv'>
+                <IoIosLogOut size={80}/>
+                <h3>Oh no! You're leaving...</h3>
+                <h3>Are you sure?</h3>
+                <div className='noLogoutAdmin'>
+                    <button>No</button>
+                </div>
+                <div className='yesLogoutAdmin'>
+                    <button>Yes, Log Me Out</button>
+                </div>
+            </div>
+        </div>
+        
+
+
         </>
     );
 }

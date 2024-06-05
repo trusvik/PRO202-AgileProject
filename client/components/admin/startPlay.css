@@ -9,6 +9,7 @@
     display: flex;
     background-color: #D9D9D9;
     padding: 10px 10px 10px 0px;
+    margin-top: 10px;
 }
 
 #leftQuestionElement{
