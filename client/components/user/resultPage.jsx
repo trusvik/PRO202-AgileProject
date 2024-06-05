@@ -33,6 +33,11 @@ const UserResultPage = () => {
         };
 
         fetchResults();
+
+        const timer = setTimeout(() => {
+            navigate('/waitingRoom');
+        }, 10000);
+
     }, [playId, navigate]);
 
     const transformChartData = (data) => {
@@ -72,7 +77,7 @@ const UserResultPage = () => {
                 ) : (
                     <p>No results to display</p>
                 )}
-                <button onClick={() => navigate('')} id="goBackButton">Go Back</button>
+                <button onClick={() => navigate('/waitingRoom')} id="goBackButton">Go Back</button>
             </div>
         </>
     );
