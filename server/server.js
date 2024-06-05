@@ -326,6 +326,35 @@ app.get("/verify-token", verifyTokenMiddleware, (req, res) => {
     res.status(200).json({ valid: true, username: req.user.username });
 });
 
+// Gets the current play - I hope.
+app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
+
+    const { playId } = req.params;
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        const results = await plays.aggregate([
+            { $match: { _id: new ObjectId(playId) } },
+            { $unwind: "$scenarios" },
+            { $unwind: "$scenarios.choices" },
+            { $project: {
+                    playName: "$play",
+                    scenarioQuestion: "$scenarios.question",
+                    choiceDescription: "$scenarios.choices.description",
+                    votes: "$scenarios.choices.votes"
+                }}
+        ]).toArray();
+
+        res.status(200).json(results);
+    } catch (err) {
+        console.error('Failed to fetch results', err);
+        res.status(500).json({ error: 'Failed to fetch results' });
+    }
+
+});
+
+
 // Protected admin route
 app.get("/admin", verifyTokenMiddleware, (req, res) => {
     res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {

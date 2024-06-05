@@ -8,7 +8,7 @@ import WaitingRoom from "./components/user/waitingRoom";
 import CreateNew from "./components/admin/createNew";
 import EditPlay from "./components/admin/editPlay";
 import StartPlay from "./components/admin/startPlay";
-import ResultPage from "./components/user/resultPage";
+import UserResultPage from "./components/user/resultPage";
 import "./app.css";
 import Play from "./components/user/play";
 import ResultPage from './components/admin/resultPage';
@@ -38,7 +38,7 @@ export function App() {
                 <Route path="/" element={<Navigate to="/pinPage" />} />
                 <Route path="/admin/plays/edit/:id" element={<EditPlay />} />
                 <Route path="/admin/plays/start/:id" element={<StartPlay />} />
-                <Route path="/resultPage/" element={<ResultPage />} />
+                <Route path="/resultPage/" element={<UserResultPage />} />
                 <Route path="/play/" element={<Play />} />
                 <Route path="/admin/resultPage" element={<ResultPage />} />
             </Routes>

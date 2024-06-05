@@ -1,76 +1,86 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import BarChart from "./barChart"; // Sørg for at stien er riktig
+import { useNavigate, useParams } from "react-router-dom";
+import BarChart from "./barChart";
 import './resultPage.css';
 
-const ResultPage = () => {
-    const [currentPlay, setCurrentPlay] = useState(null);
-    const [loading, setLoading] = useState(true);
+const UserResultPage = () => {
+    const { playId } = useParams();
+    const [results, setResults] = useState([]);
+    const [chartData, setChartData] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchCurrentPlay = async () => {
+        const fetchResults = async () => {
             try {
-                console.log('Fetching current play from Heroku...');
-                const response = await fetch('https://loading-19800d80be43.herokuapp.com/admin/plays/getCurrent', {
-                    credentials: 'include', // Ensure cookies are sent with the request
+                const response = await fetch(`/admin/plays/results/${playId}`, {
+                    method: 'GET',
+                    credentials: 'include',
                 });
-                console.log('Response status:', response.status);
+
                 if (response.status === 401) {
-                    console.error("Unauthorized access");
+                    console.error("Unauthorized");
                     return;
+                } else if (!response.ok) {
+                    throw new Error('Failed to fetch results');
                 }
-                if (!response.ok) {
-                    //throw new Error('Network response was not ok');
-                    console.error("Network response was not ok.");
-                }
+
                 const data = await response.json();
-                console.log('Data fetched:', data);
-                setCurrentPlay(data);
-                setLoading(false);
+                setResults(data);
+                transformChartData(data);
             } catch (error) {
-                console.error('Error fetching current play:', error);
-                setLoading(false);
+                console.error("Error fetching results", error);
             }
         };
 
-        fetchCurrentPlay();
-    }, [navigate]);
+        fetchResults();
 
-    const getChartData = (scenario) => ({
-        labels: scenario.choices.map(choice => choice.description),
-        datasets: [{
-            label: 'Votes',
-            data: scenario.choices.map(choice => choice.votes),
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-        }]
-    });
+        const timer = setTimeout(() => {
+            navigate('/waitingRoom');
+        }, 10000);
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    }, [playId, navigate]);
 
-    if (!currentPlay) {
-        return <p>No play data available</p>;
-    }
+    const transformChartData = (data) => {
+        const labels = data.map(result => `${result.playName} - ${result.choiceDescription}`);
+        const votes = data.map(result => result.votes);
+
+        const chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Votes',
+                    data: votes,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        setChartData(chartData);
+    };
 
     return (
-        <div className="resultPageBody">
-            <section id='containerSectionName'>
-                <div id='choices'>
-                    <h2>Choices for {currentPlay.play}</h2>
-                    {currentPlay.scenarios && currentPlay.scenarios.map(scenario => (
-                        <div key={scenario.scenario_id}>
-                            <h4>{scenario.description}</h4>
-                            <BarChart data={getChartData(scenario)} />
-                        </div>
-                    ))}
+        <>
+            <header id="containerHeader">
+                <div id="flexContainerLeft">
+                    <h1 id='logo'>Results</h1>
                 </div>
-            </section>
-        </div>
+                <div id="flexContainerRight">
+                    <p id='userName'>Admin</p>
+                </div>
+            </header>
+
+            <div id="resultContainer">
+                {chartData ? (
+                    <BarChart data={chartData} />
+                ) : (
+                    <p>No results to display</p>
+                )}
+                <button onClick={() => navigate('/waitingRoom')} id="goBackButton">Go Back</button>
+            </div>
+        </>
     );
 }
 
-export default ResultPage;
+export default UserResultPage;
