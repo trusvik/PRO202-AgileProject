@@ -49,9 +49,8 @@ function ResultPage() {
                 ) : (
                     results.map(result => (
                         <div key={result._id} className="resultItem">
-                            <h3>Play: {result.playName}</h3>
-                            <p>Scenario: {result.scenarioQuestion}</p>
-                            <p>Choice: {result.choiceDescription}</p>
+
+                            <h3>{result.choiceDescription}</h3>
                             <p>Votes: {result.votes}</p>
                             <p></p>
                         </div>

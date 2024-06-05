@@ -56,11 +56,21 @@ function StartPlay() {
         const wsPort = window.location.port ? `:${window.location.port}` : '';
         const wsUrl = `${wsProtocol}://${wsHost}${wsPort}`;
         ws = new WebSocket(wsUrl);
-
         return () => {
             if (ws) ws.close();
         };
     }, [id, navigate]);
+    const handleShowGame = () => {
+        const wsUrl = process.env.NODE_ENV === 'production'
+            ? 'wss://loading-19800d80be43.herokuapp.com/'
+            : `ws://${window.location.hostname}:${window.location.port}`;
+        const ws = new WebSocket(wsUrl);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
+            ws.close();
+        };
+        navigate('/admin/resultPage'); // Redirect to the result page after sending the WebSocket message
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -92,8 +102,8 @@ function StartPlay() {
                             <p>{scenario.question}</p>
                         </div>
                         <div id='rightQuestionElement'>
-                            <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' min="0" />
-                            <button>Show</button>
+                            <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' />
+                            <button onClick={handleShowGame}>Show</button>
                         </div>
                     </div>
                 ))}
