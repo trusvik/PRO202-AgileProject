@@ -58,3 +58,18 @@
   .option-2 { background-color: #ff00ff; color: #fff; }
   .option-3 { background-color: #ff0000; color: #fff; }
   
+
+  .selectedOptionText {
+   font-size: 24px;
+   margin-top: 20px;
+
+  }
+
+
+  .timer {
+    position: absolute;
+    top: 80px; 
+    right: 25px;
+    font-size: 30px;
+    
+  }
