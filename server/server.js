@@ -107,6 +107,32 @@ app.get('/admin/plays/get', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
+// Fetch results for plays
+app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
+    try {
+        const database = client.db('loading');
+        const plays = database.collection('plays');
+
+        // Assuming the results are stored within each play document
+        const results = await plays.aggregate([
+            { $unwind: "$scenarios" },
+            { $unwind: "$scenarios.choices" },
+            { $project: {
+                playName: "$play",
+                scenarioQuestion: "$scenarios.question",
+                choiceDescription: "$scenarios.choices.description",
+                votes: "$scenarios.choices.votes"
+            }}
+        ]).toArray();
+
+        res.status(200).json(results);
+    } catch (err) {
+        console.error('Failed to fetch results', err);
+        res.status(500).json({ error: 'Failed to fetch results' });
+    }
+});
+
+
 app.get('/admin/plays/get/:id', verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
 

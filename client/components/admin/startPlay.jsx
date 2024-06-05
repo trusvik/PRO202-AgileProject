@@ -52,6 +52,7 @@ function StartPlay() {
             ws.send(JSON.stringify({ type: 'ADMIN_START_GAME' }));
             ws.close();
         };
+        navigate('/admin/resultPage'); // Redirect to the result page after sending the WebSocket message
     };
 
     return (
