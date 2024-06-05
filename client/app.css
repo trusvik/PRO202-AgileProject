@@ -30,3 +30,8 @@ body {
     font-style: normal;
 }
 
+#page_container a{
+    text-decoration: none;
+    color: black;
+}
+
