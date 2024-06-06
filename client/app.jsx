@@ -13,6 +13,7 @@ import "./app.css";
 import Play from "./components/user/play";
 import ResultPage from './components/admin/resultPage';
 import WaitingRoomAdmin from "./components/admin/waitingRoomAdmin";
+import PlayOver from "./components/admin/playOver";
 
 
 
@@ -45,6 +46,7 @@ export function App() {
                 <Route path="/admin/resultPage/:playId/:scenarioId" element={<ResultPage />} />
                 <Route path="/play/:playId/:scenarioId" element={<Play />} />
                 <Route path="/admin/plays/waitingroom/:playId" element={<WaitingRoomAdmin />} />
+                <Route path="/admin/reset" element={<PlayOver />} />
             </Routes>
         </div>
     );

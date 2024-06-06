@@ -16,6 +16,9 @@ function StartPlay() {
     useEffect(() => {
         if (localStorage.getItem('nextStageIndex')) {
             let nxtStg = localStorage.getItem('nextStageIndex');
+            if (nxtStg < 0) {
+                navigate('/admin/reset')
+            }
             setTheIndex(nxtStg)
             console.log("The index gotten at Startplay is ", theIndex);
         }

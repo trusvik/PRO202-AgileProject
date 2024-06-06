@@ -137,6 +137,20 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
     }
 });
 
+app.post('/admin/reset', verifyTokenMiddleware, async (req, res) => {
+    GAME_STATE = {
+        playId: null,
+        scenarioId: null,
+        votes: [0,0,0,0],
+        gameCode: null
+    }
+    if (GAME_STATE.playId === null) {
+        res.status(200)
+    } else {
+        res.status(401)
+    }
+})
+
 app.get('/admin/plays/results/:playId/:scenarioId', async (req, res) => {
     const { playId, scenarioId } = req.params;
 
