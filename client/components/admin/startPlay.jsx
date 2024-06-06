@@ -61,6 +61,9 @@ function StartPlay() {
     }, [id, navigate]);
 
     const handleShowGame = (scenarioId) => {
+        const countdown = document.getElementById("startPlayInput").value;
+        localStorage.setItem('countdown', countdown);
+        
         const wsUrl = process.env.NODE_ENV === 'production'
             ? 'wss://loading-19800d80be43.herokuapp.com/'
             : `ws://${window.location.hostname}:${window.location.port}`;
