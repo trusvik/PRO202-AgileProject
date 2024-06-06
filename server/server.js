@@ -544,6 +544,7 @@ const server = http.createServer(app);
 const wsServer = new WebSocketServer({ noServer: true });
 const sockets = [];
 
+// Nå er du down bad as kompis
 server.on("upgrade", (req, socket, head) => {
     const cookies = cookie.parse(req.headers.cookie || '');
     const signedCookies = cookieParser.signedCookies(cookies, process.env.COOKIE_SECRET); // Ensure this matches your setup
