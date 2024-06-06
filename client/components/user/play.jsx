@@ -7,6 +7,7 @@ const Play = () => {
     const [question, setQuestion] = useState('');
     const [options, setOptions] = useState([]);
     const [votes, setVotes] = useState([]);
+    const [hasVoted, setHasVoted] = useState(false);
     const navigate = useNavigate();
     const ws = useRef(null); // Use a ref to hold the WebSocket instance
 
@@ -63,8 +64,13 @@ const Play = () => {
         fetchScenario();
         connectWebSocket();
 
+        const timer = setTimeout(() => {
+            navigate('/resultPage');
+        }, 30000); // 30 seconds timer
+
         return () => {
             if (ws.current) ws.current.close();
+            clearTimeout(timer);
         };
     }, [playId, scenarioId, navigate]);
 
@@ -93,7 +99,7 @@ const Play = () => {
         // Store votes and mark the user as having voted
         localStorage.setItem('votes', JSON.stringify(newVotes));
         localStorage.setItem(`hasVoted_${playId}_${scenarioId}`, 'true');
-        navigate('/resultPage');
+        setHasVoted(true); // Update the state to indicate the user has voted
     };
 
     return (
@@ -106,11 +112,13 @@ const Play = () => {
                         key={index}
                         className={`optionBtn option-${index}`}
                         onClick={() => handleAnswer(index)}
+                        disabled={hasVoted} // Disable buttons if the user has voted
                     >
                         {option}
                     </button>
                 ))}
             </div>
+            {hasVoted && <div>Din stemme er sendt...</div>} {/* Conditionally render the message */}
         </div>
     );
 }
