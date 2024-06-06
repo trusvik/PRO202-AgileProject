@@ -8,6 +8,7 @@ const Play = () => {
     const [options, setOptions] = useState([]);
     const [votes, setVotes] = useState([]);
     const [hasVoted, setHasVoted] = useState(false);
+    const [timer, setTimer] = useState(0);
     const navigate = useNavigate();
     const ws = useRef(null); // Use a ref to hold the WebSocket instance
 
@@ -64,13 +65,23 @@ const Play = () => {
         fetchScenario();
         connectWebSocket();
 
-        const timer = setTimeout(() => {
-            navigate('/resultPage');
-        }, 10000); // 30 seconds timer
+        const countdown = parseInt(localStorage.getItem('countdown')) || 30; // Default to 30 seconds if not set
+        setTimer(countdown);
+
+        const interval = setInterval(() => {
+            setTimer(prevTimer => {
+                if (prevTimer <= 1) {
+                    clearInterval(interval);
+                    navigate('/resultPage');
+                    return 0;
+                }
+                return prevTimer - 1;
+            });
+        }, 1000);
 
         return () => {
             if (ws.current) ws.current.close();
-            clearTimeout(timer);
+            clearInterval(interval);
         };
     }, [playId, scenarioId, navigate]);
 
@@ -104,6 +115,7 @@ const Play = () => {
 
     return (
         <div className="questionContainer">
+            <div className="timer">Time remaining: {timer} seconds</div>
             {hasVoted ? (
                 <div>Din stemme er sendt...</div>
             ) : (

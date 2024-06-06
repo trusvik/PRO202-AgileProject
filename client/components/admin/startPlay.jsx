@@ -72,7 +72,7 @@ function StartPlay() {
         };
     }, [id, navigate]);
 
-    
+
     const handleShowGame = (scenarioId) => {
         const countdown = document.getElementById("startPlayInput").value;
         localStorage.setItem('countdown', countdown);

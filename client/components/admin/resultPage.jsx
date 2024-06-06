@@ -15,10 +15,10 @@ import './resultPage.css';
 function ResultPage() {
   const { playId, scenarioId } = useParams();
   const [results, setResults] = useState([]);
+  const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const ws = useRef(null); // Use a ref to hold the WebSocket instance
   let countDownDone = false;
-
 
   const connectWebSocket = () => {
     const wsUrl = process.env.NODE_ENV === 'production'
@@ -38,7 +38,7 @@ function ResultPage() {
         }
         if (data.type === 'UPDATE_RESULTS' && data.playId === playId && data.scenarioId === scenarioId) {
           setResults(data.updatedVotes);
-        } 
+        }
       } catch (e) {
         console.error('Error parsing WebSocket message', e);
       }
@@ -82,46 +82,42 @@ function ResultPage() {
     fetchResults();
     connectWebSocket();
 
+    let countdown = parseInt(localStorage.getItem('countdown'), 10) || 30; // Default to 30 seconds if not set
+    setTimer(countdown);
+
+    const interval = setInterval(() => {
+      setTimer(prevTimer => {
+        if (prevTimer <= 1) {
+          clearInterval(interval);
+          handleAnswers();
+          countDownDone = true;
+          return 0;
+        }
+        return prevTimer - 1;
+      });
+    }, 1000);
+
     return () => {
       if (ws.current) ws.current.close();
+      clearInterval(interval);
     };
   }, [playId, scenarioId, navigate]);
 
   const handleAnswers = () => {
-    console.log("Handlign answers");
+    console.log("Handling answers");
     let mostVoteIndex = 0;
     for (let i = 1; i < results.length; i++) {
-        if (results[i] && results[mostVoteIndex].votes < results[i].votes) {
-            mostVoteIndex = i;
-        }
-    } 
+      if (results[i] && results[mostVoteIndex].votes < results[i].votes) {
+        mostVoteIndex = i;
+      }
+    }
     console.log('The answer with the most votes', results[mostVoteIndex]);
     if (results && results[mostVoteIndex]) {
       console.log(results[mostVoteIndex].nextStage);
       let nextStageIndex = parseInt(results[mostVoteIndex].nextStage, 10) -1 ;
       localStorage.setItem('nextStageIndex', nextStageIndex)
     }
-
   }
-
-  const startCountdown = async () => {
-      let countdown = localStorage.getItem('countdown');
-      if (!countdown) return;
-  
-      countdown = parseInt(countdown, 10);
-      const interval = setInterval(() => {
-        countdown -= 1;
-        localStorage.setItem('countdown', countdown);
-        console.log(`Countdown: ${countdown}`);
-  
-        if (countdown <= 0) {
-          clearInterval(interval);
-          handleAnswers();
-          countDownDone = true;
-        }
-      }, 1000);
-  };
-  startCountdown();
 
   return (
       <>
@@ -135,6 +131,7 @@ function ResultPage() {
         </header>
 
         <div id="resultContainer">
+          <div className="timer">Time remaining: {timer} seconds</div>
           {results.length === 0 ? (
               <p>No results to display</p>
           ) : (
@@ -158,13 +155,8 @@ function ResultPage() {
               </ResponsiveContainer>
           )}
           <button onClick={() => {
-              if (countDownDone) {
-                navigate(`/admin/plays/start/${playId}`)
-              } else {
-                alert('The countdown is not finished!')
-              }
-            } 
-          } id="goBackButton">Go Back</button>
+            navigate(`/admin/plays/start/${playId}`);
+          }} id="goBackButton">Go Back</button>
         </div>
       </>
   );
