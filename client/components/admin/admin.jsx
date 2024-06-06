@@ -121,6 +121,10 @@ function Admin() {
         navigate(`/admin/plays/start/${playId}`);
     };
 
+    const handleWaitingRoom = (playId) => {
+        navigate(`/admin/plays/waitingroom/${playId}`);
+    };
+
     const confirmLogout = async () => {
         try {
             const response = await fetch('/logout', {
@@ -170,7 +174,7 @@ function Admin() {
             <section id='parent-margin'>
                 <section id='containerSectionButton'>
                     <button id="settingsBtnAdmin" onClick={() => setShowSettings(true)}><CiSettings id='logoutIcon' size={20}/></button>
-                    <button className="logoutBtn" onClick={() => setShowLogoutPopup(true)}> 
+                    <button className="logoutBtn" onClick={() => setShowLogoutPopup(true)}>
                         <IoIosLogOut id='settingsIcon'size={20}/>
                         <span className="tooltip">Logout</span>
                     </button>
@@ -210,6 +214,7 @@ function Admin() {
                         </div>
                         <div id='end'>
                             <button id='play' onClick={() => handleStart(play._id)}>Play</button>
+                            <button id='waitingRoom' onClick={() => handleWaitingRoom(play._id)}>Watch Results</button>
                             <button id='edit' onClick={() => handleEdit(play._id)}>Edit</button>
                             <button id='remove' onClick={() => {
                                 setShowRemovePopup(true);
@@ -266,7 +271,7 @@ function Admin() {
                         <div>
                             <button className='yesRemoveButton' onClick={confirmRemove}>YES</button>
                             <button className='noRemoveButton' onClick={() => setShowRemovePopup(false)}>NO</button>
-                        </div>   
+                        </div>
                     </div>
                 </div>
             )}

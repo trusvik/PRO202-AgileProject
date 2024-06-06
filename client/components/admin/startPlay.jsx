@@ -63,19 +63,19 @@ function StartPlay() {
     const handleShowGame = (scenarioId) => {
         const countdown = document.getElementById("startPlayInput").value;
         localStorage.setItem('countdown', countdown);
-        
+
         const wsUrl = process.env.NODE_ENV === 'production'
             ? 'wss://loading-19800d80be43.herokuapp.com/'
             : `ws://${window.location.hostname}:${window.location.port}`;
         const ws = new WebSocket(wsUrl);
         ws.onopen = () => {
+            console.log('Sending ADMIN_START_GAME message...');
             ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId }));
+            ws.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId: id, scenarioId })); // Notify waiting admins
             ws.close();
         };
         navigate(`/admin/resultPage/${id}/${scenarioId}`); // Pass play and scenario IDs to the result page
     };
-    
-    
 
     if (loading) {
         return <p>Loading...</p>;
