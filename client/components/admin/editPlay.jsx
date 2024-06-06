@@ -180,7 +180,8 @@ function EditPlay() {
                                     <p id='fontSizeChoice'>Next Stage:</p>
                                     <input
                                         id='sizeInputAdmin'
-                                        type="text"
+                                        type="number"
+                                        min={1}
                                         value={choice.nextStage}
                                         onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'nextStage', e.target.value)}
                                     />
