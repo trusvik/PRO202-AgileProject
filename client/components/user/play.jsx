@@ -66,7 +66,7 @@ const Play = () => {
 
         const timer = setTimeout(() => {
             navigate('/resultPage');
-        }, 30000); // 30 seconds timer
+        }, 10000); // 30 seconds timer
 
         return () => {
             if (ws.current) ws.current.close();
@@ -104,21 +104,25 @@ const Play = () => {
 
     return (
         <div className="questionContainer">
-            <h2 className="loadingText">LOADING..</h2>
-            <h3 className="questionText">{question}</h3>
-            <div className="optionsContainer">
-                {options.map((option, index) => (
-                    <button
-                        key={index}
-                        className={`optionBtn option-${index}`}
-                        onClick={() => handleAnswer(index)}
-                        disabled={hasVoted} // Disable buttons if the user has voted
-                    >
-                        {option}
-                    </button>
-                ))}
-            </div>
-            {hasVoted && <div>Din stemme er sendt...</div>} {/* Conditionally render the message */}
+            {hasVoted ? (
+                <div>Din stemme er sendt...</div>
+            ) : (
+                <>
+                    <h2 className="loadingText">LOADING..</h2>
+                    <h3 className="questionText">{question}</h3>
+                    <div className="optionsContainer">
+                        {options.map((option, index) => (
+                            <button
+                                key={index}
+                                className={`optionBtn option-${index}`}
+                                onClick={() => handleAnswer(index)}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     );
 }
