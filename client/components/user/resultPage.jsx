@@ -1,32 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import BarChart from "./barChart";
+import { useNavigate } from "react-router-dom";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import './resultPage.css';
 
 const UserResultPage = () => {
-    const { playId } = useParams();
     const [results, setResults] = useState([]);
-    const [chartData, setChartData] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchResults = async () => {
+            const scenarioId = localStorage.getItem('scenarioId'); // Retrieve scenarioId from localStorage
+            const playId = localStorage.getItem('playId');
+
+            if (!scenarioId) {
+                console.error("No scenarioId found in localStorage");
+                return;
+            }
+
+            console.log(`Fetching results with playId: ${playId} and scenarioId: ${scenarioId}`);
+
             try {
-                const response = await fetch(`/admin/plays/results/${playId}`, {
+                const response = await fetch(`/admin/plays/results/${playId}/${scenarioId}`, {
                     method: 'GET',
-                    credentials: 'include',
                 });
 
                 if (response.status === 401) {
                     console.error("Unauthorized");
                     return;
                 } else if (!response.ok) {
-                    throw new Error('Failed to fetch results');
+                    console.error('Failed to fetch results');
                 }
 
                 const data = await response.json();
+                console.log("Fetched data:", data); // Log fetched data to verify its structure
                 setResults(data);
-                transformChartData(data);
             } catch (error) {
                 console.error("Error fetching results", error);
             }
@@ -38,27 +45,8 @@ const UserResultPage = () => {
             navigate('/waitingRoom');
         }, 10000);
 
-    }, [playId, navigate]);
-
-    const transformChartData = (data) => {
-        const labels = data.map(result => `${result.playName} - ${result.choiceDescription}`);
-        const votes = data.map(result => result.votes);
-
-        const chartData = {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Votes',
-                    data: votes,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                },
-            ],
-        };
-
-        setChartData(chartData);
-    };
+        return () => clearTimeout(timer);
+    }, [navigate]);
 
     return (
         <>
@@ -72,10 +60,27 @@ const UserResultPage = () => {
             </header>
 
             <div id="resultContainer">
-                {chartData ? (
-                    <BarChart data={chartData} />
-                ) : (
+                {results.length === 0 ? (
                     <p>No results to display</p>
+                ) : (
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart
+                            data={results}
+                            margin={{
+                                top: 20,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="choiceDescription" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="votes" fill="#8884d8" />
+                        </BarChart>
+                    </ResponsiveContainer>
                 )}
                 <button onClick={() => navigate('/waitingRoom')} id="goBackButton">Go Back</button>
             </div>
