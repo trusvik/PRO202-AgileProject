@@ -42,6 +42,7 @@ export function App() {
                 <Route path="/play/" element={<Play />} />
                 <Route path="/admin/resultPage" element={<ResultPage />} />
                 <Route path="/admin/resultPage/:playId/:scenarioId" element={<ResultPage />} />
+                <Route path="/play/:playId/:scenarioId" element={<Play />} />
             </Routes>
         </div>
     );

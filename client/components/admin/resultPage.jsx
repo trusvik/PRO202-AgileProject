@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   BarChart,
@@ -16,6 +16,33 @@ function ResultPage() {
   const { playId, scenarioId } = useParams();
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
+  const ws = useRef(null); // Use a ref to hold the WebSocket instance
+
+  const connectWebSocket = () => {
+    const wsUrl = process.env.NODE_ENV === 'production'
+      ? 'wss://loading-19800d80be43.herokuapp.com/'
+      : `ws://${window.location.hostname}:${window.location.port}`;
+    ws.current = new WebSocket(wsUrl);
+
+    ws.current.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    ws.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'UPDATE_RESULTS' && data.playId === playId && data.scenarioId === scenarioId) {
+          setResults(data.updatedVotes);
+        }
+      } catch (e) {
+        console.log('Received non-JSON message:', event.data);
+      }
+    };
+
+    ws.current.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+  };
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -41,6 +68,11 @@ function ResultPage() {
     };
 
     fetchResults();
+    connectWebSocket();
+
+    return () => {
+      if (ws.current) ws.current.close();
+    };
   }, [playId, scenarioId, navigate]);
 
   return (

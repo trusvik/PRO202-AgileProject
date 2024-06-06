@@ -5,7 +5,6 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosLogOut } from "react-icons/io";
 
 function Admin() {
-    // State hooks for managing plays data and various UI states.
     const [plays, setPlays] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
@@ -18,7 +17,6 @@ function Admin() {
     const [playToRemove, setPlayToRemove] = useState(null); // State to hold the play to be removed
     const navigate = useNavigate(); // Initialize useNavigate hook
 
-    // useEffect hook to fetch plays data from the server.
     useEffect(() => {
         const fetchPlays = async () => {
             try {
@@ -45,17 +43,14 @@ function Admin() {
         fetchPlays();
     }, [navigate]);
 
-    // Displays a loading message while data is being fetched.
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    // Handler for creating a new play.
     const handleCreateNew = () => {
         navigate('/admin/plays/new');
     };
 
-    // Handler for removing a play.
     const confirmRemove = async () => {
         try {
             const response = await fetch(`/admin/plays/delete/${playToRemove._id}`, {
@@ -79,12 +74,10 @@ function Admin() {
         }
     };
 
-    // Handler for editing a play.
     const handleEdit = (playId) => {
         navigate(`/admin/plays/edit/${playId}`);
     };
 
-    // Handler for changing the admin password.
     const handleChangePassword = async (event) => {
         event.preventDefault(); // Prevent form from submitting normally
         if (!newPassword || !confirmPassword) {
@@ -124,12 +117,10 @@ function Admin() {
         }
     };
 
-    // Handler for starting a play.
     const handleStart = (playId) => {
         navigate(`/admin/plays/start/${playId}`);
     };
 
-    // Handler for logging out.
     const confirmLogout = async () => {
         try {
             const response = await fetch('/logout', {
@@ -147,8 +138,26 @@ function Admin() {
         }
     };
 
+    const handleResetVotes = async () => {
+        try {
+            const response = await fetch('/admin/reset-votes', {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                alert('Votes have been reset successfully');
+            } else {
+                alert('Failed to reset votes');
+            }
+        } catch (error) {
+            console.error('Error resetting votes:', error);
+            alert('An error occurred while resetting votes');
+        }
+    };
+
     return (
-        <>  
+        <>
             <header id="containerHeader">
                 <div id="flexContainerLeft">
                     <h1 id='logo'>Plays</h1>
@@ -178,6 +187,7 @@ function Admin() {
                         </div>
                     )}
                     <button id='createNewButton' onClick={handleCreateNew}>Create new</button>
+                    <button id='resetVotesButton' onClick={handleResetVotes}>Reset Votes</button> {/* Add Reset Votes Button */}
                 </section>
 
                 <section id='containerSectionName'>
