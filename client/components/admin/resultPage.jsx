@@ -20,8 +20,8 @@ function ResultPage() {
 
   const connectWebSocket = () => {
     const wsUrl = process.env.NODE_ENV === 'production'
-      ? 'wss://loading-19800d80be43.herokuapp.com/'
-      : `ws://${window.location.hostname}:${window.location.port}`;
+        ? 'wss://loading-19800d80be43.herokuapp.com/'
+        : `ws://${window.location.hostname}:${window.location.port}`;
     ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => {
@@ -35,12 +35,19 @@ function ResultPage() {
           setResults(data.updatedVotes);
         }
       } catch (e) {
-        console.log('Received non-JSON message:', event.data);
+        console.error('Error parsing WebSocket message', e);
       }
     };
 
     ws.current.onclose = () => {
       console.log('WebSocket disconnected');
+      // Try to reconnect after a delay
+      setTimeout(connectWebSocket, 5000);
+    };
+
+    ws.current.onerror = (error) => {
+      console.error('WebSocket error', error);
+      ws.current.close();
     };
   };
 
@@ -76,42 +83,42 @@ function ResultPage() {
   }, [playId, scenarioId, navigate]);
 
   return (
-    <>
-      <header id="containerHeader">
-        <div id="flexContainerLeft">
-          <h1 id='logo'>Results</h1>
-        </div>
-        <div id="flexContainerRight">
-          <p id='userName'>Admin</p>
-        </div>
-      </header>
+      <>
+        <header id="containerHeader">
+          <div id="flexContainerLeft">
+            <h1 id='logo'>Results</h1>
+          </div>
+          <div id="flexContainerRight">
+            <p id='userName'>Admin</p>
+          </div>
+        </header>
 
-      <div id="resultContainer">
-        {results.length === 0 ? (
-          <p>No results to display</p>
-        ) : (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart
-              data={results}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="description" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="votes" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-        <button onClick={() => navigate('/admin')} id="goBackButton">Go Back</button>
-      </div>
-    </>
+        <div id="resultContainer">
+          {results.length === 0 ? (
+              <p>No results to display</p>
+          ) : (
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                    data={results}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="description" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="votes" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+          )}
+          <button onClick={() => navigate('/admin')} id="goBackButton">Go Back</button>
+        </div>
+      </>
   );
 }
 
