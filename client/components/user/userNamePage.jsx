@@ -1,75 +1,77 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import './userNamePage.css';
 
 const UserNamePage = ({ setIsUserNameEntered }) => {
     const [name, setName] = useState("");
     const navigate = useNavigate();
 
-
-    // Updates the name state when the input value changes.
+    // Oppdaterer navn-tilstanden når inputverdien endres.
     const handleInputChange = (event) => {
         setName(event.target.value);
     };
 
-
-    // Function to handle the name submission.
+    // Funksjon for å håndtere navneinnsending.
     const setNameButton = () => {
-
         const trimmedName = name.trim();
 
-        // Validates that the name is not empty.
+        // Validerer at navnet ikke er tomt.
         if (trimmedName === "") {
             alert("Vennligst skriv inn navnet ditt");
             return;
         }
 
-        // Validates that the name is not too long (exceeding 25 characters).
+        // Validerer at navnet ikke er for langt (over 25 tegn).
         if (trimmedName.length > 25) {
             alert("Navnet er for langt");
             return;
         }
 
-        // Validates that the name only contains allowed characters (letters, numbers, and spaces).
+        // Validerer at navnet kun inneholder tillatte tegn (bokstaver, tall og mellomrom).
         const nameRegex = /^[a-zA-ZæøåÆØÅ0-9\s]+$/;
         if (!nameRegex.test(trimmedName)) {
-            alert("Nanvet kan kun inneholde bokstaver og mellomrom");
+            alert("Navnet kan kun inneholde bokstaver og mellomrom");
             return;
         }
 
-        // Retrieves existing names from sessionStorage and adds the new name.
-        const storedNames = JSON.parse(sessionStorage.getItem("names"))|| [];
+        // Henter eksisterende navn fra sessionStorage og legger til det nye navnet.
+        const storedNames = JSON.parse(sessionStorage.getItem("names")) || [];
         const updatedNames = [...storedNames, name];
-        sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Stores the names in sessionStorage.
+        sessionStorage.setItem("names", JSON.stringify(updatedNames)); // Lagrer navnene i sessionStorage.
         setName("");
         setIsUserNameEntered(true);
-        navigate('/waitingRoom'); // User gets sent to /waitingRoom.
+        navigate('/waitingRoom'); // Brukeren blir sendt til /waitingRoom.
     };
 
-    // Function that allows the user to also press enter after typing their name in the input field
+    // Funksjon som lar brukeren trykke Enter etter å ha skrevet inn navnet sitt i inputfeltet
     const handleKeyPress = (event) => {
-        if(event.key === "Enter") {
+        if (event.key === "Enter") {
             setNameButton();
         }
     }
 
-
     return (
         <div className="mainBody">
+            <Helmet>
+                <meta 
+                    name="viewport" 
+                    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" 
+                />
+            </Helmet>
             <div className="pageContainer">
                 <h1 className="pageLogo">Loading...</h1>
-                <h2>Skriv inn navnet ditt</h2>
                 <input
                     className="inputBox"
                     type="text"
                     value={name}
                     onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
-                    placeholder="Navn..."
+                    placeholder="Skriv inn ditt navn"
                 />
-                <button className="enterNameBtn" type="submit" onClick={setNameButton}>OK</button>
+                <button className="enterNameBtn" type="submit" onClick={setNameButton}>Hopp i venterommet</button>
             </div>
-        </div>    
+        </div>
     );
 };
 
