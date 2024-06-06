@@ -17,6 +17,8 @@ function ResultPage() {
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
   const ws = useRef(null); // Use a ref to hold the WebSocket instance
+  let countDownDone = false;
+
 
   const connectWebSocket = () => {
     const wsUrl = process.env.NODE_ENV === 'production'
@@ -31,9 +33,12 @@ function ResultPage() {
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        if (countDownDone) {
+          console.log("countdown is over, will not take in results anymore");
+        }
         if (data.type === 'UPDATE_RESULTS' && data.playId === playId && data.scenarioId === scenarioId) {
           setResults(data.updatedVotes);
-        }
+        } 
       } catch (e) {
         console.error('Error parsing WebSocket message', e);
       }
@@ -82,6 +87,42 @@ function ResultPage() {
     };
   }, [playId, scenarioId, navigate]);
 
+  const handleAnswers = () => {
+    console.log("Handlign answers");
+    let mostVoteIndex = 0;
+    for (let i = 1; i < results.length; i++) {
+        if (results[i] && results[mostVoteIndex].votes < results[i].votes) {
+            mostVoteIndex = i;
+        }
+    } 
+    console.log('The answer with the most votes', results[mostVoteIndex]);
+    if (results && results[mostVoteIndex]) {
+      console.log(results[mostVoteIndex].nextStage);
+      let nextStageIndex = parseInt(results[mostVoteIndex].nextStage, 10) -1 ;
+      localStorage.setItem('nextStageIndex', nextStageIndex)
+    }
+
+  }
+
+  const startCountdown = async () => {
+      let countdown = localStorage.getItem('countdown');
+      if (!countdown) return;
+  
+      countdown = parseInt(countdown, 10);
+      const interval = setInterval(() => {
+        countdown -= 1;
+        localStorage.setItem('countdown', countdown);
+        console.log(`Countdown: ${countdown}`);
+  
+        if (countdown <= 0) {
+          clearInterval(interval);
+          handleAnswers();
+          countDownDone = true;
+        }
+      }, 1000);
+  };
+  startCountdown();
+
   return (
       <>
         <header id="containerHeader">
@@ -116,7 +157,14 @@ function ResultPage() {
                 </BarChart>
               </ResponsiveContainer>
           )}
-          <button onClick={() => navigate('/admin')} id="goBackButton">Go Back</button>
+          <button onClick={() => {
+              if (countDownDone) {
+                navigate(`/admin/plays/start/${playId}`)
+              } else {
+                alert('The countdown is not finished!')
+              }
+            } 
+          } id="goBackButton">Go Back</button>
         </div>
       </>
   );

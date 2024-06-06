@@ -70,5 +70,5 @@
 }
 
 #goBackButton:hover {
-    background-color: darken(var(--background-color-header), 10%);
+    background-color: black;
 }

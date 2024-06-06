@@ -125,7 +125,8 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
                 playName: "$play",
                 scenarioQuestion: "$scenarios.question",
                 choiceDescription: "$scenarios.choices.description",
-                votes: "$scenarios.choices.votes"
+                votes: "$scenarios.choices.votes",
+                nextStage: "$scenarios.choices.nextStage"
             }}
         ]).toArray();
 
@@ -170,7 +171,8 @@ app.get('/admin/plays/results/:playId/:scenarioId', async (req, res) => {
             scenarioQuestion: scenario.question,
             choices: scenario.choices.map(choice => ({
                 description: choice.description,
-                votes: choice.votes
+                votes: choice.votes,
+                nextStage: choice.nextStage,
             }))
         };
 
@@ -269,6 +271,7 @@ app.post("/admin/plays/new", verifyTokenMiddleware, async (req, res) => {
 
 app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
+    console.log("admin/plays/start was called");
 
     if (!ObjectId.isValid(playId)) {
         return res.status(400).json({ error: "Invalid play ID" });
@@ -284,17 +287,23 @@ app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
         }
 
 
+        let randomCode = GAME_STATE.randomCode;
         // Generate a 6-digit random code
-        const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
+        if (GAME_STATE.gameCode === null) {
+            console.log("Game code was null...");
+            randomCode = Math.floor(100000 + Math.random() * 900000).toString();
+            GAME_STATE.gameCode = randomCode;
+            GAME_STATE.scenarioId = play.scenarios[0].scenario_id;
+            await plays.updateOne({ _id: new ObjectId(playId) }, { $set: { accessCode: randomCode } });
+        }
 
         // Optionally, store the generated code in the play document
-        await plays.updateOne({ _id: new ObjectId(playId) }, { $set: { accessCode: randomCode } });
+        
 
-        GAME_STATE.gameCode = randomCode;
         GAME_STATE.playId = playId;
-        GAME_STATE.scenarioId = play.scenarios[0].scenario_id;
+
         console.log(GAME_STATE);
-        res.status(200).json({ play: play.play, code: randomCode });
+        res.status(200).json({ play: play.play, code: GAME_STATE.gameCode });
     } catch (err) {
         console.error('Failed to start play', err);
         res.status(500).json({ error: 'Failed to start play' });
@@ -597,7 +606,7 @@ server.on("upgrade", (req, socket, head) => {
 
                     const updatedPlay = await plays.findOne({ _id: new ObjectId(playId) });
                     const updatedScenario = updatedPlay.scenarios[scenarioIndex];
-                    const updatedVotes = updatedScenario.choices.map(choice => ({ description: choice.description, votes: choice.votes }));
+                    const updatedVotes = updatedScenario.choices.map(choice => ({ description: choice.description, votes: choice.votes, nextStage: choice.nextStage }));
 
                     // Broadcast the updated votes to the admin
                     sockets.forEach(client => {

@@ -9,8 +9,17 @@ function StartPlay() {
     const [scenarios, setScenarios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [theIndex, setTheIndex] = useState(0);
     const navigate = useNavigate();
     let ws;
+
+    useEffect(() => {
+        if (localStorage.getItem('nextStageIndex')) {
+            let nxtStg = localStorage.getItem('nextStageIndex');
+            setTheIndex(nxtStg)
+            console.log("The index gotten at Startplay is ", theIndex);
+        }
+    }, [])
 
     useEffect(() => {
         const fetchPlay = async () => {
@@ -60,6 +69,7 @@ function StartPlay() {
         };
     }, [id, navigate]);
 
+    
     const handleShowGame = (scenarioId) => {
         const countdown = document.getElementById("startPlayInput").value;
         localStorage.setItem('countdown', countdown);
@@ -101,17 +111,17 @@ function StartPlay() {
                 <div>
                     <p>{play}</p>
                 </div>
-                {scenarios.map((scenario, index) => (
-                    <div key={index} id='parentQuestionElement'>
+                {scenarios[theIndex] && (
+                    <div key={theIndex} id='parentQuestionElement'>
                         <div id='leftQuestionElement'>
-                            <p>{scenario.question}</p>
+                            <p>{scenarios[theIndex].question}</p>
                         </div>
                         <div id='rightQuestionElement'>
                             <input type="number" id="startPlayInput" placeholder='Set Countdown (Sec)' min={0}/>
-                            <button onClick={() => handleShowGame(scenario.scenario_id)}>Show</button>
+                            <button onClick={() => handleShowGame(scenarios[theIndex].scenario_id)}>Show</button>
                         </div>
                     </div>
-                ))}
+                )}
             </div>
         </>
     );
