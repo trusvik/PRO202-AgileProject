@@ -8,7 +8,7 @@ exports[`PinPage Snapshot Test renders correctly 1`] = `
     className="pinPageContainer"
   >
     <h1
-      id="logo"
+      className="pageLogo"
     >
       LOADING...
     </h1>
@@ -17,7 +17,7 @@ exports[`PinPage Snapshot Test renders correctly 1`] = `
       onChange={[Function]}
       onKeyDown={[Function]}
       pattern="\\d*"
-      placeholder="PIN-kode ..."
+      placeholder="Skriv inn PIN-kode"
       type="text"
       value=""
     />
