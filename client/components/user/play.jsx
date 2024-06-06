@@ -38,13 +38,15 @@ const Play = () => {
                     navigate('/userNamePage');
                     return;
                 } else if (!response.ok) {
-                    throw new Error('Failed to fetch scenario');
+                    console.error('Failed to fetch scenario');
                 }
 
                 const data = await response.json();
                 setQuestion(data.question);
                 setOptions(data.choices.map(choice => choice.description));
                 setVotes(new Array(data.choices.length).fill(0)); // Initialize votes array
+                localStorage.setItem('scenarioId', scenarioId); // Save scenarioID to localStorage
+                localStorage.setItem('playId', playId);
             } catch (error) {
                 console.error("Error fetching scenario", error);
             }
