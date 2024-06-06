@@ -181,7 +181,7 @@ function EditPlay() {
                                     <input
                                         id='sizeInputAdmin'
                                         type="number"
-                                        min={1}
+                                        min={0}
                                         value={choice.nextStage}
                                         onChange={(e) => handleChoiceChange(scenarioIndex, choiceIndex, 'nextStage', e.target.value)}
                                     />
