@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { MemoryRouter } from 'react-router-dom'; // to handle routing context
-import CreateNew from '../components/admin/createNew'; // Adjust the path as necessary
+import { MemoryRouter } from 'react-router-dom';
+import CreateNew from '../components/admin/createNew';
 
 // Mock the `useNavigate` hook
 jest.mock('react-router-dom', () => ({
