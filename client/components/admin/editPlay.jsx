@@ -152,7 +152,7 @@ function EditPlay() {
                                         onClick={() => handleIconClick(scenarioIndex)}
                                     />
                                 )}
-                                <p id='fontSize'>Scenario Question:</p>
+                                <p id='fontSize'>Scenario {scenarioIndex + 1} Question:</p>
                                 <input
                                     id='sizeInputAdmin'
                                     type="text"
