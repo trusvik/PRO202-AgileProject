@@ -23,6 +23,14 @@ const Play = () => {
         ws.current.onclose = () => {
             console.log('WebSocket disconnected');
         };
+
+        ws.current.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'RESET_VOTES') {
+                console.log('Resetting votes and clearing voting flags');
+                localStorage.removeItem(`hasVoted_${playId}_${scenarioId}`);
+            }
+        };
     };
 
     useEffect(() => {
@@ -61,6 +69,12 @@ const Play = () => {
     }, [playId, scenarioId, navigate]);
 
     const handleAnswer = (selectedOptionIndex) => {
+        const hasVoted = localStorage.getItem(`hasVoted_${playId}_${scenarioId}`);
+        if (hasVoted) {
+            alert("You have already voted in this scenario.");
+            return;
+        }
+
         const newVotes = [...votes];
         newVotes[selectedOptionIndex]++;
         setVotes(newVotes);
@@ -76,8 +90,9 @@ const Play = () => {
             ws.current.send(JSON.stringify(message));
         }
 
-        // Store votes and navigate to the result page after answering
+        // Store votes and mark the user as having voted
         localStorage.setItem('votes', JSON.stringify(newVotes));
+        localStorage.setItem(`hasVoted_${playId}_${scenarioId}`, 'true');
         navigate('/resultPage');
     };
 

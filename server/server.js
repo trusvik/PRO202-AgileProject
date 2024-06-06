@@ -482,6 +482,7 @@ app.post('/admin/reset-votes', verifyTokenMiddleware, async (req, res) => {
 });
 
 
+
 // User registration
 app.put("/admin/change-password", async (req, res) => {
     const { newPassword } = req.body;
@@ -525,6 +526,40 @@ app.put("/admin/change-password", async (req, res) => {
         res.status(500).json({ error: "Failed to change password" });
     }
 });
+
+app.post("/verify-pin", async (req, res) => {
+    const { pin } = req.body;
+
+    if (!pin || pin !== GAME_STATE.gameCode) {
+        return res.status(400).json({ error: "Invalid or missing PIN code" });
+    }
+
+    try {
+        // Generate a token for the user session
+        const token = jwt.sign({ pin: GAME_STATE.gameCode }, JWT_SECRET, { expiresIn: '12h' });
+        res.cookie('user_token', token, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 12 * 60 * 60 * 1000 });
+        res.status(200).json({ message: "PIN verified successfully!" });
+    } catch (err) {
+        console.error("Failed to verify PIN", err);
+        res.status(500).json({ error: "Failed to verify PIN" });
+    }
+});
+
+app.get("/verify-user-token", (req, res) => {
+    const token = req.cookies.user_token;
+    if (!token) {
+        return res.status(401).json({ valid: false });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        res.status(200).json({ valid: true, pin: decoded.pin });
+    } catch (err) {
+        console.error("Token verification failed:", err.message);
+        res.status(401).json({ valid: false });
+    }
+});
+
 
 // User logout
 app.post("/logout", (req, res) => {
