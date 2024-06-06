@@ -20,9 +20,8 @@ const PlayOver = () => {
     }, [navigate])
     
     return (
-        <div>
-            <p>The play is over</p>
-            <b>TRALALALALAl</b>
+        <div id="end-screen-container">
+            <p>THE GAME IS OVER</p>
         </div>
     )
 }

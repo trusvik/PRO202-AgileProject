@@ -1,0 +1,13 @@
+#end-screen-container {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(221, 168, 21);
+}
+
+#end-screen-container p {
+    font-size: xx-large;
+}
