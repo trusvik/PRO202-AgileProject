@@ -1,6 +1,8 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: Arial, serif;
+    font-weight: bold;
 }
 
 #root {
@@ -34,4 +36,6 @@ body {
     text-decoration: none;
     color: black;
 }
+
+
 
