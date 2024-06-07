@@ -28,15 +28,14 @@ const WaitingRoom = () => {
                 if (data.type === 'UPDATE_NAMES') {
                     setNameList(data.names);
                 } else if (data.type === 'REDIRECT_TO_PLAY') {
-                    const { playId, scenarioId } = data;
+                    const { playId, scenarioId, countdown } = data; // Add countdown if needed
+                    localStorage.setItem('countdown', countdown); // Save countdown to local storage
                     navigate(`/play/${playId}/${scenarioId}`);
                 }
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
             }
         };
-        
-        
 
         ws.onclose = () => {
             console.log('WebSocket disconnected');

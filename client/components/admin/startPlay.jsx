@@ -82,8 +82,8 @@ function StartPlay() {
         const ws = new WebSocket(wsUrl);
         ws.onopen = () => {
             console.log('Sending ADMIN_START_GAME message...');
-            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId, countdown }));
-            ws.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId: id, scenarioId })); // Notify waiting admins
+            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId, countdown })); // Include countdown
+            ws.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId: id, scenarioId, countdown })); // Notify waiting admins
             ws.close();
         };
         navigate(`/admin/resultPage/${id}/${scenarioId}`); // Pass play and scenario IDs to the result page

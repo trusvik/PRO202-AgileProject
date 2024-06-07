@@ -31,6 +31,8 @@ const Play = () => {
             if (message.type === 'RESET_VOTES') {
                 console.log('Resetting votes and clearing voting flags');
                 localStorage.removeItem(`hasVoted_${playId}_${scenarioId}`);
+            } else if (message.type === 'ADMIN_START_GAME' && message.playId === playId && message.scenarioId === scenarioId) {
+                setTimer(parseInt(message.countdown) || 30); // Set the timer from the message
             }
         };
     };

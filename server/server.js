@@ -122,12 +122,12 @@ app.get('/admin/plays/results', verifyTokenMiddleware, async (req, res) => {
             { $unwind: "$scenarios" },
             { $unwind: "$scenarios.choices" },
             { $project: {
-                playName: "$play",
-                scenarioQuestion: "$scenarios.question",
-                choiceDescription: "$scenarios.choices.description",
-                votes: "$scenarios.choices.votes",
-                nextStage: "$scenarios.choices.nextStage"
-            }}
+                    playName: "$play",
+                    scenarioQuestion: "$scenarios.question",
+                    choiceDescription: "$scenarios.choices.description",
+                    votes: "$scenarios.choices.votes",
+                    nextStage: "$scenarios.choices.nextStage"
+                }}
         ]).toArray();
 
         res.status(200).json(results);
@@ -164,38 +164,39 @@ app.get('/admin/plays/results/:playId/:scenarioId', async (req, res) => {
         const plays = database.collection('plays');
 
         console.log(`Fetching play with ID: ${playId}`);
+        
         const play = await plays.findOne({ _id: new ObjectId(playId) });
-        if (!play) {
-            console.log("Play not found");
-            return res.status(404).json({ error: "Play not found" });
-        }
+if (!play) {
+    console.log("Play not found");
+    return res.status(404).json({ error: "Play not found" });
+}
 
-        console.log(`Fetching scenario with ID: ${scenarioId}`);
-        const scenario = play.scenarios.find(scenario => {
-            return scenario.scenario_id.toString() === scenarioId;
-        });
+console.log(`Fetching scenario with ID: ${scenarioId}`);
+const scenario = play.scenarios.find(scenario => {
+    return scenario.scenario_id.toString() === scenarioId;
+});
 
-        if (!scenario) {
-            console.log("Scenario not found");
-            return res.status(404).json({ error: "Scenario not found" });
-        }
+if (!scenario) {
+    console.log("Scenario not found");
+    return res.status(404).json({ error: "Scenario not found" });
+}
 
-        const result = {
-            playName: play.play,
-            scenarioQuestion: scenario.question,
-            choices: scenario.choices.map(choice => ({
-                description: choice.description,
-                votes: choice.votes,
-                nextStage: choice.nextStage,
-            }))
-        };
+const result = {
+    playName: play.play,
+    scenarioQuestion: scenario.question,
+    choices: scenario.choices.map(choice => ({
+        description: choice.description,
+        votes: choice.votes,
+        nextStage: choice.nextStage,
+    }))
+};
 
-        console.log("Results fetched successfully", result);
-        res.status(200).json(result);
-    } catch (err) {
-        console.error('Failed to fetch results', err);
-        res.status(500).json({ error: 'Failed to fetch results' });
-    }
+console.log("Results fetched successfully", result);
+res.status(200).json(result);
+} catch (err) {
+    console.error('Failed to fetch results', err);
+    res.status(500).json({ error: 'Failed to fetch results' });
+}
 });
 
 // Route to get current scenario choices for a play
@@ -226,8 +227,6 @@ app.get('/play/scenario/:playId/:scenarioId', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch scenario' });
     }
 });
-
-
 
 app.get('/admin/plays/get/:id', async (req, res) => {
     const playId = req.params.id;
@@ -300,7 +299,6 @@ app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
             return res.status(404).json({ error: "Play not found" });
         }
 
-
         let randomCode = GAME_STATE.randomCode;
         // Generate a 6-digit random code
         if (GAME_STATE.gameCode === null) {
@@ -310,9 +308,6 @@ app.post("/admin/plays/start/:id", verifyTokenMiddleware, async (req, res) => {
             GAME_STATE.scenarioId = play.scenarios[0].scenario_id;
             await plays.updateOne({ _id: new ObjectId(playId) }, { $set: { accessCode: randomCode } });
         }
-
-        // Optionally, store the generated code in the play document
-        
 
         GAME_STATE.playId = playId;
 
@@ -358,6 +353,7 @@ app.delete("/admin/plays/delete/:id", verifyTokenMiddleware, async (req, res) =>
         res.status(500).json({ error: "Failed to delete play" });
     }
 });
+
 app.put('/admin/plays/:id', verifyTokenMiddleware, async (req, res) => {
     const playId = req.params.id;
     const { name, scenarios } = req.body;
@@ -439,7 +435,6 @@ app.get('/gameState', async (req, res) => {
 })
 // Gets the current play - I hope.
 app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
-
     const { playId } = req.query;
     console.log(playId);
     try {
@@ -458,18 +453,16 @@ app.get('/admin/plays/getCurrent', verifyTokenMiddleware, async (req, res) => {
                 }}
         ]).toArray();
 
-        console.log(results); 
+        console.log(results);
         res.status(200).json(results);
     } catch (err) {
         console.error('Failed to fetch results', err);
         res.status(500).json({ error: 'Failed to fetch results' });
     }
-
 });
 
-
 // Protected admin route
-app.get("/admin", verifyTokenMiddleware, (req, res) => {
+app.get("/admin", (req, res) => {
     res.sendFile(join(__dirname, "../client/dist/index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
@@ -494,8 +487,6 @@ app.post('/admin/reset-votes', verifyTokenMiddleware, async (req, res) => {
         res.status(500).json({ error: 'Failed to reset votes' });
     }
 });
-
-
 
 // User registration
 app.put("/admin/change-password", async (req, res) => {
@@ -574,7 +565,6 @@ app.get("/verify-user-token", (req, res) => {
     }
 });
 
-
 // User logout
 app.post("/logout", (req, res) => {
     res.clearCookie('token', { path: '/' });
@@ -617,10 +607,10 @@ server.on("upgrade", (req, socket, head) => {
             const data = JSON.parse(message);
 
             if (data.type === 'ADMIN_START_GAME') {
-                const { playId, scenarioId } = data;
+                const { playId, scenarioId, countdown } = data; // Include countdown
                 // Admin wants to start the game, notify all users
                 for (const client of sockets) {
-                    client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId, scenarioId }));
+                    client.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId, scenarioId, countdown })); // Include countdown
                 }
             } else if (data.type === 'USER_VOTE') {
                 const { playId, scenarioId, choiceIndex } = data;
@@ -678,8 +668,6 @@ server.on("upgrade", (req, socket, head) => {
     });
 });
 
-
-
 // Start the server
 connectToDatabase().then(async () => {
     const port = process.env.PORT || 3000;
@@ -687,4 +675,3 @@ connectToDatabase().then(async () => {
         console.log(`Server is running on port ${port}`);
     });
 }).catch(console.dir);
-
