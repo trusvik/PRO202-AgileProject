@@ -22,18 +22,21 @@ const UserResultPage = () => {
             try {
                 const response = await fetch(`/admin/plays/results/${playId}/${scenarioId}`, {
                     method: 'GET',
+                    credentials: 'include',
                 });
 
                 if (response.status === 401) {
                     console.error("Unauthorized");
+                    navigate('/userlogin'); // Adjust the route if there's a user login
                     return;
                 } else if (!response.ok) {
                     console.error('Failed to fetch results');
+                    return;
                 }
 
                 const data = await response.json();
                 console.log("Fetched data:", data); // Log fetched data to verify its structure
-                setResults(data);
+                setResults(data.choices || []); // Adjust to your data structure
             } catch (error) {
                 console.error("Error fetching results", error);
             }
@@ -55,7 +58,7 @@ const UserResultPage = () => {
                     <h1 id='logo'>Results</h1>
                 </div>
                 <div id="flexContainerRight">
-                    <p id='userName'>Admin</p>
+                    <p id='userName'>User</p> {/* Adjust user name if needed */}
                 </div>
             </header>
 
@@ -74,7 +77,7 @@ const UserResultPage = () => {
                             }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="choiceDescription" />
+                            <XAxis dataKey="description" /> {/* Ensure this matches your data */}
                             <YAxis />
                             <Tooltip />
                             <Legend />
