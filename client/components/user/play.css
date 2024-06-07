@@ -8,15 +8,19 @@
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
   }
 
-
-
-
-
 .questionContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     text-align: center;
     background-color: #f2a71b;
     padding: 50px;
     height: 100vh;
+  }
+
+  .timer{
+    margin-bottom: 50px;
   }
   
   /*Styling of the title */
@@ -62,14 +66,6 @@
   .selectedOptionText {
    font-size: 24px;
    margin-top: 20px;
-
   }
 
-
-  .timer {
-    position: absolute;
-    top: 80px; 
-    right: 25px;
-    font-size: 30px;
-    
-  }
+  
