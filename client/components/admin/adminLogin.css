@@ -27,14 +27,19 @@
     url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
 }
 
+#logoAdminLogin{
+    font-family: "JejuHallasan";
+}
+
+
 /* Styling for the main container of the admin login page */
-#admLogMainContainer{
+.admLogMainContainer{
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    height: 90%;
+    height: 100%;
     background-color: #6051BD;
 }
 
@@ -59,6 +64,8 @@
     margin-top: 5px;
     font-weight: bold;
 }
+
+
 
 /* Styling for the login button */
 #loginBtn{
@@ -176,4 +183,9 @@ button {
 .popupMessage {
     color: red;
     margin-top: 10px;
+}
+
+#adminUsername, #adminPassword{
+    border-radius: 10px;
+    border: none;
 }

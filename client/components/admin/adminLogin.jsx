@@ -68,11 +68,11 @@ const AdminLogin = () => {
     
 
     return (
-        <div id="admLogMainContainer">
-            <h1 id="logo">Loading..</h1>
+        <div className="admLogMainContainer">
+            <h1 id="logoAdminLogin">Loading..</h1>
             <h3 id="adminLogin">Admin login</h3>
             <form className="admFloater" onSubmit={handleLogin}>
-                <div className="inputBox">
+                <div className="inputBoxAdminLogin">
                     <input
                         id="adminUsername"
                         type="text"
