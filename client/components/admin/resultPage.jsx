@@ -16,9 +16,9 @@ function ResultPage() {
   const { playId, scenarioId } = useParams();
   const [results, setResults] = useState([]);
   const [timer, setTimer] = useState(0);
+  const [countDownDone, setCountDownDone] = useState(false);
   const navigate = useNavigate();
-  const ws = useRef(null); // Use a ref to hold the WebSocket instance
-  let countDownDone = false;
+  const ws = useRef(null);
 
   const connectWebSocket = () => {
     const wsUrl = process.env.NODE_ENV === 'production'
@@ -33,10 +33,13 @@ function ResultPage() {
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log('WebSocket message received:', data); // Log the data
         if (countDownDone) {
           console.log("countdown is over, will not take in results anymore");
+          return; // Prevent updating results after countdown
         }
         if (data.type === 'UPDATE_RESULTS' && data.playId === playId && data.scenarioId === scenarioId) {
+          console.log('Updating results with WebSocket data:', data.updatedVotes); // Log the update
           setResults(data.updatedVotes);
         }
       } catch (e) {
@@ -73,6 +76,7 @@ function ResultPage() {
         }
 
         const data = await response.json();
+        console.log('Initial fetch results:', data); // Log the data
         setResults(data.choices);
       } catch (error) {
         console.error("Error fetching results", error);
@@ -89,8 +93,7 @@ function ResultPage() {
       setTimer(prevTimer => {
         if (prevTimer <= 1) {
           clearInterval(interval);
-          handleAnswers();
-          countDownDone = true;
+          setCountDownDone(true);
           return 0;
         }
         return prevTimer - 1;
@@ -103,19 +106,44 @@ function ResultPage() {
     };
   }, [playId, scenarioId, navigate]);
 
+  useEffect(() => {
+    if (countDownDone && results.length > 0) {
+      handleAnswers();
+    }
+  }, [countDownDone, results]);
+
   const handleAnswers = () => {
     console.log("Handling answers");
+
+    if (results.length === 0) {
+      console.log('No results available');
+      return;
+    }
+
+    console.log('Results:', results); // Log the results to verify structure
+
     let mostVoteIndex = 0;
     for (let i = 1; i < results.length; i++) {
-      if (results[i] && results[mostVoteIndex].votes < results[i].votes) {
-        mostVoteIndex = i;
+      if (results[i] && results[i].votes != null && !isNaN(results[i].votes)) {
+        if (results[mostVoteIndex].votes < results[i].votes) {
+          mostVoteIndex = i;
+        }
+      } else {
+        console.warn(`Result at index ${i} has invalid votes property:`, results[i]);
       }
     }
-    console.log('The answer with the most votes', results[mostVoteIndex]);
-    if (results && results[mostVoteIndex]) {
-      console.log(results[mostVoteIndex].nextStage);
-      let nextStageIndex = parseInt(results[mostVoteIndex].nextStage, 10) -1 ;
-      localStorage.setItem('nextStageIndex', nextStageIndex)
+
+    if (results[mostVoteIndex] && results[mostVoteIndex].votes != null) {
+      console.log('The answer with the most votes', results[mostVoteIndex]);
+      if (results[mostVoteIndex].nextStage != null) {
+        console.log(results[mostVoteIndex].nextStage);
+        let nextStageIndex = parseInt(results[mostVoteIndex].nextStage, 10) - 1;
+        localStorage.setItem('nextStageIndex', nextStageIndex);
+      } else {
+        console.warn('nextStage is not defined for the most voted result:', results[mostVoteIndex]);
+      }
+    } else {
+      console.log('No valid results found');
     }
   }
 
