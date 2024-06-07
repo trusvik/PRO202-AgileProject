@@ -4,6 +4,7 @@ import './playOver.css';
 
 const PlayOver = () => {
     const navigate = useNavigate();
+
     useEffect(() => {
         const clearGameState = async () => {
             localStorage.clear()
@@ -16,7 +17,21 @@ const PlayOver = () => {
                 return;
             }
         }
+        const resetVotes = async () => {
+            const response = await fetch('/admin/reset-votes', {
+                method: 'POST',
+                credentials: 'include',
+            })
+            if (!response.ok) {
+                console.log("Could not reset votes");
+                return;
+            } else {
+                console.log("VOTES RESET I THINK");
+            }
+
+        }
         clearGameState();
+        resetVotes();
     }, [navigate])
     
     return (
