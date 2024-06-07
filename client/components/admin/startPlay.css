@@ -1,3 +1,15 @@
+/* Importing the custom font "JejuHallasan" */
+@font-face {
+    font-family: "JejuHallasan";
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot");
+    src: url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/2da952d097bffd198ec0f0aa3fdd6804.svg#JejuHallasan")format("svg");
+  }
+
+
 #sectionHolderParent{
     width: 90%;
     margin-top: 20px;
@@ -23,6 +35,7 @@
     display: flex;
     justify-content: end;
 }
+
 #startPlayInput{
     margin-right: 10px;
     text-align: center;
@@ -31,4 +44,35 @@
 #nameDivHolder{
     padding-left: 10px;
     padding-bottom: 2px;
+}
+
+#containerHeaderStartPlay{
+    background-color: #F2A71B;
+    display: flex;
+    height: 75px;
+}
+
+.flexContainerLeftStartPlay{
+    width: 33.33%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.flexContainerMiddleStartPlay{
+    width: 33.33%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexContainerRightStartPlay{
+    width: 33.33%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+#logoStartPlay{
+    font-family: "JejuHallasan";
 }

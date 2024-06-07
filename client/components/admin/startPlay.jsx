@@ -99,12 +99,14 @@ function StartPlay() {
 
     return (
         <>
-            <header id="containerHeader">
-                <div id="flexContainerLeft">
+            <header id="containerHeaderStartPlay">
+                <div className="flexContainerLeftStartPlay">
                     <h1 id='logo'>Play: {play}</h1>
-                    <h3 id="logo">Pin: {code}</h3>
                 </div>
-                <div id="flexContainerRight">
+                <div className='flexContainerMiddleStartPlay'>
+                    <h1 id="logoStartPlay">Pin: {code}</h1>
+                </div>
+                <div className="flexContainerRightStartPlay">
                     <p id='userName'>Admin</p>
                 </div>
             </header>
