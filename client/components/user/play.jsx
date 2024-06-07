@@ -119,7 +119,10 @@ const Play = () => {
         <div className="questionContainer">
             <div className="timer">Time remaining: {timer} seconds</div>
             {hasVoted ? (
-                <div>Din stemme er sendt...</div>
+                <div>
+                    <h3>Din stemme er sendt...</h3>
+                    <h4>Venter på de andre spillerne</h4>
+                </div>
             ) : (
                 <>
                     <h2 className="loadingText">LOADING..</h2>
