@@ -19,10 +19,10 @@ function StartPlay() {
             if (nxtStg < 0) {
                 navigate('/admin/reset')
             }
-            setTheIndex(nxtStg)
-            console.log("The index gotten at Startplay is ", theIndex);
+            setTheIndex(nxtStg);
+            console.log("The index gotten at Startplay is ", nxtStg);
         }
-    }, [])
+    }, [navigate]);
 
     useEffect(() => {
         const fetchPlay = async () => {
@@ -72,7 +72,6 @@ function StartPlay() {
         };
     }, [id, navigate]);
 
-
     const handleShowGame = (scenarioId) => {
         const countdown = document.getElementById("startPlayInput").value;
         localStorage.setItem('countdown', countdown);
@@ -83,7 +82,7 @@ function StartPlay() {
         const ws = new WebSocket(wsUrl);
         ws.onopen = () => {
             console.log('Sending ADMIN_START_GAME message...');
-            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId }));
+            ws.send(JSON.stringify({ type: 'ADMIN_START_GAME', playId: id, scenarioId, countdown }));
             ws.send(JSON.stringify({ type: 'REDIRECT_TO_PLAY', playId: id, scenarioId })); // Notify waiting admins
             ws.close();
         };
