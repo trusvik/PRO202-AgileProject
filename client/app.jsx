@@ -23,13 +23,6 @@ export function App() {
 
     return (
         <div id={"page_container"}>
-            <nav>
-                <Link to={`/adminLogin/`}>Admin Login</Link>
-                <Link to={`/pinPage/`}>Pin Page</Link>
-                <Link to={`/admin/`}>Admin Page</Link>
-                <Link to={`/userNamePage/`}>Username page</Link>
-
-            </nav>
             <Routes>
                 <Route path="/adminLogin/" element={<AdminLogin />} />
                 <Route path="/pinPage/" element={<PinPage setIsAuthenticated={setIsAuthenticated}/>} />
